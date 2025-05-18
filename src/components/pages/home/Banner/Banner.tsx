@@ -12,8 +12,12 @@ const Banner = () => {
           style={{
             backgroundImage: `url(${banner.src})`,
             backgroundPosition: "center 20%",
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+
+            zIndex: -1,
           }}
-        ></div>
+        />
 
         {/* Content */}
         <div className="relative container max-w-[1320px] mx-auto px-4 h-full">

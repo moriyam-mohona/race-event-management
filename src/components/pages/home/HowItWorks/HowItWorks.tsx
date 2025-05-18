@@ -4,6 +4,7 @@ import img2 from "@/assets/images/home/find-people.png";
 import img3 from "@/assets/images/home/share-load.png";
 import img4 from "@/assets/images/home/gear-up.png";
 import Image, { StaticImageData } from "next/image";
+import { Container } from "@/components/ui-library/container";
 interface FeatureStep {
   icon: StaticImageData;
   title: string;
@@ -39,33 +40,35 @@ const features: FeatureStep[] = [
 
 const HowItWorks: React.FC = () => {
   return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          title="How it Works"
-          description="Dusttrainers connects you with travel services, race info, virtual expos and personalised recommendations. Offering community driven support and seamless experiences, it help you discover and book events, join race communities, share travel and stays, and plan itineraries. With integrated booking options and the power of group savings and local support through the community, Dusttrainers helps you save money and stay fully prepared and connected for your next adventure."
-        />
+    <Container>
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            title="How it Works"
+            description="Dusttrainers connects you with travel services, race info, virtual expos and personalised recommendations. Offering community driven support and seamless experiences, it help you discover and book events, join race communities, share travel and stays, and plan itineraries. With integrated booking options and the power of group savings and local support through the community, Dusttrainers helps you save money and stay fully prepared and connected for your next adventure."
+          />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:gap-8 mt-16">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="flex flex-col items-center text-center p-6 rounded-lg transition-all duration-300"
-            >
-              <div className="w-24 h-24">
-                <Image src={feature.icon} alt="Feature Icon" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 lg:gap-8 mt-16">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center text-center p-6 rounded-lg transition-all duration-300"
+              >
+                <div className="w-24 h-24">
+                  <Image src={feature.icon} alt="Feature Icon" />
+                </div>
+                <h3 className="text-2xl font-semibold text-gray-900 mt-16 mb-5">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {feature.description}
+                </p>
               </div>
-              <h3 className="text-2xl font-semibold text-gray-900 mt-16 mb-5">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600 leading-relaxed">
-                {feature.description}
-              </p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </Container>
   );
 };
 
