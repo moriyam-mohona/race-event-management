@@ -1,7 +1,8 @@
-import { MapPin, Calendar, Activity } from "lucide-react";
+import { MapPin, Calendar } from "lucide-react";
 import { Expo } from "@/types/Common";
 import Image from "next/image";
-// import profile from "@/assets/";
+import profile from "@/assets/profile.png";
+import geat_img from "@/assets/gears.png";
 interface EventCardProps {
   event: Expo;
 }
@@ -45,32 +46,48 @@ const ExpoCard: React.FC<EventCardProps> = ({ event }) => {
 
         <div className="space-y-2 mb-4">
           <div className="flex items-center font-semibold ">
-            <MapPin className="w-4 h-4 mr-2 text-orange-500" />
+            <Image
+              src={profile}
+              alt="profile"
+              width={1000}
+              height={1000}
+              className="w-5 h-5 rounded-full mr-2"
+            />
             <span>{event.vendorName}</span>
           </div>
 
           <div className="flex items-center text-gray-600">
-            <MapPin className="w-4 h-4 mr-2 text-orange-500" />
+            <MapPin className="w-4 h-4 mr-2" />
             <span>{event.location}</span>
           </div>
 
           <div className="flex items-center text-gray-600">
-            <Calendar className="w-4 h-4 mr-2 text-orange-500" />
+            <Calendar className="w-4 h-4 mr-2" />
             <span>{event.date}</span>
-          </div>
-
-          <div className="flex items-center text-gray-600">
-            <Activity className="w-4 h-4 mr-2 text-orange-500" />
-            <span>{event.category}</span>
           </div>
         </div>
 
-        <div className="mt-6 space-y-4 text-gray-600">
+        <div className="space-y-4 text-gray-600">
           <p className="text-xl font-medium text-gray-800">
             $ {event.price} {event.currency}
           </p>
+          <div className="flex items-center">
+            <Image
+              src={geat_img}
+              alt="gears"
+              width={1000}
+              height={1000}
+              className="w-5 h-5 rounded-full mr-2"
+            />
+            <span className="font-semibold">Needed Gears : {"  "}</span>
+            <span>
+              {"  "}
+              {event?.gears?.map((gear) => gear).join(" | ")}
+            </span>
+          </div>
           <p className="h-16 *:lg:h-12">{event.description}</p>
         </div>
+
         <button className="mt-6 px-6 py-2 bg-transparent border border-primary text-primary hover:text-white rounded-md hover:bg-primary transition-colors duration-300">
           See more
         </button>
