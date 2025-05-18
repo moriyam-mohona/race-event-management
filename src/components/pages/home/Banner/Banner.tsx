@@ -5,7 +5,7 @@ const Banner = () => {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative h-[850px] overflow-hidden">
+      <div className="relative min-h-[850px] overflow-hidden">
         {/* Background Image */}
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -17,8 +17,8 @@ const Banner = () => {
 
         {/* Content */}
         <div className="relative container max-w-[1320px] mx-auto px-4 h-full">
-          <div className="flex flex-col justify-end h-full pt-20 pb-40">
-            <h1 className="font-montserrat text-4xl md:text-5xl lg:text-6xl font-bold text-orange-50 max-w-3xl leading-16">
+          <div className="flex flex-col justify-end h-full pt-40 md:pt-72 pb-40">
+            <h1 className="font-montserrat text-4xl md:text-5xl lg:text-6xl font-bold text-orange-50 max-w-3xl md:leading-16">
               The Journey starts With us -
               <span className="text-orange-500"> Lace Up & Turn Up</span>
             </h1>
