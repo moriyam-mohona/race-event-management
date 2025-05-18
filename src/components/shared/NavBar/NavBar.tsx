@@ -20,10 +20,7 @@ const Navbar = () => {
 
   return (
     <ProgressProvider color="#0B7077">
-      <nav
-        className="
-     py-8 px-4 md:px-8"
-      >
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 shadow-md py-4 px-4 md:px-8">
         <div className="container max-w-[1320px] mx-auto flex items-center justify-between">
           {/* Mobile Menu Button (shifted to the left) */}
           <button
