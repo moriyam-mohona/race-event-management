@@ -1,11 +1,143 @@
-import React from 'react';
+"use client";
 
-const NavBar = () => {
-    return (
-        <div>
-            NavBar
+import { useState } from "react";
+import { X } from "lucide-react";
+import { RxHamburgerMenu } from "react-icons/rx";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import { ProgressProvider } from "@bprogress/next/app";
+import Image from "next/image";
+import logo from "@/assets/logo.png";
+const Navbar = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  // Navigation links
+  const navLinks = [
+    { name: "Home", href: "/" },
+    { name: "Race Categories", href: "/" },
+    { name: "Contact", href: "/" },
+    { name: "Community", href: "/" },
+  ];
+
+  return (
+    <ProgressProvider color="#0B7077">
+      <nav
+        className="
+     py-8 px-4 md:px-8"
+      >
+        <div className="container max-w-[1320px] mx-auto flex items-center justify-between">
+          {/* Mobile Menu Button (shifted to the left) */}
+          <button
+            className="md:hidden "
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <div className="space-y-1.5">
+                <RxHamburgerMenu className="h-6 w-6" />
+              </div>
+            )}
+          </button>
+
+          <div className="flex items-center space-x-4 gap-10">
+            {/* Logo */}
+            <Link href="/" className="flex items-center">
+              <Image
+                src={logo}
+                alt="logo"
+                height={1000}
+                width={1000}
+                className="h-18 w-24"
+              />
+            </Link>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center space-x-8">
+              {navLinks.map((link, index) => (
+                <Link
+                  key={index}
+                  href={link.href}
+                  className=" hover:text-primary text-lg transition-colors"
+                >
+                  {link.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Mobile Navigation */}
+          <AnimatePresence>
+            {isMobileMenuOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="absolute top-32 left-0 right-0 bg-white z-20 md:hidden"
+              >
+                <div className="flex flex-col p-4 space-y-4">
+                  {navLinks.map((link, index) => (
+                    <Link
+                      key={index}
+                      href={link.href}
+                      className="hover:font-semibold hover:text-primary transition-colors py-2"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+
+                  <div className="flex items-center justify-between gap-5 space-y-2">
+                    <Link
+                      href="/"
+                      className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Login Now
+                    </Link>
+                    <Link
+                      href="/"
+                      className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full"
+                    >
+                      Sign up
+                    </Link>
+                  </div>
+                  <Link
+                    href="/"
+                    className="bg-primary hover:bg-transparent hover:border hover:border-primary hover:text-primary hover:font-semibold text-white py-2 px-5 rounded-full text-center transition-colors"
+                  >
+                    Create Event
+                  </Link>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Search and Login */}
+          <div className="hidden md:flex items-center space-x-3">
+            <Link
+              href="/"
+              className="text-lg hover:text-primary hover:font-semibold hover:underline border-r-2 pr-3 border-black "
+            >
+              Login
+            </Link>
+            <Link
+              href="/"
+              className="text-lg hover:text-primary hover:font-semibold hover:underline"
+            >
+              Sign up
+            </Link>
+            <Link
+              href="/"
+              className="text-lg bg-primary hover:bg-primary/80 text-white py-3 px-5 ml-3 rounded-full text-center transition-colors"
+            >
+              Create Event
+            </Link>
+          </div>
         </div>
-    );
+      </nav>
+    </ProgressProvider>
+  );
 };
 
-export default NavBar;
+export default Navbar;

@@ -6,11 +6,11 @@ import { Container } from "@/components/ui-library/container";
 
 const HomeComponent = () => {
   return (
-    <Container >
+    <Container>
       <Banner />
       <Example />
       <LoginWithGoogle />
-    </Container> 
+    </Container>
   );
 };
 
