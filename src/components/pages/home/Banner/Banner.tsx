@@ -1,6 +1,6 @@
 "use client";
-
 import banner from "@/assets/images/home/hero.png";
+
 const Banner = () => {
   return (
     <div>

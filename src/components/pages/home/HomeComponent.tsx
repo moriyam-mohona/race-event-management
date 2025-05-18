@@ -5,6 +5,8 @@ import Banner from "./Banner/Banner";
 
 import HowItWorks from "./HowItWorks/HowItWorks";
 import UpcomingEvents from "./UpcomingEvents/UpcomingEvents";
+import FindDreamRace from "./FindDreamRace/FindDreamRace";
+import JoinRaceExpo from "./JoinRaceExpo/JoinRaceExpo";
 
 const HomeComponent = () => {
   return (
@@ -12,6 +14,8 @@ const HomeComponent = () => {
       <Banner />
       <HowItWorks />
       <UpcomingEvents />
+      <FindDreamRace />
+      <JoinRaceExpo />
     </>
   );
 };

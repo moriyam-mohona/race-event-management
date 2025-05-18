@@ -11,6 +11,7 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import event from "@/assets/event.png";
+import { Container } from "@/components/ui-library/container";
 
 const events: Event[] = [
   {
@@ -93,52 +94,54 @@ const UpcomingEvents: React.FC = () => {
 
   return (
     <section className="py-20 bg-green-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <SectionHeader
-          title="Upcoming Events"
-          description="Looking for something soon— open to where the journey takes you? Discover, plan, connect, lend a hand, and share the experience - the spirit of adventure like never before."
-        />
+      <Container>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            title="Upcoming Events"
+            description="Looking for something soon— open to where the journey takes you? Discover, plan, connect, lend a hand, and share the experience - the spirit of adventure like never before."
+          />
 
-        <div className="relative mt-12">
-          <Swiper
-            modules={[Navigation]}
-            spaceBetween={20}
-            slidesPerView={1}
-            breakpoints={{
-              640: { slidesPerView: 1 },
-              768: { slidesPerView: 2 },
-              1024: { slidesPerView: 4 },
-            }}
-            navigation={{
-              prevEl: prevRef.current,
-              nextEl: nextRef.current,
-            }}
-          >
-            {events.map((event) => (
-              <SwiperSlide key={event.id}>
-                <EventCard event={event} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          <div className="relative mt-12">
+            <Swiper
+              modules={[Navigation]}
+              spaceBetween={20}
+              slidesPerView={1}
+              breakpoints={{
+                640: { slidesPerView: 1 },
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 4 },
+              }}
+              navigation={{
+                prevEl: prevRef.current,
+                nextEl: nextRef.current,
+              }}
+            >
+              {events.map((event) => (
+                <SwiperSlide key={event.id}>
+                  <EventCard event={event} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
 
-          {/* Navigation Buttons */}
-          <button
-            ref={prevRef}
-            className="absolute -left-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
-            aria-label="Previous events"
-          >
-            <ChevronLeft className="w-6 h-6 text-gray-600" />
-          </button>
+            {/* Navigation Buttons */}
+            <button
+              ref={prevRef}
+              className="absolute -left-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
+              aria-label="Previous events"
+            >
+              <ChevronLeft className="w-6 h-6 text-gray-600" />
+            </button>
 
-          <button
-            ref={nextRef}
-            className="absolute -right-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
-            aria-label="Next events"
-          >
-            <ChevronRight className="w-6 h-6 text-gray-600" />
-          </button>
+            <button
+              ref={nextRef}
+              className="absolute -right-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
+              aria-label="Next events"
+            >
+              <ChevronRight className="w-6 h-6 text-gray-600" />
+            </button>
+          </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 };
