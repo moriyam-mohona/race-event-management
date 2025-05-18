@@ -24,3 +24,11 @@ export interface Expo {
   vendorName: string;
   gears: string[];
 }
+
+export type Review = {
+  id: string;
+  name: string;
+  location: string;
+  review: string;
+  avatar: string | StaticImageData;
+};

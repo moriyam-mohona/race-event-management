@@ -106,6 +106,7 @@ const UpcomingEvents: React.FC = () => {
               modules={[Navigation]}
               spaceBetween={20}
               slidesPerView={1}
+              loop={true}
               breakpoints={{
                 640: { slidesPerView: 1 },
                 768: { slidesPerView: 2 },

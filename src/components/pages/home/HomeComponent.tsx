@@ -7,6 +7,7 @@ import HowItWorks from "./HowItWorks/HowItWorks";
 import UpcomingEvents from "./UpcomingEvents/UpcomingEvents";
 import FindDreamRace from "./FindDreamRace/FindDreamRace";
 import JoinRaceExpo from "./JoinRaceExpo/JoinRaceExpo";
+import CommunitySays from "./CommunitySays/CommunitySays";
 
 const HomeComponent = () => {
   return (
@@ -16,6 +17,7 @@ const HomeComponent = () => {
       <UpcomingEvents />
       <FindDreamRace />
       <JoinRaceExpo />
+      <CommunitySays />
     </>
   );
 };
