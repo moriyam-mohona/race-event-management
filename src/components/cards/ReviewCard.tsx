@@ -29,8 +29,10 @@ const ReviewCard = ({ review }: ReviewCardProps) => {
       <p className=" mb-4">{review.location}</p>
 
       {/* Review Text */}
-      <p className="text-[#676767] font-normal font-montserrat text-lg mb-6">
-        {review.review}
+
+      <p className="text-[#676767] font-normal font-montserrat text-lg mb-6 h-24">
+        {review.review.split(" ").slice(0, 16).join(" ") +
+          (review.review.split(" ").length > 16 ? "..." : "")}
       </p>
 
       {/* Quote Icon */}
