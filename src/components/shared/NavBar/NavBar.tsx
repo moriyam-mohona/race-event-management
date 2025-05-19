@@ -93,7 +93,7 @@ const Navbar = () => {
                       Login Now
                     </Link>
                     <Link
-                      href="/"
+                      href="/auth/register"
                       className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full"
                     >
                       Sign up
@@ -119,7 +119,7 @@ const Navbar = () => {
               Login
             </Link>
             <Link
-              href="/"
+              href="/auth/register"
               className="text-lg hover:text-primary hover:font-semibold hover:underline"
             >
               Sign up
