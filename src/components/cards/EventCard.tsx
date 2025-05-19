@@ -2,6 +2,7 @@ import React from "react";
 import { MapPin, Calendar, Activity } from "lucide-react";
 import { Event } from "@/types/Common";
 import Image from "next/image";
+import Link from "next/link";
 
 interface EventCardProps {
   event: Event;
@@ -67,9 +68,14 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
           </p>
           <p className="h-16 *:lg:h-12">{event.description}</p>
         </div>
-        <button className="mt-6 px-6 py-2 bg-transparent border border-primary text-primary hover:text-white rounded-md hover:bg-primary transition-colors duration-300">
-          See more
-        </button>
+        <div className="mt-10">
+          <Link
+            href={`/race-categories/${event.id}`}
+            className="px-6 py-2 bg-transparent border border-primary text-primary hover:text-white rounded-md hover:bg-primary transition-colors duration-300"
+          >
+            See more
+          </Link>
+        </div>
       </div>
     </div>
   );

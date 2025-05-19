@@ -20,7 +20,7 @@ const Navbar = () => {
 
   return (
     <ProgressProvider color="#0B7077">
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/40  backdrop-blur-md shadow-md py-4 px-4 md:px-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/40  backdrop-blur-md py-4 px-4 md:px-8">
         <div className="container max-w-[1320px] mx-auto flex items-center justify-between">
           {/* Mobile Menu Button (shifted to the left) */}
           <button
@@ -114,19 +114,19 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-3">
             <Link
               href="/auth/login"
-              className="text-lg hover:text-primary hover:font-semibold hover:underline border-r-2 pr-3 border-black "
+              className="text-base hover:text-primary hover:font-semibold hover:underline border-r-2 pr-3 border-black "
             >
               Login
             </Link>
             <Link
               href="/auth/register"
-              className="text-lg hover:text-primary hover:font-semibold hover:underline"
+              className="text-base hover:text-primary hover:font-semibold hover:underline"
             >
               Sign up
             </Link>
             <Link
               href="/"
-              className="text-lg bg-primary hover:bg-primary/80 text-white py-3 px-5 ml-3 rounded-full text-center transition-colors"
+              className="text-base bg-primary hover:bg-primary/80 text-white py-3 px-5 ml-3 rounded-full text-center transition-colors"
             >
               Create Event
             </Link>

@@ -3,6 +3,7 @@ import { Expo } from "@/types/Common";
 import Image from "next/image";
 import profile from "@/assets/profile.png";
 import geat_img from "@/assets/gears.png";
+import Link from "next/link";
 interface EventCardProps {
   event: Expo;
 }
@@ -88,9 +89,12 @@ const ExpoCard: React.FC<EventCardProps> = ({ event }) => {
           <p className="h-16 *:lg:h-12">{event.description}</p>
         </div>
 
-        <button className="mt-6 px-6 py-2 bg-transparent border border-primary text-primary hover:text-white rounded-md hover:bg-primary transition-colors duration-300">
+        <Link
+          href={`/race-categories/${event.id}`}
+          className="mt-6 px-6 py-2 bg-transparent border border-primary text-primary hover:text-white rounded-md hover:bg-primary transition-colors duration-300"
+        >
           See more
-        </button>
+        </Link>
       </div>
     </div>
   );
