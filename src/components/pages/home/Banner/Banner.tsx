@@ -1,7 +1,30 @@
 "use client";
 import banner from "@/assets/images/home/hero.png";
+import { useState } from "react";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 
+// Shadcn components
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 const Banner = () => {
+  const [raceType, setRaceType] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
+  const [date, setDate] = useState<Date | undefined>(undefined);
+
   return (
     <div>
       {/* Hero Section */}
@@ -39,58 +62,53 @@ const Banner = () => {
             <div className="mt-10">
               <div className="flex flex-col sm:flex-row gap-4 max-w-6xl bg-black/20 backdrop-blur-md p-6 rounded-lg">
                 <div className="flex-1">
-                  <select
-                    className="w-full px-4 py-3 rounded-md border text-white placeholder-gray-500 focus:ring-2 focus:ring-primary"
-                    defaultValue=""
-                  >
-                    <option value="" disabled>
-                      Race type
-                    </option>
-                    <option value="5k" className="bg-transparent text-black">
-                      5K Run
-                    </option>
-                    <option value="10k" className="bg-transparent text-black">
-                      10K Run
-                    </option>
-                    <option value="half" className="bg-transparent text-black">
-                      Half Marathon
-                    </option>
-                    <option value="full" className="bg-transparent text-black">
-                      Full Marathon
-                    </option>
-                    <option value="ultra" className="bg-transparent text-black">
-                      Ultra Marathon
-                    </option>
-                    <option value="trail" className="bg-transparent text-black">
-                      Trail Running
-                    </option>
-                    <option
-                      value="triathlon"
-                      className="bg-transparent text-black"
-                    >
-                      Triathlon
-                    </option>
-                  </select>
+                  <Select value={raceType} onValueChange={setRaceType}>
+                    <SelectTrigger className="w-full h-11 bg-transparent border text-white focus:ring-2 focus:ring-primary [&_[data-placeholder]]:text-white">
+                      <SelectValue placeholder="Race type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Hybrid">Hybrid</SelectItem>
+                      <SelectItem value="On site">On site</SelectItem>
+                      <SelectItem value="Virtual">Virtual</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="flex-1">
-                  <input
+                  <Input
                     type="text"
                     placeholder="Location"
-                    className="w-full px-4 py-3 rounded-md border text-white focus:ring-2 focus:ring-primary placeholder:text-white"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    className="w-full h-11 bg-transparent border text-white focus:ring-2 focus:ring-primary placeholder:text-white"
                   />
                 </div>
 
                 <div className="flex-1">
-                  <input
-                    type="date"
-                    className="w-full px-4 py-3 rounded-md border text-white placeholder-white focus:ring-2 focus:ring-primary "
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full h-11 bg-transparent border text-white focus:ring-2 focus:ring-primary justify-start font-normal"
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {date ? format(date, "PPP") : <span>Select date</span>}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
-                <button className="px-8 py-3 bg-primary text-white rounded-md font-medium hover:bg-primary/80 transition-colors duration-300 whitespace-nowrap">
+                <Button className="h-11 px-8 bg-primary text-white rounded-md font-medium hover:bg-primary/80 transition-colors duration-300 whitespace-nowrap">
                   Explore Race
-                </button>
+                </Button>
               </div>
             </div>
           </div>

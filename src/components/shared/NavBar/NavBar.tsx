@@ -54,7 +54,7 @@ const Navbar = () => {
                 <Link
                   key={index}
                   href={link.href}
-                  className=" hover:text-primary transition-colors"
+                  className="hover:font-semibold"
                 >
                   {link.name}
                 </Link>
