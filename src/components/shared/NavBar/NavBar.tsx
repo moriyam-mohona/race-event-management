@@ -14,7 +14,7 @@ const Navbar = () => {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Race Categories", href: "/race-categories" },
-    { name: "Contact", href: "/" },
+    { name: "Contact", href: "/contact-us" },
     { name: "Community", href: "/" },
   ];
 
