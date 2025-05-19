@@ -86,7 +86,7 @@ const Navbar = () => {
 
                   <div className="flex items-center justify-between gap-5 space-y-2">
                     <Link
-                      href="/"
+                      href="/auth/login"
                       className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
@@ -113,7 +113,7 @@ const Navbar = () => {
           {/* Search and Login */}
           <div className="hidden md:flex items-center space-x-3">
             <Link
-              href="/"
+              href="/auth/login"
               className="text-lg hover:text-primary hover:font-semibold hover:underline border-r-2 pr-3 border-black "
             >
               Login

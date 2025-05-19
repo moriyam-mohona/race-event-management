@@ -20,8 +20,7 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import { FcGoogle } from "react-icons/fc";
-import { TfiFacebook } from "react-icons/tfi";
+import SocialLogin from "../SocialLogin/SocialLogin";
 
 interface PersonalInfo {
   firstName: string;
@@ -76,32 +75,8 @@ const Register = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("All form data:", { ...personalInfo, ...locationInfo });
+    console.log("Data:", { ...personalInfo, ...locationInfo });
   };
-
-  const handleSocialLogin = (provider: string) => {
-    console.log(`Continue with ${provider}`);
-  };
-
-  const SocialButton = ({ provider }: { provider: string }) => (
-    <Button
-      type="button"
-      variant="outline"
-      className="w-full flex items-center justify-center gap-2 text-base font-normal h-12"
-      onClick={() => handleSocialLogin(provider)}
-    >
-      {provider === "Google" ? (
-        <div className="bg-white w-6 h-6 flex items-center justify-center rounded-full">
-          <FcGoogle />
-        </div>
-      ) : (
-        <div className="bg-[#4C6ABE] w-6 h-6 flex items-center justify-center rounded-full">
-          <TfiFacebook className="text-white " />
-        </div>
-      )}
-      Continue with {provider}
-    </Button>
-  );
 
   return (
     <div className="flex justify-center items-center min-h-screen my-20 p-4">
@@ -267,8 +242,8 @@ const Register = () => {
           </div>
 
           <div className="space-y-4">
-            <SocialButton provider="Google" />
-            <SocialButton provider="Facebook" />
+            <SocialLogin provider="Google" />
+            <SocialLogin provider="Facebook" />
           </div>
         </form>
       </div>
