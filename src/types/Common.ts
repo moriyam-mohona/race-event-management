@@ -32,3 +32,45 @@ export type Review = {
   review: string;
   avatar: string | StaticImageData;
 };
+
+export interface FilterState {
+  eventType: string;
+  categories: string[];
+  distance: {
+    min: string;
+    max: string;
+    unit: string;
+  };
+  date: {
+    day: string;
+    month: string;
+    year: string;
+  };
+  continent: string;
+  country: string;
+  region: string;
+  raceType: {
+    hybrid: boolean;
+    onSite: boolean;
+    virtual: boolean;
+  };
+}
+
+export interface RaceEvent {
+  id: string;
+  title: string;
+  location: {
+    city: string;
+    country: string;
+    coordinates: [number, number];
+  };
+  date: string;
+  category: string;
+  distance: string;
+  price: string;
+  terrain: string;
+  participants: number;
+  season: string;
+  imageUrl: string;
+  description: string;
+}

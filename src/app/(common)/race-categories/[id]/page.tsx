@@ -3,7 +3,7 @@ import React from "react";
 
 const RaceDetails = () => {
   return (
-    <div className="mt-28">
+    <div className="my-48 mb-40">
       <EventDetailsPage />
     </div>
   );

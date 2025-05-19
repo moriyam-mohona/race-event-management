@@ -13,7 +13,7 @@ const Navbar = () => {
   // Navigation links
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Race Categories", href: "/" },
+    { name: "Race Categories", href: "/race-categories" },
     { name: "Contact", href: "/" },
     { name: "Community", href: "/" },
   ];
