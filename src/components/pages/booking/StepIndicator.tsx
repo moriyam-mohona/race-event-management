@@ -48,7 +48,7 @@ export default function StepIndicator() {
               {/* Step label */}
               <div
                 className={cn(
-                  "mt-2 text-sm lg:text-base",
+                  "hidden md:block mt-2 text-sm lg:text-base",
                   isActive ? "text-primary" : "text-gray-400"
                 )}
               >

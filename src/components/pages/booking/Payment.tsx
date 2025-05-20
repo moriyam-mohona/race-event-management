@@ -1,20 +1,11 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RootState } from "@/redux/store";
 import {
@@ -22,9 +13,11 @@ import {
   resetBooking,
   setPayment,
 } from "@/redux/features/booking/bookingSlice";
+import SuccessModal from "@/components/shared/SuccessModal";
 
 export default function Payment() {
   const dispatch = useDispatch();
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { ticket, personalDetails, addOns } = useSelector(
     (state: RootState) => state.booking
   );
@@ -89,7 +82,7 @@ export default function Payment() {
         payment: formData,
       });
       dispatch(resetBooking());
-      alert("Payment successful! Your booking is confirmed.");
+      setShowSuccessModal(true);
     }
   };
 
@@ -110,9 +103,10 @@ export default function Payment() {
   //   };
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6">
+    <div className="bg-white">
       <div className="mb-6">
-        <h2 className="text-xl font-medium">Payment Method</h2>
+        <h2 className="text-3xl font-medium text-gray-700">Payment Method</h2>
+
         <div className="mt-4">
           <RadioGroup
             value={formData.paymentMethod}
@@ -142,121 +136,122 @@ export default function Payment() {
           </RadioGroup>
         </div>
       </div>
+      {/* Payment Details */}
+      <div className="mt-20">
+        <h3 className="mb-4 text-xl text-gray-800 font-medium">
+          Payment Details
+        </h3>
+        <div className="border border-gray-200 rounded-lg p-6">
+          <div className="mb-6">
+            <div className="mb-4">
+              <Input
+                id="cardName"
+                name="cardName"
+                value={formData.cardName}
+                onChange={handleChange}
+                className="mt-1"
+                placeholder="Enter Name on Card"
+              />
+              {errors.cardName && (
+                <p className="mt-1 text-xs text-red-500">{errors.cardName}</p>
+              )}
+            </div>
 
-      <div className="mb-6">
-        <h3 className="mb-4 text-lg font-medium">Payment Details</h3>
+            <div className="mb-4">
+              <Input
+                id="cardNumber"
+                name="cardNumber"
+                type="number"
+                value={formData.cardNumber}
+                onChange={handleChange}
+                className="mt-1"
+                placeholder="Card Number"
+              />
+              {errors.cardNumber && (
+                <p className="mt-1 text-xs text-red-500">{errors.cardNumber}</p>
+              )}
+            </div>
 
-        <div className="mb-4">
-          <Label htmlFor="cardName">Card Name or Card</Label>
-          <Input
-            id="cardName"
-            name="cardName"
-            value={formData.cardName}
-            onChange={handleChange}
-            className="mt-1"
-            placeholder="John Doe"
-          />
-          {errors.cardName && (
-            <p className="mt-1 text-xs text-red-500">{errors.cardName}</p>
-          )}
-        </div>
+            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <Input
+                  id="cvv"
+                  name="cvv"
+                  type="number"
+                  value={formData.cvv}
+                  onChange={handleChange}
+                  className="mt-1"
+                  placeholder="CVV Code"
+                />
+                {errors.cvv && (
+                  <p className="mt-1 text-xs text-red-500">{errors.cvv}</p>
+                )}
+              </div>
+              <div>
+                <Input
+                  id="expiryDate"
+                  name="expiryDate"
+                  type="date"
+                  value={formData.expiryDate}
+                  onChange={handleChange}
+                  className="mt-1"
+                  placeholder="Expiration Date"
+                />
+                {errors.expiryDate && (
+                  <p className="mt-1 text-xs text-red-500">
+                    {errors.expiryDate}
+                  </p>
+                )}
+              </div>
+            </div>
 
-        <div className="mb-4">
-          <Label htmlFor="cardNumber">Card Number</Label>
-          <Input
-            id="cardNumber"
-            name="cardNumber"
-            value={formData.cardNumber}
-            onChange={handleChange}
-            className="mt-1"
-            placeholder="1234 5678 9012 3456"
-          />
-          {errors.cardNumber && (
-            <p className="mt-1 text-xs text-red-500">{errors.cardNumber}</p>
-          )}
-        </div>
-
-        <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="cvv">CVV Code</Label>
-            <Input
-              id="cvv"
-              name="cvv"
-              value={formData.cvv}
-              onChange={handleChange}
-              className="mt-1"
-              placeholder="123"
-            />
-            {errors.cvv && (
-              <p className="mt-1 text-xs text-red-500">{errors.cvv}</p>
+            <div className="mb-4 flex items-center space-x-2">
+              <Checkbox
+                id="agreeToTerms"
+                checked={formData.agreeToTerms}
+                onCheckedChange={handleCheckboxChange}
+              />
+              <Label htmlFor="agreeToTerms" className="text-sm text-gray-600">
+                By clicking Confirm Payment I agree to the company term of
+                service.
+              </Label>
+            </div>
+            {errors.agreeToTerms && (
+              <p className="mt-1 text-xs text-red-500">{errors.agreeToTerms}</p>
             )}
           </div>
-          <div>
-            <Label htmlFor="expiryDate">Expiration Date</Label>
+          <div className="mb-6">
             <Input
-              id="expiryDate"
-              name="expiryDate"
-              value={formData.expiryDate}
+              id="country"
+              name="country"
+              value={formData.country}
               onChange={handleChange}
               className="mt-1"
-              placeholder="MM/YY"
+              placeholder="Country"
             />
-            {errors.expiryDate && (
-              <p className="mt-1 text-xs text-red-500">{errors.expiryDate}</p>
+
+            {errors.country && (
+              <p className="mt-1 text-xs text-red-500">{errors.country}</p>
             )}
           </div>
         </div>
-
-        <div className="mb-4 flex items-center space-x-2">
-          <Checkbox
-            id="agreeToTerms"
-            checked={formData.agreeToTerms}
-            onCheckedChange={handleCheckboxChange}
-          />
-          <Label htmlFor="agreeToTerms" className="text-sm">
-            By clicking Confirm Payment I agree to the company term of service.
-          </Label>
-        </div>
-        {errors.agreeToTerms && (
-          <p className="mt-1 text-xs text-red-500">{errors.agreeToTerms}</p>
-        )}
-      </div>
-
-      <div className="mb-6">
-        <h3 className="mb-4 text-lg font-medium">Country</h3>
-        <Select
-          value={formData.country}
-          onValueChange={(value) => handleSelectChange("country", value)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select country" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="us">United States</SelectItem>
-            <SelectItem value="uk">United Kingdom</SelectItem>
-            <SelectItem value="ca">Canada</SelectItem>
-            <SelectItem value="au">Australia</SelectItem>
-            <SelectItem value="fr">France</SelectItem>
-            <SelectItem value="de">Germany</SelectItem>
-            <SelectItem value="es">Spain</SelectItem>
-          </SelectContent>
-        </Select>
-        {errors.country && (
-          <p className="mt-1 text-xs text-red-500">{errors.country}</p>
-        )}
       </div>
 
       <div className="mt-8 flex justify-between">
-        <Button variant="outline" onClick={handleBack}>
+        <button onClick={handleBack} className="border px-10 py-2 rounded">
           Back
-        </Button>
-        <Button
-          className="bg-blue-500 hover:bg-blue-600"
+        </button>
+        <button
+          className="bg-primary hover:bg-primary/90 text-white px-10 py-2 rounded"
           onClick={handleSubmit}
         >
           Pay securely
-        </Button>
+        </button>
       </div>
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => setShowSuccessModal(false)}
+      />
     </div>
   );
 }

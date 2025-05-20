@@ -96,7 +96,6 @@ export default function PersonalDetails() {
           <p className="text-orange-500">Participant 01</p>
         </div>
       </div>
-
       <div className="my-16">
         <h3 className="mb-4 text-xl text-gray-800 font-medium">
           Personal Information
@@ -201,7 +200,7 @@ export default function PersonalDetails() {
           </div>
         </div>
       </div>
-
+      {/* Address & Contact */}
       <div className="mb-6">
         <h3 className="mb-4 text-xl text-gray-800 font-medium">
           Address & Contact
@@ -312,7 +311,7 @@ export default function PersonalDetails() {
           </div>
         </div>
       </div>
-
+      {/* Button  */}
       <div className="mt-8 flex justify-between">
         <button onClick={handleBack} className="border px-10 py-2 rounded">
           Back
