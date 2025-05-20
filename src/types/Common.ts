@@ -74,3 +74,59 @@ export interface RaceEvent {
   imageUrl: string;
   description: string;
 }
+
+export interface TicketState {
+  eventType?: string;
+  distance?: string;
+  date?: string;
+  time?: string;
+  price?: number;
+  quantity?: number;
+}
+
+export interface PersonalDetailsState {
+  gender?: string;
+  firstName?: string;
+  lastName?: string;
+  dateOfBirth?: string;
+  nationality?: string;
+  email?: string;
+  address?: string;
+  continent?: string;
+  country?: string;
+  region?: string;
+  zipCode?: string;
+  phoneNumber?: string;
+  emergencyContact?: string;
+}
+
+export interface AddOnItem {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
+
+export interface AddOnsState {
+  selectedItems?: AddOnItem[];
+}
+
+export interface PaymentState {
+  paymentMethod?: string;
+  cardName?: string;
+  cardNumber?: string;
+  cvv?: string;
+  expiryDate?: string;
+  agreeToTerms?: boolean;
+  country?: string;
+}
+
+export interface BookingState {
+  currentStep: number;
+  ticket: TicketState;
+  personalDetails: PersonalDetailsState;
+  addOns: AddOnsState;
+  payment: PaymentState;
+}

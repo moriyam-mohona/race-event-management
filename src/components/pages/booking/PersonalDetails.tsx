@@ -1,20 +1,11 @@
 "use client";
 
 import type React from "react";
-
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { RootState } from "@/redux/store";
 import {
   nextStep,
@@ -97,277 +88,241 @@ export default function PersonalDetails() {
   };
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6">
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-medium">Cycling</h2>
-        <div className="text-right">
-          <p className="text-sm text-gray-600">8-10 Aug, 2025</p>
-          <p className="text-sm text-orange-500">Participant 01</p>
+    <div className="rounded-lg bg-white">
+      <div className="mb-4 flex flex-col justify-between space-y-4">
+        <h2 className="text-3xl font-medium text-gray-700">Cycling</h2>
+        <div className=" space-y-4">
+          <p className="text-gray-600">8-10 Aug, 2025</p>
+          <p className="text-orange-500">Participant 01</p>
+        </div>
+      </div>
+
+      <div className="my-16">
+        <h3 className="mb-4 text-xl text-gray-800 font-medium">
+          Personal Information
+        </h3>
+
+        {/* personal Infos  */}
+        <div className="border px-5 py-8 rounded-lg">
+          <div className="mb-4 ">
+            <RadioGroup
+              value={formData.gender}
+              onValueChange={(value) => handleSelectChange("gender", value)}
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="male" id="male" />
+                <Label htmlFor="male">Male</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="female" id="female" />
+                <Label htmlFor="female">Female</Label>
+              </div>
+            </RadioGroup>
+            {errors.gender && (
+              <p className="mt-1 text-xs text-red-500">{errors.gender}</p>
+            )}
+          </div>
+          <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <Input
+                id="firstName"
+                name="firstName"
+                placeholder="First Name"
+                value={formData.firstName}
+                onChange={handleChange}
+                className="mt-1"
+              />
+              {errors.firstName && (
+                <p className="mt-1 text-xs text-red-500">{errors.firstName}</p>
+              )}
+            </div>
+            <div>
+              <Input
+                id="lastName"
+                name="lastName"
+                placeholder="Last Name"
+                value={formData.lastName}
+                onChange={handleChange}
+                className="mt-1"
+              />
+              {errors.lastName && (
+                <p className="mt-1 text-xs text-red-500">{errors.lastName}</p>
+              )}
+            </div>
+          </div>
+
+          <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <Input
+                id="dateOfBirth"
+                name="dateOfBirth"
+                placeholder="Date of Birth"
+                type="date"
+                value={formData.dateOfBirth}
+                onChange={handleChange}
+                className="mt-1"
+              />
+              {errors.dateOfBirth && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.dateOfBirth}
+                </p>
+              )}
+            </div>
+            <div>
+              <Input
+                id="nationality"
+                name="nationality"
+                placeholder="Nationality"
+                value={formData.nationality}
+                onChange={handleChange}
+                className="mt-1"
+              />
+              {errors.nationality && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.nationality}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <Input
+              id="email"
+              name="email"
+              placeholder="Email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="mt-1"
+            />
+            {errors.email && (
+              <p className="mt-1 text-xs text-red-500">{errors.email}</p>
+            )}
+          </div>
         </div>
       </div>
 
       <div className="mb-6">
-        <h3 className="mb-4 text-lg font-medium">Personal Information</h3>
-
-        <div className="mb-4">
-          <RadioGroup
-            value={formData.gender}
-            onValueChange={(value) => handleSelectChange("gender", value)}
-            className="flex gap-4"
-          >
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="male" id="male" />
-              <Label htmlFor="male">Male</Label>
+        <h3 className="mb-4 text-xl text-gray-800 font-medium">
+          Address & Contact
+        </h3>
+        <div className="border px-5 py-8 rounded-lg">
+          {/* address */}
+          <div className="mb-4">
+            <Input
+              id="address"
+              name="address"
+              placeholder="Address"
+              value={formData.address}
+              onChange={handleChange}
+              className="mt-1"
+            />
+            {errors.address && (
+              <p className="mt-1 text-xs text-red-500">{errors.address}</p>
+            )}
+          </div>
+          <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {/* Continent */}
+            <div>
+              <Input
+                id="continent"
+                name="continent"
+                placeholder="Continent"
+                value={formData.continent}
+                onChange={handleChange}
+                className="mt-1"
+              />
+              {errors.continent && (
+                <p className="mt-1 text-xs text-red-500">{errors.continent}</p>
+              )}
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="female" id="female" />
-              <Label htmlFor="female">Female</Label>
+            <div>
+              <Input
+                id="country"
+                name="country"
+                placeholder="Country"
+                value={formData.country}
+                onChange={handleChange}
+                className="mt-1"
+              />
+              {errors.country && (
+                <p className="mt-1 text-xs text-red-500">{errors.country}</p>
+              )}
             </div>
-          </RadioGroup>
-          {errors.gender && (
-            <p className="mt-1 text-xs text-red-500">{errors.gender}</p>
-          )}
-        </div>
-
-        <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="firstName">First Name</Label>
-            <Input
-              id="firstName"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              className="mt-1"
-            />
-            {errors.firstName && (
-              <p className="mt-1 text-xs text-red-500">{errors.firstName}</p>
-            )}
           </div>
-          <div>
-            <Label htmlFor="lastName">Last Name</Label>
-            <Input
-              id="lastName"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              className="mt-1"
-            />
-            {errors.lastName && (
-              <p className="mt-1 text-xs text-red-500">{errors.lastName}</p>
-            )}
+          <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <Input
+                id="region"
+                name="region"
+                placeholder="Continent"
+                value={formData.region}
+                onChange={handleChange}
+                className="mt-1"
+              />
+              {errors.region && (
+                <p className="mt-1 text-xs text-red-500">{errors.region}</p>
+              )}
+            </div>
+            <div>
+              <Input
+                id="zipCode"
+                name="zipCode"
+                placeholder="Zip code"
+                value={formData.zipCode}
+                onChange={handleChange}
+                className="mt-1"
+              />
+              {errors.zipCode && (
+                <p className="mt-1 text-xs text-red-500">{errors.zipCode}</p>
+              )}
+            </div>
           </div>
-        </div>
-
-        <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="dateOfBirth">Date of Birth</Label>
-            <Input
-              id="dateOfBirth"
-              name="dateOfBirth"
-              type="date"
-              value={formData.dateOfBirth}
-              onChange={handleChange}
-              className="mt-1"
-            />
-            {errors.dateOfBirth && (
-              <p className="mt-1 text-xs text-red-500">{errors.dateOfBirth}</p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="nationality">Nationality</Label>
-            <Select
-              value={formData.nationality}
-              onValueChange={(value) =>
-                handleSelectChange("nationality", value)
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select nationality" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="us">United States</SelectItem>
-                <SelectItem value="uk">United Kingdom</SelectItem>
-                <SelectItem value="ca">Canada</SelectItem>
-                <SelectItem value="au">Australia</SelectItem>
-                <SelectItem value="fr">France</SelectItem>
-                <SelectItem value="de">Germany</SelectItem>
-                <SelectItem value="es">Spain</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.nationality && (
-              <p className="mt-1 text-xs text-red-500">{errors.nationality}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="mt-1"
-          />
-          {errors.email && (
-            <p className="mt-1 text-xs text-red-500">{errors.email}</p>
-          )}
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <h3 className="mb-4 text-lg font-medium">Address & Contact</h3>
-
-        <div className="mb-4">
-          <Label htmlFor="address">Address</Label>
-          <Input
-            id="address"
-            name="address"
-            value={formData.address}
-            onChange={handleChange}
-            className="mt-1"
-          />
-          {errors.address && (
-            <p className="mt-1 text-xs text-red-500">{errors.address}</p>
-          )}
-        </div>
-
-        <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="continent">Continent</Label>
-            <Select
-              value={formData.continent}
-              onValueChange={(value) => handleSelectChange("continent", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select continent" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="na">North America</SelectItem>
-                <SelectItem value="sa">South America</SelectItem>
-                <SelectItem value="eu">Europe</SelectItem>
-                <SelectItem value="as">Asia</SelectItem>
-                <SelectItem value="af">Africa</SelectItem>
-                <SelectItem value="oc">Oceania</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.continent && (
-              <p className="mt-1 text-xs text-red-500">{errors.continent}</p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="country">Country</Label>
-            <Select
-              value={formData.country}
-              onValueChange={(value) => handleSelectChange("country", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select country" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="us">United States</SelectItem>
-                <SelectItem value="uk">United Kingdom</SelectItem>
-                <SelectItem value="ca">Canada</SelectItem>
-                <SelectItem value="au">Australia</SelectItem>
-                <SelectItem value="fr">France</SelectItem>
-                <SelectItem value="de">Germany</SelectItem>
-                <SelectItem value="es">Spain</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.country && (
-              <p className="mt-1 text-xs text-red-500">{errors.country}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="region">Region</Label>
-            <Select
-              value={formData.region}
-              onValueChange={(value) => handleSelectChange("region", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select region" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ny">New York</SelectItem>
-                <SelectItem value="ca">California</SelectItem>
-                <SelectItem value="tx">Texas</SelectItem>
-                <SelectItem value="fl">Florida</SelectItem>
-                <SelectItem value="il">Illinois</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.region && (
-              <p className="mt-1 text-xs text-red-500">{errors.region}</p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="zipCode">Zip code/ Postal code</Label>
-            <Select
-              value={formData.zipCode}
-              onValueChange={(value) => handleSelectChange("zipCode", value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select zip code" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="10001">10001</SelectItem>
-                <SelectItem value="10002">10002</SelectItem>
-                <SelectItem value="10003">10003</SelectItem>
-                <SelectItem value="10004">10004</SelectItem>
-                <SelectItem value="10005">10005</SelectItem>
-              </SelectContent>
-            </Select>
-            {errors.zipCode && (
-              <p className="mt-1 text-xs text-red-500">{errors.zipCode}</p>
-            )}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <Label htmlFor="phoneNumber">Phone number</Label>
-            <Input
-              id="phoneNumber"
-              name="phoneNumber"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              className="mt-1"
-            />
-            {errors.phoneNumber && (
-              <p className="mt-1 text-xs text-red-500">{errors.phoneNumber}</p>
-            )}
-          </div>
-          <div>
-            <Label htmlFor="emergencyContact">Emergency contact Number</Label>
-            <Input
-              id="emergencyContact"
-              name="emergencyContact"
-              value={formData.emergencyContact}
-              onChange={handleChange}
-              className="mt-1"
-            />
-            {errors.emergencyContact && (
-              <p className="mt-1 text-xs text-red-500">
-                {errors.emergencyContact}
-              </p>
-            )}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <Input
+                id="phoneNumber"
+                name="phoneNumber"
+                placeholder="Phone number"
+                value={formData.phoneNumber}
+                onChange={handleChange}
+                className="mt-1"
+              />
+              {errors.phoneNumber && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.phoneNumber}
+                </p>
+              )}
+            </div>
+            <div>
+              <Input
+                id="emergencyContact"
+                name="emergencyContact"
+                placeholder="Emergency contact"
+                value={formData.emergencyContact}
+                onChange={handleChange}
+                className="mt-1"
+              />
+              {errors.emergencyContact && (
+                <p className="mt-1 text-xs text-red-500">
+                  {errors.emergencyContact}
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       <div className="mt-8 flex justify-between">
-        <Button variant="outline" onClick={handleBack}>
+        <button onClick={handleBack} className="border px-10 py-2 rounded">
           Back
-        </Button>
-        <Button
-          className="bg-blue-500 hover:bg-blue-600"
+        </button>
+        <button
+          className="bg-primary hover:bg-primary/90 text-white px-10 py-2 rounded"
           onClick={handleContinue}
         >
           Next
-        </Button>
+        </button>
       </div>
     </div>
   );

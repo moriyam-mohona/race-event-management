@@ -53,7 +53,7 @@ export default function BookingFlow() {
 
       <StepIndicator />
 
-      <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+      <div className="mt-20 grid grid-cols-1 gap-6 md:grid-cols-3">
         <div className="md:col-span-2">{renderStep()}</div>
         <div className="md:col-span-1">
           <OrderSummary />
