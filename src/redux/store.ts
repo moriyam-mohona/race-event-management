@@ -4,8 +4,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 // import storage from "redux-persist/lib/storage";
 import createWebStorage from "redux-persist/lib/storage/createWebStorage";
-import { persistReducer, persistStore, FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE } from "redux-persist";
+import {
+  persistReducer,
+  persistStore,
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from "redux-persist";
 import authReducer from "./features/auth/authSlice";
+import bookingReducer from "./features/booking/bookingSlice";
 import { baseApi } from "./api/baseApi";
 
 const createNoopStorage = () => {
@@ -22,20 +32,32 @@ const createNoopStorage = () => {
   };
 };
 
-const storage = typeof window !== "undefined" ? createWebStorage("local") : createNoopStorage();
+const storage =
+  typeof window !== "undefined"
+    ? createWebStorage("local")
+    : createNoopStorage();
 
 const persistAuthConfig = {
   key: "auth",
   storage,
 };
+const persistBookingConfig = {
+  key: "booking",
+  storage,
+};
 
 const persistedAuthReducer = persistReducer(persistAuthConfig, authReducer);
+const persistedBookingReducer = persistReducer(
+  persistBookingConfig,
+  bookingReducer
+);
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       [baseApi.reducerPath]: baseApi.reducer,
       auth: persistedAuthReducer,
+      booking: persistedBookingReducer,
     },
     middleware: (getDefaultMiddlewares) =>
       getDefaultMiddlewares({
