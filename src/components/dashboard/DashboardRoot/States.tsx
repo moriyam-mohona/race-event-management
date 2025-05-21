@@ -11,6 +11,7 @@ function useUserRole(): UserRole {
 
 // Dummy stat data function based on user role
 type UserRole = "vendor" | "admin";
+
 const getStatsByRole = (role: UserRole) => {
   const baseStats: Record<
     UserRole,
