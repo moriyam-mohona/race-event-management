@@ -31,7 +31,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
       {/* Body */}
       <div className="flex flex-1 overflow-hidden">
         {/* Desktop Sidebar */}
-        <aside className="w-64 border-r bg-white p-4 hidden md:block">
+        <aside className="w-64 bg-white p-4 hidden md:block">
           <Sidebar role={role} />
         </aside>
 
@@ -56,7 +56,9 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         )}
 
         {/* Main content */}
-        <main className="flex-1 overflow-auto bg-gray-50 p-4">{children}</main>
+        <main className="flex-1 overflow-auto bg-gray-50 p-4 mt-24">
+          {children}
+        </main>
       </div>
     </div>
   );
