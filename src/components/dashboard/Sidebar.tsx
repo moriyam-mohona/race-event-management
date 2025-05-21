@@ -7,6 +7,8 @@ import { FiLogOut } from "react-icons/fi";
 import { LuMessagesSquare } from "react-icons/lu";
 import { LiaListAltSolid } from "react-icons/lia";
 import { BsBookmark } from "react-icons/bs";
+import { LuLayoutDashboard } from "react-icons/lu";
+import { IoCalendarOutline } from "react-icons/io5";
 
 const sidebars: Record<
   string,
@@ -35,9 +37,23 @@ const sidebars: Record<
       icon: <BsBookmark />,
     },
   ],
-  moderator: [
-    { name: "Community", href: "/dashboard/community", icon: <GoPerson /> },
-    { name: "Reports", href: "/dashboard/reports", icon: <GoPerson /> },
+  vendor: [
+    {
+      name: "Dashboard",
+      href: "/dashboard/vendor/dashboard",
+      icon: <LuLayoutDashboard />,
+    },
+    { name: "Profile", href: "/dashboard/vendor/profile", icon: <GoPerson /> },
+    {
+      name: "All Events",
+      href: "/dashboard/vendor/all-events",
+      icon: <LiaListAltSolid />,
+    },
+    {
+      name: "Booking List",
+      href: "/dashboard/vendor/booking-list",
+      icon: <IoCalendarOutline />,
+    },
   ],
 };
 
