@@ -59,6 +59,9 @@ const Sidebar = ({ role }: { role: string }) => {
           <h2 className="mt-5 text-2xl font-medium">Username</h2>
           <p className="text-gray-600">I D - 1244</p>
         </div>
+        <div className="w-full my-4">
+          <hr className="h-2 border-t border-gray-200" />
+        </div>
         <nav className="space-y-2">
           {links.map((link) => (
             <Link key={link.href} href={link.href}>

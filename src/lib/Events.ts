@@ -16,6 +16,7 @@ export const raceEvents: RaceEvent[] = [
     terrain: "Mountains",
     participants: 15000,
     season: "Winter",
+    status: "upcoming",
     imageUrl:
       "https://images.pexels.com/photos/2402777/pexels-photo-2402777.jpeg?auto=compress&cs=tinysrgb&w=800",
     description:
@@ -36,6 +37,7 @@ export const raceEvents: RaceEvent[] = [
     terrain: "Urban",
     participants: 45000,
     season: "Fall",
+    status: "upcoming",
     imageUrl:
       "https://images.pexels.com/photos/2530129/pexels-photo-2530129.jpeg?auto=compress&cs=tinysrgb&w=800",
     description:
@@ -56,6 +58,7 @@ export const raceEvents: RaceEvent[] = [
     terrain: "Ocean",
     participants: 2000,
     season: "Summer",
+    status: "completed",
     imageUrl:
       "https://images.pexels.com/photos/863988/pexels-photo-863988.jpeg?auto=compress&cs=tinysrgb&w=800",
     description:
@@ -74,6 +77,7 @@ export const raceEvents: RaceEvent[] = [
     distance: "10 km",
     price: "$30 USD",
     terrain: "Any",
+    status: "completed",
     participants: 75000,
     season: "Any",
     imageUrl:

@@ -73,6 +73,7 @@ export interface RaceEvent {
   season: string;
   imageUrl: string;
   description: string;
+  status?: string;
 }
 
 export interface TicketState {
@@ -129,4 +130,16 @@ export interface BookingState {
   personalDetails: PersonalDetailsState;
   addOns: AddOnsState;
   payment: PaymentState;
+}
+export interface EventProps {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  image: string | StaticImageData;
+  category: string;
+  status: "upcoming" | "completed";
+  attendees: number;
 }

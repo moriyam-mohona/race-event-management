@@ -1,0 +1,108 @@
+import { EventProps } from "@/types/Common";
+import img from "@/assets/event.png";
+export const eventsData: EventProps[] = [
+  {
+    id: "1",
+    title: "Tech Conference 2025",
+    description:
+      "Join us for the biggest tech conference of the year featuring keynotes from industry leaders and hands-on workshops.",
+    date: "June 15, 2025",
+    time: "9:00 AM - 5:00 PM",
+    location: "Convention Center, New York",
+    image: img,
+    category: "Technology",
+    status: "upcoming",
+    attendees: 1250,
+  },
+  {
+    id: "2",
+    title: "Design Workshop",
+    description:
+      "Learn the latest design trends and tools in this interactive workshop led by industry professionals.",
+    date: "July 10, 2025",
+    time: "10:00 AM - 3:00 PM",
+    location: "Design Hub, San Francisco",
+    image: img,
+    category: "Design",
+    status: "upcoming",
+    attendees: 75,
+  },
+  {
+    id: "3",
+    title: "Marketing Summit",
+    description:
+      "Discover cutting-edge marketing strategies and network with marketing professionals from around the world.",
+    date: "August 5, 2025",
+    time: "9:00 AM - 6:00 PM",
+    location: "Grand Hotel, Chicago",
+    image: img,
+    category: "Marketing",
+    status: "upcoming",
+    attendees: 450,
+  },
+  {
+    id: "4",
+    title: "Startup Pitch Night",
+    description:
+      "Watch innovative startups pitch their ideas to investors and network with entrepreneurs.",
+    date: "September 20, 2025",
+    time: "6:00 PM - 9:00 PM",
+    location: "Innovation Hub, Austin",
+    image: img,
+    category: "Business",
+    status: "upcoming",
+    attendees: 200,
+  },
+  {
+    id: "5",
+    title: "Web Development Bootcamp",
+    description:
+      "An intensive three-day bootcamp covering the latest web development technologies and practices.",
+    date: "January 15, 2025",
+    time: "9:00 AM - 4:00 PM",
+    location: "Tech Campus, Seattle",
+    image: img,
+    category: "Development",
+    status: "completed",
+    attendees: 120,
+  },
+  {
+    id: "6",
+    title: "AI and Machine Learning Conference",
+    description:
+      "Explore the future of AI and machine learning with talks from leading researchers and practitioners.",
+    date: "February 28, 2025",
+    time: "10:00 AM - 6:00 PM",
+    location: "Science Center, Boston",
+    image: img,
+    category: "Technology",
+    status: "completed",
+    attendees: 800,
+  },
+  {
+    id: "7",
+    title: "Product Management Workshop",
+    description:
+      "Learn essential product management skills and methodologies from experienced product leaders.",
+    date: "March 10, 2025",
+    time: "9:00 AM - 5:00 PM",
+    location: "Business Center, Los Angeles",
+    image: img,
+    category: "Business",
+    status: "completed",
+    attendees: 90,
+  },
+  {
+    id: "8",
+    title: "UX Research Symposium",
+    description:
+      "A day dedicated to UX research methodologies, tools, and best practices with hands-on sessions.",
+    date: "April 5, 2025",
+    time: "10:00 AM - 4:00 PM",
+    location: "Design Institute, Portland",
+    image: img,
+    category: "Design",
+    status: "completed",
+    attendees: 150,
+  },
+];
