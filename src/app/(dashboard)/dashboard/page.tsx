@@ -1,11 +1,5 @@
-import React from 'react';
-
 const DashboardPage = () => {
-    return (
-        <div>
-            dashboard
-        </div>
-    );
+  return <div className="rounded-xl border p-6 shadow bg-white">dashboard</div>;
 };
 
 export default DashboardPage;

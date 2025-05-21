@@ -22,20 +22,6 @@ const Navbar = () => {
     <ProgressProvider color="#0B7077">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/40  backdrop-blur-md py-4 px-4 md:px-8">
         <div className="container max-w-[1320px] mx-auto flex items-center justify-between">
-          {/* Mobile Menu Button (shifted to the left) */}
-          <button
-            className="md:hidden "
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <div className="space-y-1.5">
-                <RxHamburgerMenu className="h-6 w-6" />
-              </div>
-            )}
-          </button>
-
           <div className="flex items-center space-x-4 gap-10">
             {/* Logo */}
             <Link href="/" className="flex items-center">
@@ -61,6 +47,19 @@ const Navbar = () => {
               ))}
             </div>
           </div>
+          {/* Mobile Menu Button (shifted to the left) */}
+          <button
+            className="md:hidden "
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <div className="space-y-1.5">
+                <RxHamburgerMenu className="h-6 w-6" />
+              </div>
+            )}
+          </button>
 
           {/* Mobile Navigation */}
           <AnimatePresence>
