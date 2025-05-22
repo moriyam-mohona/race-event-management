@@ -61,11 +61,11 @@ const StatCard = ({
   icon: React.ReactNode;
 }) => (
   <div className="flex items-center gap-4 rounded-xl bg-green-50 px-6 py-10 shadow-sm">
-    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-900">
+    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-green-800">
       {icon}
     </div>
     <div className="space-y-2">
-      <div className="text-3xl font-medium">{value}</div>
+      <div className="text-xl lg:text-3xl font-medium">{value}</div>
       <div className="text-muted-foreground">{label}</div>
     </div>
   </div>

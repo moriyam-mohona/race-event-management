@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 const CreateEventDetails = () => {
   const dispatch = useAppDispatch();
@@ -93,7 +94,7 @@ const CreateEventDetails = () => {
     return () => {
       formData.images.forEach((img: any) => URL.revokeObjectURL(img.preview));
     };
-  }, []);
+  }, [formData.images]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -416,7 +417,7 @@ const CreateEventDetails = () => {
           <div className="border rounded-lg p-6 space-y-4">
             {formData.faqs.map((faq, index) => (
               <div key={index} className="space-y-2 relative border-b pb-4">
-                <Label>Question {index + 1}</Label>
+                <Label className="text-xl">Question {index + 1}</Label>
                 <Input
                   value={faq.question}
                   onChange={(e) => {
@@ -437,13 +438,13 @@ const CreateEventDetails = () => {
                 />
                 <button
                   type="button"
-                  className="absolute right-0 top-0 text-red-500"
+                  className="absolute right-0 -top-2 text-orange-600 bg-red-100 p-1 rounded-md  hover:bg-red-200 transition-colors duration-200"
                   onClick={() => {
                     const updated = formData.faqs.filter((_, i) => i !== index);
                     setFormData((prev) => ({ ...prev, faqs: updated }));
                   }}
                 >
-                  🗑️
+                  <RiDeleteBin6Line className="text-2xl" />
                 </button>
               </div>
             ))}

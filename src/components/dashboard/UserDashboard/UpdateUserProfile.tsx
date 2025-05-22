@@ -70,7 +70,7 @@ const UpdateUserProfile = () => {
 
   return (
     <div className="w-full">
-      <h2 className="text-[32px] font-medium text-gray-800 mb-6">
+      <h2 className="text-2xl lg:text-[32px] font-medium text-gray-800 mb-6">
         Edit Your Profile Information
       </h2>
 

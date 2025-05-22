@@ -10,7 +10,6 @@ import {
   prevStep,
   type GearItem,
 } from "@/redux/features/event/eventSlice";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Trash2, Plus, Upload } from "lucide-react";
@@ -83,7 +82,7 @@ const CreateGearForm = () => {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-2xl font-medium mb-6">Create Needed Gear</h2>
+        <h2 className="text-4xl font-medium mb-6">Create Needed Gear</h2>
 
         {gearItems.length > 0 && (
           <div className="mb-8">
@@ -130,11 +129,11 @@ const CreateGearForm = () => {
           </div>
         )}
 
-        <div className="bg-white p-6 rounded-lg border">
-          <h3 className="text-xl font-medium mb-6">Create Gear</h3>
-
-          <div className="space-y-4">
-            <div>
+        <div className="">
+          <h3 className="text-xl font-medium mt-10 mb-4">Create Gear</h3>
+          <div className="border rounded-lg p-6 space-y-4">
+            {/* Gear Title */}
+            <div className="space-y-2">
               <Label htmlFor="gear-title">Gear Title</Label>
               <Input
                 id="gear-title"
@@ -145,8 +144,8 @@ const CreateGearForm = () => {
                 className="mt-1"
               />
             </div>
-
-            <div>
+            {/* Category Name */}
+            <div className="space-y-2">
               <Label htmlFor="gear-category">Category Name</Label>
               <Input
                 id="gear-category"
@@ -157,85 +156,92 @@ const CreateGearForm = () => {
                 className="mt-1"
               />
             </div>
-
-            <div>
-              <Label htmlFor="gear-price">Price</Label>
-              <Input
-                id="gear-price"
-                name="price"
-                value={newGear.price}
-                onChange={handleChange}
-                placeholder="0.00"
-                type="number"
-                min="0"
-                step="0.01"
-                className="mt-1"
-              />
-            </div>
-
-            <div>
-              <Label>Upload Images</Label>
-              <div className="mt-2 border-2 border-dashed border-gray-200 rounded-lg p-6 bg-gray-50">
-                <div className="flex flex-col items-center justify-center text-center">
-                  {imagePreview ? (
-                    <div className="mb-4">
-                      <Image
-                        src={imagePreview || "/placeholder.svg"}
-                        alt="Preview"
-                        width={100}
-                        height={100}
-                        className="rounded-md object-cover"
-                      />
-                    </div>
-                  ) : (
-                    <Upload className="h-10 w-10 text-gray-400 mb-2" />
-                  )}
-
-                  <p className="text-sm text-gray-500 mb-2">
-                    Drag and Drop files to Upload
-                    <br />
-                    or
-                  </p>
-
-                  <label htmlFor="file-upload" className="cursor-pointer">
-                    <span className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium">
-                      Browse
-                    </span>
-                    <input
-                      id="file-upload"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageChange}
-                      className="sr-only"
+          </div>
+          {/* Price */}
+          <div>
+            <h3 className="text-xl font-medium mt-10 mb-4">Price</h3>
+            <Input
+              id="gear-price"
+              name="price"
+              value={newGear.price}
+              onChange={handleChange}
+              placeholder="0.00"
+              type="number"
+              min="0"
+              step="0.01"
+              className="mt-1"
+            />
+          </div>
+          {/* Upload Images */}
+          <div>
+            <h3 className="text-xl font-medium mt-10 mb-4">Upload Images</h3>
+            <div className="bg-green-50 mt-2 border-2 border-dashed border-green-900/20 rounded-lg px-6 py-10 w-1/2">
+              <div className="flex flex-col items-center justify-center text-center">
+                {imagePreview ? (
+                  <div className="mb-4">
+                    <Image
+                      src={imagePreview || "/placeholder.svg"}
+                      alt="Preview"
+                      width={100}
+                      height={100}
+                      className="rounded-md object-cover"
                     />
-                  </label>
+                  </div>
+                ) : (
+                  <Upload className="h-10 w-10 text-gray-400 mb-2" />
+                )}
 
-                  <p className="text-xs text-gray-400 mt-2">
-                    Supported files: PNG, JPG, JPEG
-                  </p>
-                </div>
+                <p className="text-sm text-gray-500 mb-2">
+                  Drag and Drop files to Upload
+                  <br />
+                  or
+                </p>
+
+                <label htmlFor="file-upload" className="cursor-pointer">
+                  <span className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium">
+                    Browse
+                  </span>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="sr-only"
+                  />
+                </label>
+
+                <p className="text-xs text-gray-400 mt-2">
+                  Supported files: PNG, JPG, JPEG
+                </p>
               </div>
             </div>
-
-            <Button
-              type="button"
-              onClick={handleAddGear}
-              className="mt-4 bg-blue-500 hover:bg-blue-600"
-              disabled={!newGear.title || !newGear.category || !newGear.price}
-            >
-              Add Gear
-            </Button>
           </div>
+          <button
+            type="button"
+            onClick={handleAddGear}
+            className="mt-4 px-4 py-2 rounded-lg bg-primary text-white hover:bg-green-200"
+            disabled={!newGear.title || !newGear.category || !newGear.price}
+          >
+            Add Gear
+          </button>
         </div>
       </div>
 
       <div className="flex justify-between">
-        <Button onClick={handleBack} variant="outline">
+        <button
+          type="submit"
+          onClick={handleBack}
+          className="px-6 py-2 border rounded-lg bg-transparent hover:text-white hover:bg-green-900 "
+        >
           Back
-        </Button>
-        <Button onClick={handleNext} className="bg-blue-500 hover:bg-blue-600">
+        </button>
+        <button
+          type="submit"
+          onClick={handleNext}
+          className="px-6 py-2 rounded-lg text-white bg-primary hover:bg-primary"
+        >
           Next
-        </Button>
+        </button>
       </div>
     </div>
   );

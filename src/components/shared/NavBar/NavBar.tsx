@@ -22,7 +22,7 @@ const Navbar = () => {
     <ProgressProvider color="#0B7077">
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/40  backdrop-blur-md py-4 px-4 md:px-8">
         <div className="container max-w-[1320px] mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-4 gap-10">
+          <div className="flex items-center space-x-4 xl:gap-10">
             {/* Logo */}
             <Link href="/" className="flex items-center">
               <Image
@@ -35,12 +35,12 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-3 xl:space-x-8">
               {navLinks.map((link, index) => (
                 <Link
                   key={index}
                   href={link.href}
-                  className="hover:font-semibold"
+                  className="text-sm lg:text-base font-medium xl:font-normal hover:font-semibold"
                 >
                   {link.name}
                 </Link>
@@ -99,7 +99,7 @@ const Navbar = () => {
                     </Link>
                   </div>
                   <Link
-                    href="/"
+                    href="/dashboard/vendor/create-event"
                     className="bg-primary hover:bg-transparent hover:border hover:border-primary hover:text-primary hover:font-semibold text-white py-2 px-5 rounded-full text-center transition-colors"
                   >
                     Create Event
@@ -124,7 +124,7 @@ const Navbar = () => {
               Sign up
             </Link>
             <Link
-              href="/"
+              href="/dashboard/vendor/create-event"
               className="text-base bg-primary hover:bg-primary/80 text-white py-3 px-5 ml-3 rounded-full text-center transition-colors"
             >
               Create Event

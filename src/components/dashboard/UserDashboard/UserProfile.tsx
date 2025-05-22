@@ -6,8 +6,8 @@ const UserProfile = () => {
   return (
     <div className="h-screen">
       {/* Profile header  */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-[40px] font-medium mb-10">
+      <div className="flex  items-center justify-between mb-10">
+        <h2 className="text-2xl lg:text-[40px] font-medium ">
           Your Profile Information
         </h2>
         <Link
@@ -15,7 +15,7 @@ const UserProfile = () => {
           className="flex items-center gap-2 bg-gray-200 px-5 py-1.5 rounded"
         >
           <FiEdit3 />
-          Edit
+          <span className="hidden lg:block"> Edit</span>
         </Link>
       </div>
 

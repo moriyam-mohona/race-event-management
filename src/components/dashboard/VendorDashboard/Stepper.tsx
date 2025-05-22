@@ -13,7 +13,7 @@ interface StepperProps {
 
 export function Stepper({ currentStep, steps, onStepClick }: StepperProps) {
   return (
-    <div className="w-full py-4">
+    <div className="w-full py-4 mt-10 mb-20">
       <div className="flex items-center justify-center">
         {steps.map((step, index) => (
           <div key={step.id} className="flex items-start">
@@ -50,7 +50,7 @@ export function Stepper({ currentStep, steps, onStepClick }: StepperProps) {
             </div>
             {/* Connector line */}
             {index < steps.length - 1 && (
-              <div className="flex-1 w-60 mt-5 border-t border-dashed border-gray-300" />
+              <div className="flex-1 w-24 lg:w-60 mt-5 border-t border-dashed border-gray-300" />
             )}
           </div>
         ))}

@@ -6,13 +6,12 @@ import {
   resetEvent,
   prevStep,
 } from "@/redux/features/event/eventSlice";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const PublishEvent = () => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
+  const router = useRouter();
   const eventData = useAppSelector((state) => state.event);
 
   const handleSubmit = () => {
@@ -37,46 +36,61 @@ const PublishEvent = () => {
     <div>
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-medium">Create Event</h2>
+          <h2 className="text-4xl font-medium mb-6">Create Event</h2>
           <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500">Edit</span>
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg border space-y-8">
+        <div className="space-y-8">
           {/* Event Details */}
-          <div>
-            <h3 className="text-lg font-medium mb-4">Event & Race Title</h3>
-            <h4 className="text-xl font-bold">{eventData.title}</h4>
-            <p className="mt-2 text-gray-700">{eventData.description}</p>
+          <div className="border border-gray-200 rounded-lg p-6 bg-white">
+            <h3 className="text-xl font-semibold mb-4">Event or Expo Title</h3>
+
+            <div className="mb-4">
+              <h4 className="text-sm font-medium text-gray-500 mb-1">Title</h4>
+              <p className="text-base text-gray-800">{eventData.title}</p>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-medium text-gray-500 mb-1">
+                Description
+              </h4>
+              <p className="text-base text-gray-700">{eventData.description}</p>
+            </div>
           </div>
 
           {/* Date & Time */}
-          <div>
-            <h3 className="text-lg font-medium mb-4">Set Date & Time</h3>
+          <div className="border border-gray-200 rounded-lg p-6 bg-white mt-6">
+            <h3 className="text-xl font-semibold mb-4">Set Date & Time</h3>
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Start Date</p>
-                <p className="font-medium">{eventData.startDate}</p>
+                <p className="text-sm font-medium text-gray-500 mb-1">
+                  Start date
+                </p>
+                <p className="text-base text-gray-800">{eventData.startDate}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">End Date</p>
-                <p className="font-medium">{eventData.endDate}</p>
+                <p className="text-sm font-medium text-gray-500 mb-1">
+                  End date
+                </p>
+                <p className="text-base text-gray-800">{eventData.endDate}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Time</p>
-                <p className="font-medium">{eventData.timezone}</p>
+                <p className="text-sm font-medium text-gray-500 mb-1">Time</p>
+                <p className="text-base text-gray-800">{eventData.timezone}</p>
               </div>
             </div>
           </div>
 
           {/* Location */}
-          <div>
+          <div className="border border-gray-200 rounded-lg p-6 bg-white mt-6">
             <h3 className="text-lg font-medium mb-4">Location</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <p className="text-sm text-gray-500">Address</p>
-                <p className="font-medium">{eventData.address}</p>
+                <p className="text-sm text-gray-500">Continent</p>
+                <p className="font-medium">{eventData.continent}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Country</p>
@@ -87,14 +101,14 @@ const PublishEvent = () => {
                 <p className="font-medium">{eventData.region}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">City</p>
+                <p className="text-sm text-gray-500">Address</p>
                 <p className="font-medium">{eventData.city}</p>
               </div>
             </div>
           </div>
 
           {/* Race Category */}
-          <div>
+          <div className="border border-gray-200 rounded-lg p-6 bg-white mt-6">
             <h3 className="text-lg font-medium mb-4">Race Category</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
@@ -102,19 +116,44 @@ const PublishEvent = () => {
                 <p className="font-medium">{eventData.category}</p>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Venue Type</p>
+                <p className="text-sm text-gray-500">Type</p>
+                <p className="font-medium">{eventData.event_type}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Site</p>
                 <p className="font-medium">{eventData.venue}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Season</p>
+                <p className="font-medium">{eventData.season}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Size</p>
+                <p className="font-medium">{eventData.size}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Price</p>
+                <p className="font-medium">{eventData.prize}</p>
               </div>
             </div>
           </div>
 
-          {/* Race Data */}
+          {/* Race Start to Finish Address & Distance */}
           <div>
-            <h3 className="text-lg font-medium mb-4">Race Data</h3>
+            <h3 className="text-lg font-medium mb-4">
+              Race Start to Finish Address & Distance
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-500">Race Type</p>
-                <p className="font-medium">{eventData.raceType}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Start address</p>
+                <p className="font-medium">{eventData.startAddress}</p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Finish address </p>
+                <p className="font-medium">{eventData.finishAddress}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Distance</p>
@@ -125,7 +164,7 @@ const PublishEvent = () => {
 
           {/* Age Limit */}
           <div>
-            <h3 className="text-lg font-medium mb-4">Age Limit</h3>
+            <h3 className="text-lg font-medium mb-4">Set Age Limit</h3>
             <p className="font-medium">{eventData.ageLimit}</p>
           </div>
 
@@ -164,15 +203,20 @@ const PublishEvent = () => {
       </div>
 
       <div className="flex justify-between">
-        <Button onClick={handleBack} variant="outline">
+        <button
+          type="submit"
+          onClick={handleBack}
+          className="px-6 py-2 border rounded-lg bg-transparent hover:text-white hover:bg-green-900 "
+        >
           Back
-        </Button>
-        <Button
+        </button>
+        <button
+          type="submit"
           onClick={handleSubmit}
-          className="bg-blue-500 hover:bg-blue-600"
+          className="px-6 py-2 rounded-lg text-white bg-primary hover:bg-primary"
         >
           Submit
-        </Button>
+        </button>
       </div>
     </div>
   );

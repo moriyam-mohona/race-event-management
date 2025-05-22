@@ -1,7 +1,12 @@
+import BookingListPage from "@/components/dashboard/VendorDashboard/bookinglist/BookingListPage";
 import React from "react";
 
 const BookingList = () => {
-  return <div>BookingList</div>;
+  return (
+    <div>
+      <BookingListPage />
+    </div>
+  );
 };
 
 export default BookingList;
