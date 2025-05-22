@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import type React from "react";
@@ -14,10 +15,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import Image from "next/image";
 
 const CreateEventDetails = () => {
   const dispatch = useAppDispatch();
   const eventData = useAppSelector((state) => state.event);
+
+  type Faq = { question: string; answer: string };
 
   const [formData, setFormData] = useState({
     title: "",
@@ -41,6 +45,8 @@ const CreateEventDetails = () => {
     finishAddress: "",
     distance: "",
     ageLimit: "",
+    faqs: [] as Faq[],
+    images: [] as { file: File; preview: string }[],
   });
 
   // Load data from Redux when component mounts
@@ -67,6 +73,8 @@ const CreateEventDetails = () => {
       finishAddress: eventData.finishAddress || "",
       distance: eventData.distance || "",
       ageLimit: eventData.ageLimit || "",
+      faqs: eventData.faqs || [],
+      images: eventData.images || [],
     });
   }, [eventData]);
 
@@ -81,6 +89,12 @@ const CreateEventDetails = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  useEffect(() => {
+    return () => {
+      formData.images.forEach((img: any) => URL.revokeObjectURL(img.preview));
+    };
+  }, []);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(setEventDetails(formData));
@@ -94,12 +108,12 @@ const CreateEventDetails = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-4xl font-medium">Create Event</h2>
+        <h2 className="text-4xl font-medium mb-6">Create Event</h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Event Title & Description */}
-        <div>
+        <div className="space-y-4">
           <h3 className="text-xl font-medium">Event or Expo Title</h3>
           <div className="border rounded-lg p-6 space-y-4">
             {/* Title */}
@@ -391,6 +405,127 @@ const CreateEventDetails = () => {
                 <SelectItem value="21+">21+</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+        </div>
+
+        {/* FAQs Section */}
+        <div className="space-y-4">
+          <h3 className="text-xl font-medium">
+            Set Frequently Asked Questions
+          </h3>
+          <div className="border rounded-lg p-6 space-y-4">
+            {formData.faqs.map((faq, index) => (
+              <div key={index} className="space-y-2 relative border-b pb-4">
+                <Label>Question {index + 1}</Label>
+                <Input
+                  value={faq.question}
+                  onChange={(e) => {
+                    const updated = [...formData.faqs];
+                    updated[index].question = e.target.value;
+                    setFormData((prev) => ({ ...prev, faqs: updated }));
+                  }}
+                  placeholder="Write question"
+                />
+                <Textarea
+                  value={faq.answer}
+                  onChange={(e) => {
+                    const updated = [...formData.faqs];
+                    updated[index].answer = e.target.value;
+                    setFormData((prev) => ({ ...prev, faqs: updated }));
+                  }}
+                  placeholder="Write answer"
+                />
+                <button
+                  type="button"
+                  className="absolute right-0 top-0 text-red-500"
+                  onClick={() => {
+                    const updated = formData.faqs.filter((_, i) => i !== index);
+                    setFormData((prev) => ({ ...prev, faqs: updated }));
+                  }}
+                >
+                  🗑️
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="text-green-600 text-sm"
+              onClick={() =>
+                setFormData((prev) => ({
+                  ...prev,
+                  faqs: [...prev.faqs, { question: "", answer: "" }],
+                }))
+              }
+            >
+              + Add New
+            </button>
+          </div>
+        </div>
+
+        {/* Upload Images */}
+        <div className="space-y-4">
+          <h3 className="text-xl font-medium">Upload Images</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border rounded-lg p-6 bg-green-50">
+            {/* Upload Box */}
+            <div className="flex flex-col items-center justify-center border border-dashed p-4 rounded-md">
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                id="imageUpload"
+                onChange={(e) => {
+                  const files = Array.from(e.target.files || []);
+                  const previews = files.map((file) => ({
+                    file,
+                    preview: URL.createObjectURL(file),
+                  }));
+                  setFormData((prev) => ({
+                    ...prev,
+                    images: [...prev.images, ...previews],
+                  }));
+                }}
+              />
+              <label
+                htmlFor="imageUpload"
+                className="cursor-pointer text-blue-600"
+              >
+                Drag and Drop files to Upload or{" "}
+                <span className="underline">Browse</span>
+              </label>
+              <p className="text-xs text-gray-500 mt-2">
+                Supported files: PNG, JPG, JPEG
+              </p>
+            </div>
+
+            {/* Image Previews */}
+            <div className="space-y-2">
+              <h4 className="font-medium">Uploaded Files</h4>
+              <div className="flex flex-wrap gap-2">
+                {formData.images.map((img, index) => (
+                  <div key={index} className="relative w-20 h-20">
+                    <Image
+                      src={img.preview}
+                      alt="preview"
+                      width={80}
+                      height={80}
+                      className="w-full h-full object-cover rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = [...formData.images];
+                        updated.splice(index, 1);
+                        setFormData((prev) => ({ ...prev, images: updated }));
+                      }}
+                      className="absolute top-0 right-0 text-red-500 bg-white rounded-full px-1"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

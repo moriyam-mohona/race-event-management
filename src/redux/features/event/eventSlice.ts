@@ -7,6 +7,15 @@ export interface GearItem {
   price: string;
   image?: string;
 }
+interface Faq {
+  question: string;
+  answer: string;
+}
+
+interface ImagePreview {
+  file: File;
+  preview: string;
+}
 
 export interface EventState {
   // Step 1: Event Details
@@ -40,6 +49,9 @@ export interface EventState {
   // Age Limit
   ageLimit: string;
 
+  //faqs
+  faqs: Faq[];
+  images: ImagePreview[];
   // Step 2: Gear
   gearItems: GearItem[];
 
@@ -81,6 +93,10 @@ const initialState: EventState = {
 
   // Age Limit
   ageLimit: "",
+
+  //faqs
+  faqs: [],
+  images: [],
 
   // Step 2: Gear
   gearItems: [],
