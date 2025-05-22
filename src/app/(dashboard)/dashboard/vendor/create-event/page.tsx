@@ -1,5 +1,4 @@
 import CreateEventPage from "@/components/dashboard/VendorDashboard/CreateEventPage";
-import React from "react";
 
 const CreateEvent = () => {
   return (

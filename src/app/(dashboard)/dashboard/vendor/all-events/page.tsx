@@ -1,5 +1,4 @@
 import AllEventsPage from "@/components/dashboard/UserDashboard/events/AllEventsPage";
-import CreateEventPage from "@/components/dashboard/VendorDashboard/CreateEventPage";
 import Link from "next/link";
 import React from "react";
 import { FiPlus } from "react-icons/fi";
@@ -18,7 +17,6 @@ const AllEvents = () => {
           </Link>
         </div>
       </div>
-      <CreateEventPage />
       <AllEventsPage />
     </div>
   );
