@@ -86,7 +86,7 @@ export function BookingFilters({
             value={localSearch}
             onChange={handleSearchChange}
           />
-          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-2.5 top-4 h-4 w-4 text-gray-400" />
         </form>
 
         <div className="bg-white"></div>

@@ -144,3 +144,24 @@ export interface EventProps {
   status: "upcoming" | "completed";
   attendees: number;
 }
+
+export interface Booking {
+  id: number;
+  sl: number;
+  name: string;
+  dateTime: string;
+  location: string;
+  email: string;
+  member: number;
+  price: number;
+  gearPrice: number;
+  gender: string;
+}
+
+export interface BookingListProps {
+  activeTab: "upcoming" | "completed";
+  searchQuery: string;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+  selectedMonth: string;
+}
