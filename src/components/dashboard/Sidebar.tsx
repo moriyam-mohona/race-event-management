@@ -15,9 +15,32 @@ const sidebars: Record<
   { name: string; href: string; icon: React.ReactNode }[]
 > = {
   admin: [
-    { name: "Dashboard", href: "/dashboard", icon: <GoPerson /> },
-    { name: "Users", href: "/dashboard/users", icon: <GoPerson /> },
-    { name: "Settings", href: "/dashboard/settings", icon: <GoPerson /> },
+    {
+      name: "Dashboard",
+      href: "/dashboard/vendor/dashboard",
+      icon: <GoPerson />,
+    },
+    { name: " Profile", href: "/dashboard/admin/profile", icon: <GoPerson /> },
+    {
+      name: " Vendor List",
+      href: "/dashboard/admin/vendor-list",
+      icon: <GoPerson />,
+    },
+    {
+      name: " Community",
+      href: "/dashboard/admin/community-list",
+      icon: <GoPerson />,
+    },
+    {
+      name: " All Events",
+      href: "/dashboard/admin/all-events-list",
+      icon: <GoPerson />,
+    },
+    {
+      name: " Subscriber",
+      href: "/dashboard/admin/subscriber-list",
+      icon: <GoPerson />,
+    },
   ],
   user: [
     { name: "Profile", href: "/dashboard/user/profile", icon: <GoPerson /> },
