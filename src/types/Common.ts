@@ -74,6 +74,7 @@ export interface RaceEvent {
   imageUrl: string;
   description: string;
   status?: string;
+  bookmark?: boolean;
 }
 
 export interface TicketState {

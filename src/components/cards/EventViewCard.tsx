@@ -28,8 +28,8 @@ const EventViewCard: React.FC<EventCardProps> = ({ event }) => {
               {event.title}
             </h3>
 
-            <button className="text-gray-600 hover:text-secondary transition-colors duration-200 flex-shrink-0">
-              <Bookmark size={20} />
+            <button className="text-secondary hover:text-secondary transition-colors duration-200 flex-shrink-0">
+              <Bookmark size={24} />
             </button>
           </div>
 
