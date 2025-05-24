@@ -1,5 +1,8 @@
+"use client";
+
 import React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { GoPerson } from "react-icons/go";
 import profile from "@/assets/profile.png";
 import Image from "next/image";
@@ -81,6 +84,7 @@ const sidebars: Record<
 };
 
 const Sidebar = ({ role }: { role: string }) => {
+  const pathname = usePathname();
   const links = sidebars[role] || [];
 
   return (
@@ -101,14 +105,24 @@ const Sidebar = ({ role }: { role: string }) => {
         <div className="w-full my-4">
           <hr className="h-2 border-t border-gray-200" />
         </div>
-        <nav className="space-y-2">
-          {links.map((link) => (
-            <Link key={link.href} href={link.href}>
-              <button className="w-full flex items-center justify-center gap-3 border rounded bg-green-50/60 px-8 py-2 mb-3">
-                <span className="text-xl">{link.icon}</span> {link.name}
-              </button>
-            </Link>
-          ))}
+        <nav className="w-full px-2">
+          {links.map((link) => {
+            const isActive = pathname === link.href;
+            return (
+              <Link key={link.href} href={link.href}>
+                <button
+                  className={`w-full flex items-center justify-center gap-3 border rounded px-8 py-2 mb-3 transition-colors duration-200 ${
+                    isActive
+                      ? "bg-green-50/60 text-green-900 font-semibold"
+                      : "bg-white hover:bg-gray-50"
+                  }`}
+                >
+                  <span className="text-xl">{link.icon}</span>
+                  {link.name}
+                </button>
+              </Link>
+            );
+          })}
         </nav>
       </div>
       <button className="flex items-center gap-2 text-[#FF7474] font-medium text-lg mb-10">

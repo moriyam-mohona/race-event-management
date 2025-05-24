@@ -20,7 +20,7 @@ const Navbar = () => {
 
   return (
     <ProgressProvider color="#0B7077">
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/40  backdrop-blur-md py-4 px-4 md:px-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white lg:bg-white/40  backdrop-blur-md py-4 px-4 md:px-8">
         <div className="container max-w-[1320px] mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4 xl:gap-10">
             {/* Logo */}
@@ -35,7 +35,7 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-3 xl:space-x-8">
+            <div className="hidden lg:flex items-center space-x-3 xl:space-x-8">
               {navLinks.map((link, index) => (
                 <Link
                   key={index}
@@ -49,7 +49,7 @@ const Navbar = () => {
           </div>
           {/* Mobile Menu Button (shifted to the left) */}
           <button
-            className="md:hidden "
+            className="lg:hidden "
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? (
@@ -69,7 +69,7 @@ const Navbar = () => {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
-                className="absolute top-32 left-0 right-0 bg-white z-20 md:hidden"
+                className="absolute top-24 left-0 right-0 bg-white z-20 lg:hidden"
               >
                 <div className="flex flex-col p-4 space-y-4">
                   {navLinks.map((link, index) => (
@@ -110,7 +110,7 @@ const Navbar = () => {
           </AnimatePresence>
 
           {/* Search and Login */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden lg:flex items-center space-x-3">
             <Link
               href="/auth/login"
               className="text-base hover:text-primary hover:font-semibold hover:underline border-r-2 pr-3 border-black "
