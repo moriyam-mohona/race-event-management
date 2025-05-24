@@ -15,3 +15,12 @@ export interface Post {
   comments: number;
   author: User;
 }
+
+export interface Member {
+  id: string;
+  name: string;
+  avatar: string;
+  status: "connected" | "pending" | "disconnected";
+  isRegistered: boolean;
+  chatType: "my" | "local" | "global";
+}
