@@ -5,6 +5,7 @@ import { MessageCircle } from "lucide-react";
 import { members as initialMembers } from "@/lib/Members";
 import { Member } from "@/types/Post";
 import Image from "next/image";
+import Link from "next/link";
 
 const Message = () => {
   const [activeTab, setActiveTab] = useState("my-chat");
@@ -120,9 +121,12 @@ const Message = () => {
                       ? "Pending"
                       : "Connect"}
                   </button>
-                  <button className="p-1 hover:bg-gray-100 rounded-full transition-colors duration-200">
+                  <Link
+                    href="/chat"
+                    className="p-1 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                  >
                     <MessageCircle size={18} className="text-gray-500" />
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
