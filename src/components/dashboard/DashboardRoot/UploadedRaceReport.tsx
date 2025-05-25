@@ -13,7 +13,9 @@ import { useUserRole } from "@/lib/auth";
 const COLORS = ["#F8B195", "#1E5631", "#2E7D32"];
 
 const UploadedRaceReport = () => {
-  const role = useUserRole();
+  const pathname = window.location.pathname.split("/")[2];
+
+  const role = useUserRole(pathname);
 
   // Different data based on user role
   const adminData = [

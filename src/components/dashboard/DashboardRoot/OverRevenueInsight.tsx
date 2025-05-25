@@ -13,7 +13,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserRole } from "@/lib/auth";
 
 const OverRevenueInsight = () => {
-  const role = useUserRole();
+  const pathname = window.location.pathname.split("/")[2];
+
+  const role = useUserRole(pathname);
 
   // Different data based on user role
   const adminData = [

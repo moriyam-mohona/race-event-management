@@ -49,7 +49,7 @@ const sidebars: Record<
     { name: "Profile", href: "/dashboard/user/profile", icon: <GoPerson /> },
     {
       name: "Community",
-      href: "/dashboard/user/community",
+      href: "/community",
       icon: <LuMessagesSquare />,
     },
     {
