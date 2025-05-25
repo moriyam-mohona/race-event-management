@@ -82,8 +82,9 @@ const CreateGearForm = () => {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-4xl font-medium mb-6">Create Needed Gear</h2>
-
+        <h2 className="text-3xl xl:text-4xl font-semibold lg:font-medium mb-6">
+          Create Needed Gear
+        </h2>
         {gearItems.length > 0 && (
           <div className="mb-8">
             <h3 className="text-lg font-medium mb-4">Listed gear</h3>

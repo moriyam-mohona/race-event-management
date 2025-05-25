@@ -36,10 +36,12 @@ const PublishEvent = () => {
     <div>
       <div className="mb-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-4xl font-medium mb-6">Create Event</h2>
-          <div className="flex items-center gap-2">
+          <h2 className="text-3xl xl:text-4xl font-semibold lg:font-medium mb-6">
+            Create Event
+          </h2>
+          {/* <div className="flex items-center gap-2">
             <span className="text-sm text-gray-500">Edit</span>
-          </div>
+          </div> */}
         </div>
 
         <div className="space-y-8">

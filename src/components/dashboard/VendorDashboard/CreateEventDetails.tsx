@@ -109,7 +109,9 @@ const CreateEventDetails = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-4xl font-medium mb-6">Create Event</h2>
+        <h2 className="text-3xl xl:text-4xl font-semibold lg:font-medium mb-6">
+          Create Event
+        </h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
