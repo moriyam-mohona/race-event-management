@@ -8,7 +8,9 @@ import Navbar from "../shared/NavBar/NavBar";
 import { GoSidebarCollapse } from "react-icons/go";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const role = useUserRole();
+  const pathname = window.location.pathname.split("/")[2];
+
+  const role = useUserRole(pathname);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (

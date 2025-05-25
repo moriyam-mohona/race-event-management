@@ -1,4 +1,4 @@
-export function useUserRole(): string {
+export function useUserRole(role: string): string {
   // mock, replace with real auth state or context
-  return "admin"; // e.g.'user' 'admin', 'vendor', etc.
+  return role; // e.g.'user' 'admin', 'vendor', etc.
 }
