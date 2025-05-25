@@ -1,9 +1,35 @@
 import React from "react";
 import profile from "@/assets/profile.png";
 import Image from "next/image";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { CgMenuLeft } from "react-icons/cg";
+import ChatMessages from "./ChatMessages";
+
 const ChatTop = () => {
   return (
     <div className="bg-[#EEEEEE] p-4 lg:p-8 rounded-md shadow flex items-center gap-4">
+      <div className="flex lg:hidden">
+        <Sheet>
+          <SheetTrigger>
+            <CgMenuLeft className="text-2xl text-gray-500" />
+          </SheetTrigger>
+          <SheetContent side="left">
+            <SheetHeader>
+              <SheetDescription>
+                <div className="block lg:hidden flex-col w-full ">
+                  <ChatMessages />
+                </div>
+              </SheetDescription>
+            </SheetHeader>
+          </SheetContent>
+        </Sheet>
+      </div>
       <Image
         src={profile}
         alt="Community Profile"
