@@ -8,8 +8,8 @@ const ChatLayout = () => {
   return (
     <div>
       <ChatTop />
-      <div className="flex gap-10 w-full mt-10">
-        <div className="w-full lg:w-1/3 space-y-8">
+      <div className="flex gap-2 xl:gap-10 w-full mt-5 xl:mt-10">
+        <div className="flex flex-col w-full lg:w-1/3 space-y-8">
           <ConnectionRequest />
           <ChatMessages />
         </div>

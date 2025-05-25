@@ -122,13 +122,15 @@ const ChatInterface = () => {
           } max-w-[70%]`}
         >
           <div
-            className={`px-4 py-4 rounded-md ${
+            className={`p-2 lg:p-4 rounded-md ${
               isMe
                 ? "border border-gray-300"
                 : "border border-primary text-gray-800"
             }`}
           >
-            <p className="text-gray-600 leading-relaxed">{message.text}</p>
+            <p className="text-gray-600 leading-relaxed text-sm xl:text-base">
+              {message.text}
+            </p>
           </div>
           <span className="text-xs text-gray-600 mt-1 px-1">
             {message.time}
@@ -160,13 +162,13 @@ const ChatInterface = () => {
   );
 
   return (
-    <div className="border border-gray-200 h-[600px] rounded-2xl flex flex-col bg-white overflow-hidden">
+    <div className="border border-gray-200 h-[450px] lg:h-[600px] rounded-2xl flex flex-col bg-white overflow-hidden">
       <div
         ref={chatContainerRef}
         className="flex-1 overflow-y-auto px-4 py-4 space-y-1"
         style={{
           scrollBehavior: "smooth",
-          maxHeight: "calc(100% - 120px)",
+          maxHeight: "calc(100% - 90px)",
         }}
       >
         {messages.map((message) => (
