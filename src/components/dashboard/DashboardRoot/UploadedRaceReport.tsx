@@ -67,9 +67,11 @@ const UploadedRaceReport = () => {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-green-50/40">
       <CardHeader className="pb-2">
-        <h2 className="text-lg font-medium">Uploaded Race Report</h2>
+        <h2 className="text-lg font-medium border-b-1 pb-2">
+          Uploaded Race Report
+        </h2>
       </CardHeader>
 
       <div className="h-[200px]">

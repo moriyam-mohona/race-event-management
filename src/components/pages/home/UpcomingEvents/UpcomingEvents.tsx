@@ -110,7 +110,8 @@ const UpcomingEvents: React.FC = () => {
               breakpoints={{
                 640: { slidesPerView: 1 },
                 768: { slidesPerView: 2 },
-                1024: { slidesPerView: 4 },
+                1024: { slidesPerView: 3 },
+                1440: { slidesPerView: 4 },
               }}
               navigation={{
                 prevEl: prevRef.current,

@@ -647,10 +647,10 @@ const VendorsListPage: React.FC = () => {
   } = useVendorsState();
 
   return (
-    <div className="bg-white p-4 sm:p-6">
+    <div className="p-4 sm:p-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-medium text-gray-900">
           {TOTAL_VENDORS} Vendors
         </h1>
         <SearchAndFilter

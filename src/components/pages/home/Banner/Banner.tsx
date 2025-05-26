@@ -2,18 +2,11 @@
 import banner from "@/assets/images/home/hero.png";
 import { useState } from "react";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-
+import { CalendarIcon, ChevronDown } from "lucide-react";
 // Shadcn components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { AnimatePresence, motion } from "framer-motion";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
@@ -21,20 +14,27 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 const Banner = () => {
-  const [raceType, setRaceType] = useState<string>("");
   const [location, setLocation] = useState<string>("");
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
+  const options = ["Hybrid", "On site", "Virtual"];
+
+  const handleSelect = (option: string) => {
+    setSelectedOption(option);
+    setIsOpen(false);
+  };
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative min-h-[850px] overflow-hidden">
+      <div className="relative min-h-[450px] max-h-[700px] xl:min-h-[850px] overflow-hidden">
         {/* Background Image */}
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 lg:bg-center object-left bg-top-left bg-cover"
           style={{
             backgroundImage: `url(${banner.src})`,
-            backgroundPosition: "center 20%",
+            // backgroundPosition: "center 20%",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
 
@@ -44,13 +44,13 @@ const Banner = () => {
 
         {/* Content */}
         <div className="relative container max-w-[1320px] mx-auto px-4 h-full">
-          <div className="flex flex-col justify-end h-full pt-40 md:pt-72 pb-40">
-            <h1 className="font-montserrat text-4xl md:text-5xl lg:text-6xl font-bold text-orange-50 max-w-3xl md:leading-16">
+          <div className="flex flex-col justify-end h-full pt-40 md:pt-48 xl:pt-72 pb-40">
+            <h1 className="font-montserrat text-4xl md:text-5xl lg:text-5xl font-bold text-orange-50 max-w-3xl md:leading-16">
               The Journey starts With us -
               <span className="text-orange-500"> Lace Up & Turn Up</span>
             </h1>
 
-            <p className="mt-6 font-light text-lg text-gray-200 max-w-2xl">
+            <p className="mt-6 font-light text-sm lg:text-lg text-gray-200 max-w-2xl">
               Whether its you&apos;re first 5k, running or trekking trails in
               the Dolomites, cycling coast to coast in the USA, or diving into
               your first ultra, in or out of the water - we bring racers,
@@ -60,21 +60,46 @@ const Banner = () => {
 
             {/* Search Form */}
             <div className="mt-10">
-              <div className="flex flex-col sm:flex-row gap-4 max-w-6xl bg-black/20 backdrop-blur-md p-6 rounded-lg">
-                <div className="flex-1">
-                  <Select value={raceType} onValueChange={setRaceType}>
-                    <SelectTrigger className="w-full h-11 bg-transparent border text-white focus:ring-2 focus:ring-primary [&_[data-placeholder]]:text-white">
-                      <SelectValue placeholder="Race type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Hybrid">Hybrid</SelectItem>
-                      <SelectItem value="On site">On site</SelectItem>
-                      <SelectItem value="Virtual">Virtual</SelectItem>
-                    </SelectContent>
-                  </Select>
+              <div className="flex flex-col sm:flex-row gap-4 max-w-6xl bg-black/20 backdrop-blur-md p-6 rounded-lg w-full">
+                <div className="flex-1 relative w-full">
+                  <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="w-full flex justify-between items-center px-4 py-3 border rounded-md  text-white text-light text-sm shadow-sm hover:border-primary focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <span className="text-white">
+                      {selectedOption || "Race type"}
+                    </span>
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform duration-200 ${
+                        isOpen ? "rotate-180" : "rotate-0"
+                      }`}
+                    />
+                  </button>
+
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.ul
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                        className="absolute z-10 mt-2 w-full bg-white border rounded-md shadow-lg overflow-hidden"
+                      >
+                        {options.map((option) => (
+                          <li
+                            key={option}
+                            onClick={() => handleSelect(option)}
+                            className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                          >
+                            {option}
+                          </li>
+                        ))}
+                      </motion.ul>
+                    )}
+                  </AnimatePresence>
                 </div>
 
-                <div className="flex-1">
+                <div className="flex-1 w-full">
                   <Input
                     type="text"
                     placeholder="Location"
@@ -84,7 +109,7 @@ const Banner = () => {
                   />
                 </div>
 
-                <div className="flex-1">
+                <div className="flex-1 w-full">
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -101,6 +126,7 @@ const Banner = () => {
                         selected={date}
                         onSelect={setDate}
                         initialFocus
+                        className="w-auto bg-white/80 shadow-2xl  backdrop-blur-md rounded-lg"
                       />
                     </PopoverContent>
                   </Popover>

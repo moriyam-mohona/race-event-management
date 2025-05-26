@@ -1,12 +1,5 @@
-// import React from "react";
-
-// const CommunityListPage = () => {
-//   return <div></div>;
-// };
-
-// export default CommunityListPage;
-
 "use client";
+
 import React, { useState } from "react";
 import {
   Search,
@@ -150,7 +143,7 @@ const CommunityListPage: React.FC = () => {
     <div className="p-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <h1 className="text-2xl font-semibold text-gray-900">
+        <h1 className="text-2xl md:text-3xl font-medium text-gray-900">
           {totalCommunities} Communities
         </h1>
 
@@ -331,7 +324,7 @@ const CommunityListPage: React.FC = () => {
                     onClick={() =>
                       handleEventClick(community.eventName, community.id)
                     }
-                    className="flex items-center text-primary hover:font-semibold underline"
+                    className="flex items-center  underline"
                   >
                     {community.eventName}
                     <ArrowRight className="h-3 w-3 ml-1" />

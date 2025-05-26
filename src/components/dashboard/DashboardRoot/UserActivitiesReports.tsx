@@ -8,7 +8,7 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 import { useUserRole } from "@/lib/auth";
 
 const COLORS = ["#F8B195", "#1E5631"];
@@ -66,11 +66,11 @@ const UserActivitiesReports = () => {
   };
 
   return (
-    <Card className="w-full">
+    <Card className="w-full bg-green-50/40">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-medium">
+        <h2 className="text-lg font-medium border-b-1 pb-2">
           User Activities Reports
-        </CardTitle>
+        </h2>
       </CardHeader>
       <>
         <div className="h-[200px]">
