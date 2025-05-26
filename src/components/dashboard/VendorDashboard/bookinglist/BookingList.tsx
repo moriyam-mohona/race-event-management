@@ -125,7 +125,7 @@ export function BookingList({
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-sm border">
+      <div className="rounded-lg shadow-sm border">
         <div className="p-4 border-b">
           <h2 className="text-lg font-medium text-gray-800">
             Glendalough Lap of the Gap Marathon

@@ -31,9 +31,11 @@ const Graphs = () => {
   ];
 
   return (
-    <div className="p-4">
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Dashboard Analytics</h2>
+    <div className="">
+      <div className="mb-6 flex flex-col gap-2 items-center justify-between">
+        <h2 className="text-2xl md:text-3xl font-medium">
+          Dashboard Analytics
+        </h2>
 
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-500">Sort by</span>

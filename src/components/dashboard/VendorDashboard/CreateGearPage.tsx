@@ -82,7 +82,7 @@ const CreateGearForm = () => {
   return (
     <div>
       <div className="mb-8">
-        <h2 className="text-3xl xl:text-4xl font-semibold lg:font-medium mb-6">
+        <h2 className="text-2xl md:text-3xl xl:text-4xl font-medium mb-6">
           Create Needed Gear
         </h2>
         {gearItems.length > 0 && (
@@ -176,7 +176,7 @@ const CreateGearForm = () => {
           {/* Upload Images */}
           <div>
             <h3 className="text-xl font-medium mt-10 mb-4">Upload Images</h3>
-            <div className="bg-green-50 mt-2 border-2 border-dashed border-green-900/20 rounded-lg px-6 py-10 w-1/2">
+            <div className="bg-green-50 mt-2 border-2 border-dashed border-green-900/20 rounded-lg px-6 py-10 md:w-1/2">
               <div className="flex flex-col items-center justify-center text-center">
                 {imagePreview ? (
                   <div className="mb-4">

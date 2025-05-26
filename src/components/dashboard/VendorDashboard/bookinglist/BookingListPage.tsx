@@ -33,7 +33,7 @@ export default function BookingListPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
+    <div className="container mx-auto md:px-4 py-6">
       <div className="flex flex-col space-y-6">
         <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
           <BookingTabs activeTab={activeTab} onTabChange={handleTabChange} />

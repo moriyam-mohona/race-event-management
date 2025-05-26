@@ -8,7 +8,7 @@ import {
   Legend,
   Tooltip,
 } from "recharts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserRole } from "@/lib/auth";
 
 const COLORS = ["#F8B195", "#1E5631"];
@@ -72,7 +72,7 @@ const UserActivitiesReports = () => {
           User Activities Reports
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <>
         <div className="h-[200px]">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
@@ -110,7 +110,7 @@ const UserActivitiesReports = () => {
             </PieChart>
           </ResponsiveContainer>
         </div>
-      </CardContent>
+      </>
     </Card>
   );
 };
