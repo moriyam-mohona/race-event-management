@@ -1,5 +1,5 @@
 "use client";
-import banner from "@/assets/images/home/hero.png";
+import banner from "@/assets/images/home/hero.jpg";
 import { useState } from "react";
 import { format } from "date-fns";
 import { CalendarIcon, ChevronDown } from "lucide-react";
@@ -34,7 +34,6 @@ const Banner = () => {
           className="absolute inset-0 lg:bg-center object-left bg-top-left bg-cover"
           style={{
             backgroundImage: `url(${banner.src})`,
-            // backgroundPosition: "center 20%",
             backgroundSize: "cover",
             backgroundRepeat: "no-repeat",
 
