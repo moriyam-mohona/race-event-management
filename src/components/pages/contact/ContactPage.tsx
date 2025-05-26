@@ -28,12 +28,12 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-12">
+    <div className="container mx-auto max-w-[1320px] px-4 py-12">
       <div className="overflow-hidden">
         <div className="grid md:grid-cols-2 gap-20">
           {/* Contact Information */}
           <div>
-            <h2 className="text-3xl font-montserrat font-semibold mb-6">
+            <h2 className="text-2xl md:text-3xl font-montserrat font-semibold mb-6">
               Contact Us
             </h2>
             <p className="mb-8 text-gray-700">
