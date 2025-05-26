@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader/SectionHeader";
 import { Expo } from "@/types/Common";
@@ -100,9 +100,20 @@ const events: Expo[] = [
 ];
 
 const JoinRaceExpo: React.FC = () => {
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+  const prevRef = useRef<HTMLButtonElement | null>(null);
+  const nextRef = useRef<HTMLButtonElement | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [swiperInstance, setSwiperInstance] = useState<any>(null);
 
+  useEffect(() => {
+    if (swiperInstance && prevRef.current && nextRef.current) {
+      swiperInstance.params.navigation.prevEl = prevRef.current;
+      swiperInstance.params.navigation.nextEl = nextRef.current;
+      swiperInstance.navigation.destroy();
+      swiperInstance.navigation.init();
+      swiperInstance.navigation.update();
+    }
+  }, [swiperInstance]);
   return (
     <section className="py-20 bg-green-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -117,6 +128,7 @@ const JoinRaceExpo: React.FC = () => {
             spaceBetween={20}
             slidesPerView={1}
             loop={true}
+            onSwiper={setSwiperInstance}
             breakpoints={{
               640: { slidesPerView: 1 },
               768: { slidesPerView: 2 },

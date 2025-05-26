@@ -28,7 +28,7 @@ const Banner = () => {
   return (
     <div>
       {/* Hero Section */}
-      <div className="relative min-h-[450px] max-h-[700px] xl:min-h-[850px] overflow-hidden">
+      <div className="relative min-h-[450px] max-h-[800px] xl:min-h-[850px] overflow-hidden">
         {/* Background Image */}
         <div
           className="absolute inset-0 lg:bg-center object-left bg-top-left bg-cover"

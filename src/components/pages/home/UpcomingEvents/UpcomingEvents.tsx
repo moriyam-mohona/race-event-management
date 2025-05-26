@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader/SectionHeader";
 import EventCard from "@/components/cards/EventCard";
@@ -11,7 +11,6 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import event from "@/assets/event.png";
-import { Container } from "@/components/ui-library/container";
 
 const events: Event[] = [
   {
@@ -89,61 +88,74 @@ const events: Event[] = [
 ];
 
 const UpcomingEvents: React.FC = () => {
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+  const prevRef = useRef<HTMLButtonElement | null>(null);
+  const nextRef = useRef<HTMLButtonElement | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const swiperRef = useRef<any>(null);
 
+  useEffect(() => {
+    if (
+      swiperRef.current &&
+      swiperRef.current.params &&
+      swiperRef.current.params.navigation
+    ) {
+      swiperRef.current.params.navigation.prevEl = prevRef.current;
+      swiperRef.current.params.navigation.nextEl = nextRef.current;
+      swiperRef.current.navigation.init();
+      swiperRef.current.navigation.update();
+    }
+  }, []);
   return (
-    <section className="py-20 bg-green-50">
-      <Container>
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeader
-            title="Upcoming Events"
-            description="Looking for something soon— open to where the journey takes you? Discover, plan, connect, lend a hand, and share the experience - the spirit of adventure like never before."
-          />
+    <section className="py-20 px-4 bg-green-50">
+      <div className=" mx-auto max-w-[1320px]">
+        <SectionHeader
+          title="Upcoming Events"
+          description="Looking for something soon— open to where the journey takes you? Discover, plan, connect, lend a hand, and share the experience - the spirit of adventure like never before."
+        />
 
-          <div className="relative mt-12">
-            <Swiper
-              modules={[Navigation]}
-              spaceBetween={20}
-              slidesPerView={1}
-              loop={true}
-              breakpoints={{
-                640: { slidesPerView: 1 },
-                768: { slidesPerView: 2 },
-                1024: { slidesPerView: 3 },
-                1440: { slidesPerView: 4 },
-              }}
-              navigation={{
-                prevEl: prevRef.current,
-                nextEl: nextRef.current,
-              }}
-            >
-              {events.map((event) => (
-                <SwiperSlide key={event.id}>
-                  <EventCard event={event} />
-                </SwiperSlide>
-              ))}
-            </Swiper>
+        <div className="relative mt-12">
+          <Swiper
+            modules={[Navigation]}
+            spaceBetween={20}
+            slidesPerView={1}
+            loop={true}
+            onSwiper={(swiper) => (swiperRef.current = swiper)}
+            breakpoints={{
+              640: { slidesPerView: 1 },
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+              1440: { slidesPerView: 4 },
+            }}
+            navigation={{
+              prevEl: prevRef.current,
+              nextEl: nextRef.current,
+            }}
+          >
+            {events.map((event) => (
+              <SwiperSlide key={event.id}>
+                <EventCard event={event} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
-            {/* Navigation Buttons */}
-            <button
-              ref={prevRef}
-              className="absolute -left-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
-              aria-label="Previous events"
-            >
-              <ChevronLeft className="w-6 h-6 text-gray-600" />
-            </button>
+          {/* Navigation Buttons */}
+          <button
+            ref={prevRef}
+            className="absolute -left-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
+            aria-label="Previous events"
+          >
+            <ChevronLeft className="w-6 h-6 text-gray-600" />
+          </button>
 
-            <button
-              ref={nextRef}
-              className="absolute -right-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
-              aria-label="Next events"
-            >
-              <ChevronRight className="w-6 h-6 text-gray-600" />
-            </button>
-          </div>
+          <button
+            ref={nextRef}
+            className="absolute -right-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
+            aria-label="Next events"
+          >
+            <ChevronRight className="w-6 h-6 text-gray-600" />
+          </button>
         </div>
-      </Container>
+      </div>
     </section>
   );
 };

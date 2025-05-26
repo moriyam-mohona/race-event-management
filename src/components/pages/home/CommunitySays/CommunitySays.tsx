@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ReviewCard from "@/components/cards/ReviewCard";
 import profile from "@/assets/profile.png";
@@ -64,17 +64,10 @@ const CommunitySays = () => {
 
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+  const [swiperReady, setSwiperReady] = useState(false);
 
   useEffect(() => {
-    // Update Swiper instance with navigation refs after component mounts
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const swiperInstance = (document.querySelector(".swiper") as any)?.swiper;
-    if (swiperInstance) {
-      swiperInstance.params.navigation.prevEl = prevRef.current;
-      swiperInstance.params.navigation.nextEl = nextRef.current;
-      swiperInstance.navigation.init();
-      swiperInstance.navigation.update();
-    }
+    setSwiperReady(true);
   }, []);
 
   return (
@@ -82,32 +75,30 @@ const CommunitySays = () => {
       <SectionHeader title="Community Says" />
 
       <div className="relative mt-12">
-        <Swiper
-          modules={[Navigation]}
-          spaceBetween={20}
-          slidesPerView={1}
-          loop={true}
-          breakpoints={{
-            640: { slidesPerView: 1 },
-            768: { slidesPerView: 2 },
-            1024: { slidesPerView: 2 },
-            1440: { slidesPerView: 3 },
-          }}
-          navigation={{
-            prevEl: prevRef.current,
-            nextEl: nextRef.current,
-          }}
-          onInit={(swiper) => {
-            swiper.navigation.init();
-            swiper.navigation.update();
-          }}
-        >
-          {reviews.map((review) => (
-            <SwiperSlide key={review.id}>
-              <ReviewCard review={review} />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {swiperReady && (
+          <Swiper
+            modules={[Navigation]}
+            spaceBetween={20}
+            slidesPerView={1}
+            loop={true}
+            breakpoints={{
+              640: { slidesPerView: 1 },
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 2 },
+              1440: { slidesPerView: 3 },
+            }}
+            navigation={{
+              prevEl: prevRef.current,
+              nextEl: nextRef.current,
+            }}
+          >
+            {reviews.map((review) => (
+              <SwiperSlide key={review.id}>
+                <ReviewCard review={review} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
 
         {/* Navigation Buttons */}
         <button
