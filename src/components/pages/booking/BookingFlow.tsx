@@ -40,12 +40,12 @@ export default function BookingFlow() {
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-6">
-      <div className="mb-14 text-center space-y-4">
+      <div className="mb-14 text-center space-y-2 lg:space-y-4">
         <p className="text-lg font-medium text-gray-700">Registration for</p>
-        <h1 className="text-3xl font-semibold font-montserrat">
+        <h1 className="text-2xl md:text-3xl font-semibold font-montserrat">
           Generali Malaga Marathon
         </h1>
-        <div className="text-lg font-medium text-gray-700 mt-1 flex items-center justify-center">
+        <div className="text-base md:text-lg font-medium text-gray-700 mt-1 flex items-center justify-center">
           <GrLocation className="mr-1 font-bold text-secondary text-2xl" />
           New York, United State
         </div>

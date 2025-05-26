@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RootState } from "@/redux/store";
 import {
@@ -14,9 +14,12 @@ import {
   setPayment,
 } from "@/redux/features/booking/bookingSlice";
 import SuccessModal from "@/components/shared/SuccessModal";
+import { FaStripe } from "react-icons/fa";
+import { useRouter } from "next/navigation";
 
 export default function Payment() {
   const dispatch = useDispatch();
+  const router = useRouter();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { ticket, personalDetails, addOns } = useSelector(
     (state: RootState) => state.booking
@@ -83,6 +86,7 @@ export default function Payment() {
       });
       dispatch(resetBooking());
       setShowSuccessModal(true);
+      router.push("/");
     }
   };
 
@@ -105,8 +109,9 @@ export default function Payment() {
   return (
     <div className="bg-white">
       <div className="mb-6">
-        <h2 className="text-3xl font-medium text-gray-700">Payment Method</h2>
-
+        <h2 className="text-2xl md:text-3xl font-medium text-gray-700">
+          Payment Method
+        </h2>
         <div className="mt-4">
           <RadioGroup
             value={formData.paymentMethod}
@@ -116,21 +121,8 @@ export default function Payment() {
             className="flex gap-4"
           >
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="card" id="card" />
               <Label htmlFor="card" className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="mr-2 h-6 w-6 text-green-500"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
-                  <path
-                    fillRule="evenodd"
-                    d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+                <FaStripe className="text-4xl bg-[#72C197] text-white rounded-full p-1" />
               </Label>
             </div>
           </RadioGroup>
@@ -238,11 +230,14 @@ export default function Payment() {
       </div>
 
       <div className="mt-8 flex justify-between">
-        <button onClick={handleBack} className="border px-10 py-2 rounded">
+        <button
+          onClick={handleBack}
+          className="border px-5 md:px-10 py-2 rounded"
+        >
           Back
         </button>
         <button
-          className="bg-primary hover:bg-primary/90 text-white px-10 py-2 rounded"
+          className="bg-primary hover:bg-primary/90 text-white px-5 md:px-10 py-2 rounded"
           onClick={handleSubmit}
         >
           Pay securely

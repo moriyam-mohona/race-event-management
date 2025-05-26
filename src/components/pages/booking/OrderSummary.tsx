@@ -44,54 +44,24 @@ export default function OrderSummary() {
           <p className="text-gray-800">8-10 Aug, 2025</p>
         </div>
 
-        {ticket.eventType && (
+        {/* {ticket.eventType && (
           <>
             <div className="mb-4 mt-6">
               <h3 className="font-medium">Needed Gear For this Race</h3>
               <div className="mt-2">
                 <div className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    checked
-                    readOnly
-                    className="text-blue-500"
-                  />
                   <span className="text-sm">Running Shoes</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <input
-                    type="radio"
-                    checked={false}
-                    readOnly
-                    className="text-blue-500"
-                  />
                   <span className="text-sm">Sports Watch</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={false}
-                    readOnly
-                    className="text-blue-500"
-                  />
                   <span className="text-sm">Running Shorts</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={false}
-                    readOnly
-                    className="text-blue-500"
-                  />
                   <span className="text-sm">Water Bottle</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={false}
-                    readOnly
-                    className="text-blue-500"
-                  />
                   <span className="text-sm">Hydration Pack</span>
                 </div>
               </div>
@@ -107,14 +77,16 @@ export default function OrderSummary() {
               </div>
             </div>
           </>
-        )}
+        )} */}
 
         {addOns.selectedItems && addOns.selectedItems.length > 0 && (
           <div className="mb-4 border-t border-gray-100 pt-4">
-            <h3 className="font-medium">Added Gear</h3>
+            <h3 className="text-lg font-medium text-gray-800 mb-4">
+              Added Gear
+            </h3>
             {addOns.selectedItems.map((item, index) => (
-              <div key={index} className="mt-2 flex justify-between">
-                <span className="text-sm">
+              <div key={index} className="mt-2 font- flex justify-between">
+                <span className="text-secondary">
                   {index + 1}. {item.name}
                 </span>
                 <div className="flex items-center">
@@ -133,11 +105,9 @@ export default function OrderSummary() {
         )}
 
         <div className="border-t border-gray-200 pt-4">
-          <div className="flex justify-between text-xl font-medium">
+          <div className="flex justify-between text-lg md:text-xl font-medium">
             <span className="font-medium">Total</span>
-            <span className="font-medium">
-              ${calculateTotal().toFixed(2)} USD
-            </span>
+            <span>${calculateTotal().toFixed(2)} USD</span>
           </div>
         </div>
       </div>

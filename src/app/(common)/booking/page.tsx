@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 export default function Home() {
   return (
     <Provider store={store}>
-      <main className="min-h-screen mt-40 bg-white">
+      <main className="min-h-screen mt-28 lg:mt-40 bg-white">
         <BookingFlow />
       </main>
     </Provider>

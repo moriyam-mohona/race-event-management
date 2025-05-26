@@ -59,7 +59,7 @@ export default function StepIndicator() {
               {index < steps.length - 1 && (
                 <div
                   className={cn(
-                    "absolute z-10 top-4 mx-auto h-px left-1/2  w-full border-t border-dashed border-red-500",
+                    "absolute top-4 mx-auto h-px left-1/2  w-full border-t border-dashed border-red-500",
                     currentStep > step.id ? "border-primary" : "border-gray-300"
                   )}
                 ></div>

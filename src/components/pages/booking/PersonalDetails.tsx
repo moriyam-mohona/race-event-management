@@ -89,11 +89,16 @@ export default function PersonalDetails() {
 
   return (
     <div className="rounded-lg bg-white">
-      <div className="mb-4 flex flex-col justify-between space-y-4">
-        <h2 className="text-3xl font-medium text-gray-700">Cycling</h2>
+      <div className="mb-4 flex flex-col justify-between space-y-2 md:space-y-4">
+        <h2 className="text-2xl md:text-3xl font-medium text-gray-700">
+          Cycling
+        </h2>
         <div className=" space-y-4">
           <p className="text-gray-600">8-10 Aug, 2025</p>
-          <p className="text-orange-500">Participant 01</p>
+          <div className="flex justify-between">
+            <p className="text-orange-500">Participant 01</p>
+            <p className="text-gray-600 font-semibold">$100.00 USD</p>
+          </div>
         </div>
       </div>
       <div className="my-16">
@@ -108,13 +113,17 @@ export default function PersonalDetails() {
               value={formData.gender}
               onValueChange={(value) => handleSelectChange("gender", value)}
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-4">
                 <RadioGroupItem value="male" id="male" />
-                <Label htmlFor="male">Male</Label>
+                <Label htmlFor="male" className="text-base text-gray-600">
+                  Male
+                </Label>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-4">
                 <RadioGroupItem value="female" id="female" />
-                <Label htmlFor="female">Female</Label>
+                <Label htmlFor="female" className="text-base text-gray-600">
+                  Female
+                </Label>
               </div>
             </RadioGroup>
             {errors.gender && (

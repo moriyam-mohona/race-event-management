@@ -7,6 +7,7 @@ import { SiStreamrunners } from "react-icons/si";
 import { TiWeatherWindy } from "react-icons/ti";
 import { IoLocationOutline } from "react-icons/io5";
 import { T_Event } from "@/types/Events";
+import Link from "next/link";
 
 export function EventHeader({
   title,
@@ -101,12 +102,18 @@ export function EventHeader({
           </div>
 
           <div className="flex gap-3 mt-4">
-            <button className="border border-primary text-primary hover:bg-primary hover:text-white px-8 py-2 rounded-lg text-lg">
+            <Link
+              href="/community"
+              className="border border-primary text-primary hover:bg-primary hover:text-white px-8 py-2 rounded-lg text-lg"
+            >
               Community
-            </button>
-            <button className="hover:border hover:border-primary hover:bg-primary/20 hover:text-primary bg-primary text-white px-8 py-2 rounded-lg text-lg">
+            </Link>
+            <Link
+              href="/booking"
+              className="hover:border hover:border-primary hover:bg-primary/20 hover:text-primary bg-primary text-white px-8 py-2 rounded-lg text-lg"
+            >
               Register Now
-            </button>
+            </Link>
           </div>
         </div>
       </div>
