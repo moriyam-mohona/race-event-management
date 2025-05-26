@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Eye, EyeOff } from "lucide-react";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import { useRouter } from "next/navigation";
 
 interface LoginData {
   email: string;
@@ -22,6 +23,7 @@ const Login = () => {
     password: "",
     rememberMe: false,
   });
+  const router = useRouter();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,6 +36,7 @@ const Login = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Login data:", loginData);
+    router.push("/");
   };
 
   return (
@@ -86,7 +89,7 @@ const Login = () => {
 
           <div className="flex items-center justify-end">
             <Link
-              href="/forgot-password"
+              href="/auth/forgot-password"
               className="text-sm text-red-500 hover:underline"
             >
               Forgot Password?

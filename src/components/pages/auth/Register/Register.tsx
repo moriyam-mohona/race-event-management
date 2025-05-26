@@ -21,6 +21,7 @@ import {
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import SocialLogin from "../SocialLogin/SocialLogin";
+import { useRouter } from "next/navigation";
 
 interface PersonalInfo {
   firstName: string;
@@ -56,6 +57,8 @@ const Register = () => {
     zipCode: "",
   });
 
+  const router = useRouter();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const updateState = step === 1 ? setPersonalInfo : setLocationInfo;
@@ -76,12 +79,13 @@ const Register = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Data:", { ...personalInfo, ...locationInfo });
+    router.push("/auth/verify-email");
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen my-20 p-4">
-      <div className="w-full max-w-4xl bg-white border rounded-lg p-6 md:p-8">
-        <h1 className="text-2xl font-semibold mb-8">
+    <div className="flex justify-center items-center min-h-screen my-10 md:my-20 p-4">
+      <div className="w-full max-w-4xl bg-white border rounded-lg p-4 md:p-8">
+        <h1 className="text-2xl lg:text-[28px] font-semibold mb-8">
           {step === 1 ? "Create Your Account" : "Location Details"}
         </h1>
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -89,7 +93,9 @@ const Register = () => {
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="block font-medium">First Name</label>
+                  <label className="block font-medium text-sm md:text-base">
+                    First Name
+                  </label>
                   <Input
                     name="firstName"
                     value={personalInfo.firstName}
@@ -98,7 +104,9 @@ const Register = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="block font-medium">Last Name</label>
+                  <label className="block font-medium text-sm md:text-base">
+                    Last Name
+                  </label>
                   <Input
                     name="lastName"
                     value={personalInfo.lastName}
@@ -110,7 +118,9 @@ const Register = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="block font-medium">Date of Birth</label>
+                  <label className="block font-medium text-sm md:text-base">
+                    Date of Birth
+                  </label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -123,18 +133,24 @@ const Register = () => {
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent align="start" className="w-auto p-0">
+                    <PopoverContent
+                      align="start"
+                      className="w-auto p-0 bg-white"
+                    >
                       <Calendar
                         mode="single"
                         selected={personalInfo.dateOfBirth}
                         onSelect={handleDateChange}
                         initialFocus
+                        className="bg-white"
                       />
                     </PopoverContent>
                   </Popover>
                 </div>
                 <div className="space-y-2">
-                  <label className="block font-medium">Gender</label>
+                  <label className="block font-medium text-sm md:text-base">
+                    Gender
+                  </label>
                   <Select
                     onValueChange={(val) => handleSelectChange("gender", val)}
                   >
@@ -151,7 +167,9 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="block font-medium">Email</label>
+                <label className="block font-medium text-sm md:text-base">
+                  Email
+                </label>
                 <Input
                   name="email"
                   type="email"
@@ -162,7 +180,9 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <label className="block font-medium">Password</label>
+                <label className="block font-medium text-sm md:text-base">
+                  Password
+                </label>
                 <div className="relative">
                   <Input
                     name="password"
@@ -188,7 +208,7 @@ const Register = () => {
               </div>
 
               <Button
-                className="w-full h-12 text-lg bg-primary text-white"
+                className="w-full h-12 text-sm md:text-lg bg-primary text-white"
                 onClick={handleNext}
               >
                 Next
@@ -199,7 +219,7 @@ const Register = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {["continent", "country", "region", "zipCode"].map((field) => (
                   <div key={field} className="space-y-2">
-                    <label className="block font-medium capitalize">
+                    <label className="block text-sm md:text-base font-medium capitalize">
                       {field.replace(/([A-Z])/g, " $1")}
                     </label>
                     <Input
@@ -218,13 +238,13 @@ const Register = () => {
                   type="button"
                   variant="outline"
                   onClick={handlePrevious}
-                  className="w-full h-12 text-base hover:bg-primary hover:text-white bg-transparent border border-primary text-primary"
+                  className="w-full h-12 text-sm md:text-base hover:bg-primary hover:text-white bg-transparent border border-primary text-primary"
                 >
                   Previous
                 </Button>
                 <Button
                   type="submit"
-                  className="w-full h-12 text-lg bg-primary text-white"
+                  className="w-full h-12 text-sm md:text-lg bg-primary text-white"
                 >
                   Sign In
                 </Button>
