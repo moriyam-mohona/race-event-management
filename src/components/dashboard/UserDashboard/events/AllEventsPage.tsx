@@ -30,15 +30,12 @@ const AllEventsPage = () => {
     <div className="container mx-auto px-4 py-8">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold">All Events</h1>
-        <p className="mt-2 text-muted-foreground">
-          Browse and register for upcoming events or view past events.
-        </p>
+        <h1 className="text-2xl md:text-3xl font-medium">All Events</h1>
       </div>
 
       {/* Tabs */}
       <Tabs defaultValue="upcoming" className="w-full">
-        <TabsList className="mb-6 w-full justify-start gap-2 md:gap-10">
+        <TabsList className="mb-6 w-full justify-start gap-2 md:gap-6">
           {["upcoming", "completed"].map((status) => (
             <TabsTrigger
               key={status}

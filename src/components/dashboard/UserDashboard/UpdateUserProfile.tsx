@@ -22,7 +22,9 @@ import { T_User } from "@/types/User";
 import Image from "next/image";
 import profile from "@/assets/images/Human.png";
 import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 const UpdateUserProfile = () => {
+  const router = useRouter();
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -66,6 +68,8 @@ const UpdateUserProfile = () => {
       ...formData,
       profileImage: profileImage ? "Image data exists" : "No image uploaded",
     });
+
+    router.push("/dashboard/user/profile");
   };
 
   return (
@@ -76,7 +80,7 @@ const UpdateUserProfile = () => {
 
       <form onSubmit={handleSubmit}>
         {/* Profile Photo */}
-        <div className="mb-8 flex justify-start items-start gap-10 max-w-2xl border border-gray-200 rounded-lg p-5">
+        <div className="mb-8 flex flex-col md:flex-row justify-start items-start md:gap-10 max-w-2xl border border-gray-200 rounded-lg p-5">
           <Label className="text-lg">Profile Photo</Label>
           <div className="flex items-center gap-4">
             <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
@@ -125,7 +129,7 @@ const UpdateUserProfile = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border border-gray-200 rounded-lg p-5">
           {/* First Name */}
           <div>
-            <Label className="text-lg mb-2">First Name</Label>
+            <Label className="text-base md:text-lg mb-2">First Name</Label>
             <Input
               placeholder="First Name"
               value={formData.firstName}
@@ -136,7 +140,7 @@ const UpdateUserProfile = () => {
           {/* Last Name */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2"></label>
-            <Label className="text-lg mb-2">Last Name</Label>
+            <Label className="text-base md:text-lg mb-2">Last Name</Label>
             <Input
               placeholder="Last Name"
               value={formData.lastName}
@@ -146,7 +150,7 @@ const UpdateUserProfile = () => {
           </div>
           {/* Date of Birth */}
           <div>
-            <Label className="text-lg mb-2">Date of Birth</Label>
+            <Label className="text-base md:text-lg mb-2">Date of Birth</Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -174,7 +178,7 @@ const UpdateUserProfile = () => {
           {/* Gender */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2"></label>
-            <Label className="text-lg mb-2">Gender</Label>
+            <Label className="text-base md:text-lg mb-2">Gender</Label>
             <Select
               onValueChange={(value) => handleInputChange("gender", value)}
             >
@@ -190,7 +194,7 @@ const UpdateUserProfile = () => {
           </div>
           {/* E-mail */}
           <div>
-            <Label className="text-lg mb-2">E-mail</Label>
+            <Label className="text-base md:text-lg mb-2">E-mail</Label>
             <Input
               type="email"
               placeholder="email@example.com"
@@ -202,13 +206,13 @@ const UpdateUserProfile = () => {
         </div>
 
         {/* Location Details */}
-        <h3 className="text-2xl font-medium text-gray-800 mb-4">
+        <h3 className="text-xl md:text-2xl font-medium text-gray-800 mb-4">
           Location Details
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border border-gray-200 rounded-lg p-5">
           {/* Continent */}
           <div>
-            <Label className="text-lg mb-2">Continent</Label>
+            <Label className="text-base md:text-lg mb-2">Continent</Label>
             <Input
               type="text"
               placeholder="Continent"
@@ -219,7 +223,7 @@ const UpdateUserProfile = () => {
           </div>
           {/* Country */}
           <div>
-            <Label className="text-lg mb-2">Country</Label>
+            <Label className="text-base md:text-lg mb-2">Country</Label>
             <Input
               type="text"
               placeholder="Country"
@@ -230,7 +234,7 @@ const UpdateUserProfile = () => {
           </div>
           {/* Region */}
           <div>
-            <Label className="text-lg mb-2">Region</Label>
+            <Label className="text-base md:text-lg mb-2">Region</Label>
             <Input
               type="text"
               placeholder="Region"
@@ -241,7 +245,9 @@ const UpdateUserProfile = () => {
           </div>
           {/* Zip code/ Postal code */}
           <div>
-            <Label className="text-lg mb-2">Zip code/ Postal code</Label>
+            <Label className="text-base md:text-lg mb-2">
+              Zip code/ Postal code
+            </Label>
             <Input
               type="text"
               placeholder="Zip code/ Postal code  "
@@ -255,7 +261,7 @@ const UpdateUserProfile = () => {
         {/* Password */}
         <div className="grid grid-cols-1 gap-6 mb-8 border border-gray-200 rounded-lg p-5">
           <div>
-            <Label className="text-lg mb-2">Old Password</Label>
+            <Label className="text-base md:text-lg mb-2">Old Password</Label>
             <div className="relative">
               <Input
                 name="password"
@@ -283,7 +289,7 @@ const UpdateUserProfile = () => {
             </div>
           </div>
           <div>
-            <Label className="text-lg mb-2">New Password</Label>
+            <Label className="text-base md:text-lg mb-2">New Password</Label>
             <div className="relative">
               <Input
                 name="password"
@@ -314,12 +320,15 @@ const UpdateUserProfile = () => {
 
         {/* Action Buttons */}
         <div className="flex justify-end gap-4 mt-8">
-          <button type="button" className="py-2 px-6 rounded-md border">
+          <button
+            type="button"
+            className="text-sm md:text-base py-2 px-6 rounded-md border"
+          >
             Cancel
           </button>
           <button
             type="submit"
-            className="bg-primary hover:bg-primary/90 py-2 px-4 rounded-md text-white"
+            className="text-sm md:text-base bg-primary hover:bg-primary/90 py-2 px-4 rounded-md text-white"
           >
             Save Changes
           </button>
