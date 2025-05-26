@@ -34,15 +34,15 @@ const CommunityPosts: React.FC = () => {
           </div>
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-primary hover:bg-primary/80 text-white px-4 py-2 rounded-lg transition-colors duration-200 flex items-center"
+            className="bg-primary hover:bg-primary/80 text-white px-2 md:px-4 py-2 rounded-lg transition-colors duration-200 flex items-center"
           >
             <Plus size={18} className="mr-1" />
-            Create a post
+            <span className="hidden md:inline"> Create a post</span>
           </button>
         </div>
 
-        <div className="flex justify-end">
-          <button className="flex items-center text-gray-600 hover:text-primary transition-colors duration-200">
+        <div className="flex justify-end mt-10 ">
+          <button className="flex items-center text-gray-600 hover:text-primary transition-colors duration-200 border border-gray-200 px-4 py-2 rounded-lg">
             <span className="mr-1">Filter</span>
             <Filter size={16} />
           </button>
