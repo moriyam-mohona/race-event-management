@@ -20,8 +20,11 @@ import {
 } from "@/components/ui/popover";
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
-import SocialLogin from "../SocialLogin/SocialLogin";
 import { useRouter } from "next/navigation";
+import logo from "@/assets/logo.png";
+import Image from "next/image";
+import Link from "next/link";
+import countries from "world-countries";
 
 interface PersonalInfo {
   firstName: string;
@@ -59,6 +62,22 @@ const Register = () => {
 
   const router = useRouter();
 
+  const countryList = countries.map((country) => ({
+    code: country.cca2,
+    name: country.name.common,
+    flagUrl: `https://flagcdn.com/w20/${country.cca2.toLowerCase()}.png`,
+  }));
+
+  const continents = [
+    { code: "AF", name: "Africa" },
+    { code: "AS", name: "Asia" },
+    { code: "EU", name: "Europe" },
+    { code: "NA", name: "North America" },
+    { code: "SA", name: "South America" },
+    { code: "OC", name: "Oceania" },
+    { code: "AN", name: "Antarctica" },
+  ];
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const updateState = step === 1 ? setPersonalInfo : setLocationInfo;
@@ -84,188 +103,251 @@ const Register = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen my-10 md:my-20 p-4">
-      <div className="w-full max-w-4xl bg-white border rounded-lg p-4 md:p-8">
-        <h1 className="text-2xl lg:text-[28px] font-semibold mb-8">
-          {step === 1 ? "Create Your Account" : "Location Details"}
-        </h1>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {step === 1 ? (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="block font-medium text-sm md:text-base">
-                    First Name
-                  </label>
-                  <Input
-                    name="firstName"
-                    value={personalInfo.firstName}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label className="block font-medium text-sm md:text-base">
-                    Last Name
-                  </label>
-                  <Input
-                    name="lastName"
-                    value={personalInfo.lastName}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="block font-medium text-sm md:text-base">
-                    Date of Birth
-                  </label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start text-left font-normal h-12"
-                      >
-                        {personalInfo.dateOfBirth
-                          ? format(personalInfo.dateOfBirth, "PPP")
-                          : "Pick a date"}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      align="start"
-                      className="w-auto p-0 bg-white"
-                    >
-                      <Calendar
-                        mode="single"
-                        selected={personalInfo.dateOfBirth}
-                        onSelect={handleDateChange}
-                        initialFocus
-                        className="bg-white"
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="space-y-2">
-                  <label className="block font-medium text-sm md:text-base">
-                    Gender
-                  </label>
-                  <Select
-                    onValueChange={(val) => handleSelectChange("gender", val)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Gender" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="block font-medium text-sm md:text-base">
-                  Email
-                </label>
-                <Input
-                  name="email"
-                  type="email"
-                  value={personalInfo.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <label className="block font-medium text-sm md:text-base">
-                  Password
-                </label>
-                <div className="relative">
-                  <Input
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    value={personalInfo.password}
-                    onChange={handleChange}
-                    required
-                    className="pr-10"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
-                    tabIndex={-1}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="w-5 h-5" />
-                    ) : (
-                      <Eye className="w-5 h-5" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <Button
-                className="w-full h-12 text-sm md:text-lg bg-primary text-white"
-                onClick={handleNext}
-              >
-                Next
-              </Button>
-            </>
-          ) : (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {["continent", "country", "region", "zipCode"].map((field) => (
-                  <div key={field} className="space-y-2">
-                    <label className="block text-sm md:text-base font-medium capitalize">
-                      {field.replace(/([A-Z])/g, " $1")}
+      <div className="flex flex-col items-center space-y-8 w-full">
+        <Link href="/">
+          <Image
+            src={logo}
+            alt="logo"
+            width={1000}
+            height={1000}
+            className="h-18 w-24"
+          />
+        </Link>
+        <div className="w-full max-w-4xl bg-white border rounded-lg p-4 md:p-8">
+          <h1 className="text-2xl lg:text-[28px] font-semibold mb-8">
+            {step === 1 ? "Create Your Account" : "Location Details"}
+          </h1>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {step === 1 ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="block font-medium text-sm md:text-base">
+                      First Name
                     </label>
                     <Input
-                      name={field}
-                      value={(locationInfo as any)[field]}
+                      name="firstName"
+                      value={personalInfo.firstName}
                       onChange={handleChange}
-                      placeholder={`Enter your ${field}`}
                       required
                     />
                   </div>
-                ))}
-              </div>
+                  <div className="space-y-2">
+                    <label className="block font-medium text-sm md:text-base">
+                      Last Name
+                    </label>
+                    <Input
+                      name="lastName"
+                      value={personalInfo.lastName}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
 
-              <div className="flex flex-col gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="block font-medium text-sm md:text-base">
+                      Date of Birth
+                    </label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="w-full justify-start text-left font-normal h-12"
+                        >
+                          {personalInfo.dateOfBirth
+                            ? format(personalInfo.dateOfBirth, "PPP")
+                            : "Pick a date"}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        align="start"
+                        className="w-auto p-0 bg-white"
+                      >
+                        <Calendar
+                          mode="single"
+                          selected={personalInfo.dateOfBirth}
+                          onSelect={handleDateChange}
+                          initialFocus
+                          className="bg-white"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block font-medium text-sm md:text-base">
+                      Gender
+                    </label>
+                    <Select
+                      onValueChange={(val) => handleSelectChange("gender", val)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Gender" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="male">Male</SelectItem>
+                        <SelectItem value="female">Female</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block font-medium text-sm md:text-base">
+                    Email
+                  </label>
+                  <Input
+                    name="email"
+                    type="email"
+                    value={personalInfo.email}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="block font-medium text-sm md:text-base">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <Input
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={personalInfo.password}
+                      onChange={handleChange}
+                      required
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
+                      tabIndex={-1}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="w-5 h-5" />
+                      ) : (
+                        <Eye className="w-5 h-5" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
                 <Button
-                  type="button"
-                  variant="outline"
-                  onClick={handlePrevious}
-                  className="w-full h-12 text-sm md:text-base hover:bg-primary hover:text-white bg-transparent border border-primary text-primary"
-                >
-                  Previous
-                </Button>
-                <Button
-                  type="submit"
                   className="w-full h-12 text-sm md:text-lg bg-primary text-white"
+                  onClick={handleNext}
                 >
-                  Sign In
+                  Next
                 </Button>
-              </div>
-            </>
-          )}
+              </>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Continent Select */}
+                  <div className="space-y-2">
+                    <label className="block text-sm md:text-base font-medium">
+                      Continent
+                    </label>
+                    <Select
+                      onValueChange={(val) =>
+                        setLocationInfo((prev) => ({ ...prev, continent: val }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select continent" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {continents.map((c) => (
+                          <SelectItem key={c.code} value={c.name}>
+                            {c.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-          <div className="relative mt-16">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-white px-2 text-gray-500">OR</span>
-            </div>
-          </div>
+                  {/* Country Select */}
+                  <div className="space-y-2">
+                    <label className="block text-sm md:text-base font-medium">
+                      Country
+                    </label>
+                    <Select
+                      onValueChange={(val) =>
+                        setLocationInfo((prev) => ({ ...prev, country: val }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select country" />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-60 overflow-y-auto">
+                        {countryList.map((c) => (
+                          <SelectItem key={c.code} value={c.name}>
+                            <div className="flex items-center gap-2">
+                              <Image
+                                src={c.flagUrl}
+                                alt={`${c.name} flag`}
+                                width={20}
+                                height={20}
+                                className="w-5 h-4 object-cover"
+                              />
+                              {c.name}
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-          <div className="space-y-4">
-            <SocialLogin provider="Google" />
-            <SocialLogin provider="Facebook" />
-          </div>
-        </form>
+                  {/* Region & Zip Code Inputs */}
+                  <div className="space-y-2">
+                    <label className="block text-sm md:text-base font-medium">
+                      Region
+                    </label>
+                    <Input
+                      name="region"
+                      value={locationInfo.region}
+                      onChange={handleChange}
+                      placeholder="Enter your region"
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="block text-sm md:text-base font-medium">
+                      Zip Code
+                    </label>
+                    <Input
+                      name="zipCode"
+                      value={locationInfo.zipCode}
+                      onChange={handleChange}
+                      placeholder="Enter your zip code"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handlePrevious}
+                    className="w-full h-12 text-sm md:text-base hover:bg-primary hover:text-white bg-transparent border border-primary text-primary"
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="w-full h-12 text-sm md:text-lg bg-primary text-white"
+                  >
+                    Sign In
+                  </Button>
+                </div>
+              </>
+            )}
+          </form>
+        </div>
       </div>
     </div>
   );
