@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,11 +8,22 @@ import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import logo from "@/assets/logo.png";
 import Image from "next/image";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { verifyToken } from "@/utils/verifyToken";
+import { JwtPayload } from "jwt-decode";
+import { useAppDispatch } from "@/redux/hooks";
+import { setUser } from "@/redux/features/auth/authSlice";
+import { ButtonLoading } from "@/components/shared/Loading/ButtonLoading";
 
 interface LoginData {
   email: string;
   password: string;
-  rememberMe: boolean;
+  rememberMe?: boolean;
+}
+
+interface DecodedUser extends JwtPayload {
+  role: string; // Add role explicitly
 }
 
 const Login = () => {
@@ -22,9 +31,12 @@ const Login = () => {
   const [loginData, setLoginData] = useState<LoginData>({
     email: "",
     password: "",
-    rememberMe: false,
   });
+
+  const dispatch = useAppDispatch();
+
   const router = useRouter();
+  const [login, { isLoading }] = useLoginMutation();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -34,10 +46,31 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login data:", loginData);
-    router.push("/");
+    const response = await handleAsyncWithToast(async () => {
+      return login(loginData);
+    });
+
+    if (response?.data?.success) {
+      // console.log(response);
+      const user = (await verifyToken(
+        response?.data?.data?.accessToken
+      )) as DecodedUser;
+      console.log(response?.data);
+      await dispatch(
+        setUser({
+          user: user,
+          accessToken: response?.data?.data?.accessToken,
+          refreshToken: response?.data?.data?.refreshToken,
+        })
+      );
+      if (user?.role === "admin") {
+        router.push("/admin/subscription-management");
+      } else {
+        router.push("/");
+      }
+    }
   };
 
   return (
@@ -111,7 +144,7 @@ const Login = () => {
               type="submit"
               className="w-full bg-primary hover:bg-primary/80 h-12 text-lg text-white"
             >
-              Login
+              {isLoading ? <ButtonLoading /> : "Login"}
             </Button>
           </form>
         </div>

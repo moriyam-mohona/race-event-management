@@ -14,16 +14,16 @@ const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
-    const access_token = (getState() as RootState).auth.access_token;
+    const accessToken = (getState() as RootState).auth.accessToken;
     headers.set("accept", "application/json");
-    if (access_token) {
-      headers.set("authorization", `Bearer ${access_token}`);
+    if (accessToken) {
+      headers.set("authorization", `Bearer ${accessToken}`);
     }
     return headers;
   },
 });
 
-const baseQueryWithRefreshToken: BaseQueryFn<
+const baseQueryWithrefreshToken: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
@@ -32,7 +32,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 
   if (result.error?.status === 401) {
     try {
-      const refreshToken = (api.getState() as RootState).auth.refresh_token;
+      const refreshToken = (api.getState() as RootState).auth.refreshToken;
 
       // if (!refreshToken) {
       //   api.dispatch(logout());
@@ -61,7 +61,11 @@ const baseQueryWithRefreshToken: BaseQueryFn<
       if (data?.success) {
         const user = (api.getState() as RootState).auth.user;
         api.dispatch(
-          setUser({ user, token: data.data.token, refresh_token: refreshToken })
+          setUser({
+            user,
+            token: data?.data?.accessToken,
+            refreshToken: refreshToken,
+          })
         );
 
         // Retry the original query with the new token
@@ -78,8 +82,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
           if (result.isConfirmed) {
             api.dispatch(logout());
             signOut();
-          }
-          else if (result.isDismissed) {
+          } else if (result.isDismissed) {
             api.dispatch(logout());
             signOut();
           }
@@ -95,9 +98,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  baseQuery: baseQueryWithRefreshToken,
-  tagTypes: [
-    "user", "example"
-  ],
+  baseQuery: baseQueryWithrefreshToken,
+  tagTypes: ["user", "example"],
   endpoints: () => ({}),
 });

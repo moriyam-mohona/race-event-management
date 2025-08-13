@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { toast } from "sonner";
 
 export const handleAsyncWithToast = async (
   asyncCallback: () => Promise<any>,
-  loadingMessage: string,
+  loadingMessage?: string,
   successMessage?: string,
   errorMessage?: string,
   isShowToast: boolean = true
@@ -29,12 +30,13 @@ export const handleAsyncWithToast = async (
     }
 
     if (!res?.data?.success) {
+      console.log(res);
       toast.error(res?.error?.data?.message, {
         id: toastInit,
       });
     }
 
-    return res; 
+    return res;
   } catch (error) {
     toast.error(
       (error as any)?.message || errorMessage || "Something went wrong",
@@ -42,7 +44,7 @@ export const handleAsyncWithToast = async (
         id: toastInit,
       }
     );
-    throw error; 
+    throw error;
   } finally {
     setTimeout(() => {
       toast.dismiss(toastInit);

@@ -25,10 +25,12 @@ import logo from "@/assets/logo.png";
 import Image from "next/image";
 import Link from "next/link";
 import countries from "world-countries";
+import { useRegisterMutation } from "@/redux/features/auth/authApi";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import { ButtonLoading } from "@/components/shared/Loading/ButtonLoading";
 
 interface PersonalInfo {
-  firstName: string;
-  lastName: string;
+  fullName: string;
   dateOfBirth: Date | undefined;
   gender: string;
   email: string;
@@ -46,8 +48,7 @@ const Register = () => {
   const [step, setStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     dateOfBirth: undefined,
     gender: "",
     email: "",
@@ -61,6 +62,7 @@ const Register = () => {
   });
 
   const router = useRouter();
+  const [register, { isLoading }] = useRegisterMutation();
 
   const countryList = countries.map((country) => ({
     code: country.cca2,
@@ -95,10 +97,25 @@ const Register = () => {
   const handleNext = () => setStep(2);
   const handlePrevious = () => setStep(1);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Data:", { ...personalInfo, ...locationInfo });
-    router.push("/auth/verify-email");
+    // console.log("Data:", { ...personalInfo, ...locationInfo });
+
+    const dataToSUbmit = {
+      ...personalInfo,
+      ...locationInfo,
+    };
+    console.log(dataToSUbmit);
+
+    const response = await handleAsyncWithToast(async () => {
+      return register(dataToSUbmit);
+    });
+    if (response?.data?.success && response?.data?.data?.isVerified === false) {
+      const email = encodeURIComponent(response?.data?.data?.email);
+      router.push(`/auth/verify-email?email=${email}`);
+    }
+
+    console.log(response);
   };
 
   return (
@@ -123,25 +140,30 @@ const Register = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="block font-medium text-sm md:text-base">
-                      First Name
+                      Full Name
                     </label>
                     <Input
-                      name="firstName"
-                      value={personalInfo.firstName}
+                      name="fullName"
+                      value={personalInfo.fullName}
                       onChange={handleChange}
                       required
                     />
                   </div>
                   <div className="space-y-2">
                     <label className="block font-medium text-sm md:text-base">
-                      Last Name
+                      Role
                     </label>
-                    <Input
-                      name="lastName"
-                      value={personalInfo.lastName}
-                      onChange={handleChange}
-                      required
-                    />
+                    <Select
+                      onValueChange={(val) => handleSelectChange("role", val)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="USER">User</SelectItem>
+                        <SelectItem value="VENDOR">Vendor</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -187,9 +209,8 @@ const Register = () => {
                         <SelectValue placeholder="Gender" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="MALE">Male</SelectItem>
+                        <SelectItem value="FEMALE">Female</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -341,7 +362,7 @@ const Register = () => {
                     type="submit"
                     className="w-full h-12 text-sm md:text-lg bg-primary text-white"
                   >
-                    Sign In
+                    {isLoading ? <ButtonLoading /> : "Sign Up"}
                   </Button>
                 </div>
               </>

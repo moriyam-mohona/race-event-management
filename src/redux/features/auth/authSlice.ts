@@ -1,34 +1,33 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createSlice } from '@reduxjs/toolkit';
-import { RootState } from '../../store';
-
+import { createSlice } from "@reduxjs/toolkit";
+import { RootState } from "../../store";
 
 type TAuthState = {
   user: null | any;
-  access_token: null | string;
-  refresh_token: null | string;
+  accessToken: null | string;
+  refreshToken: null | string;
 };
 
 const initialState: TAuthState = {
   user: null,
-  access_token: null,
-  refresh_token: null,
+  accessToken: null,
+  refreshToken: null,
 };
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const { user, access_token, refresh_token } = action.payload;
+      const { user, accessToken, refreshToken } = action.payload;
       state.user = user;
-      state.access_token = access_token;
-      state.refresh_token = refresh_token;
+      state.accessToken = accessToken;
+      state.refreshToken = refreshToken;
     },
     logout: (state) => {
       state.user = null;
-      state.access_token = null;
-      state.refresh_token = null;
+      state.accessToken = null;
+      state.refreshToken = null;
     },
   },
 });
@@ -37,5 +36,5 @@ export const { setUser, logout } = authSlice.actions;
 
 export default authSlice.reducer;
 
-export const useCurrentToken = (state: RootState) => state.auth.access_token;
+export const useCurrentToken = (state: RootState) => state.auth.accessToken;
 export const selectCurrentUser = (state: RootState) => state.auth.user;
