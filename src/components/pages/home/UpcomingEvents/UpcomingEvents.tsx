@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect } from "react";
@@ -10,88 +11,16 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import event from "@/assets/event.png";
-
-const events: Event[] = [
-  {
-    id: "1",
-    title: "Generali Malaga Marathon",
-    location: "New York, United Kingdom",
-    date: "8-10 Aug, 2025",
-    category: "Cycling",
-    price: 100,
-    currency: "USD",
-    imageUrl: event,
-    description:
-      "Search global races easily on our interactive map, join event communities.",
-  },
-  {
-    id: "2",
-    title: "Istanbul Marathon",
-    location: "New York, United Kingdom",
-    date: "8-10 Aug, 2025",
-    category: "Swimming",
-    price: 100,
-    currency: "USD",
-    imageUrl: event,
-    description:
-      "Search global races easily on our interactive map, join event communities.",
-  },
-  {
-    id: "3",
-    title: "Istanbul Marathon",
-    location: "New York, United Kingdom",
-    date: "8-10 Aug, 2025",
-    category: "Swimming",
-    price: 100,
-    currency: "USD",
-    imageUrl: event,
-    description:
-      "Search global races easily on our interactive map, join event communities.",
-  },
-  {
-    id: "4",
-    title: "Glendalough Lap of the Gap Marathon",
-    location: "New York, United Kingdom",
-    date: "8-10 Aug, 2025",
-    category: "Cycling",
-    price: 100,
-    currency: "USD",
-    imageUrl: event,
-    description:
-      "Search global races easily on our interactive map, join event communities.",
-  },
-  {
-    id: "5",
-    title: "Glendalough Lap of the Gap Marathon",
-    location: "New York, United Kingdom",
-    date: "8-10 Aug, 2025",
-    category: "Cycling",
-    price: 100,
-    currency: "USD",
-    imageUrl: event,
-    description:
-      "Search global races easily on our interactive map, join event communities.",
-  },
-  {
-    id: "6",
-    title: "Glendalough Lap of the Gap Marathon",
-    location: "New York, United Kingdom",
-    date: "8-10 Aug, 2025",
-    category: "Cycling",
-    price: 100,
-    currency: "USD",
-    imageUrl: event,
-    description:
-      "Search global races easily on our interactive map, join event communities.",
-  },
-];
+import { useGetAllApprovedEventsQuery } from "@/redux/features/event/eventApi";
 
 const UpcomingEvents: React.FC = () => {
   const prevRef = useRef<HTMLButtonElement | null>(null);
   const nextRef = useRef<HTMLButtonElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const swiperRef = useRef<any>(null);
+
+  const { data: approvedEvent } = useGetAllApprovedEventsQuery({});
+  console.log(approvedEvent);
 
   useEffect(() => {
     if (
@@ -131,8 +60,8 @@ const UpcomingEvents: React.FC = () => {
               nextEl: nextRef.current,
             }}
           >
-            {events.map((event) => (
-              <SwiperSlide key={event.id}>
+            {approvedEvent?.data?.data?.map((event: Event) => (
+              <SwiperSlide key={event?._id?.$oid}>
                 <EventCard event={event} />
               </SwiperSlide>
             ))}

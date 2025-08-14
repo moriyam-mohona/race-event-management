@@ -1,14 +1,15 @@
 import { StaticImageData } from "next/image";
 
 export interface Event {
-  id: string;
+  _id: { $oid: string };
   title: string;
-  location: string;
-  date: string;
+  address: string;
+  startDate: { $date: string };
+  endDate: { $date: string };
   category: string;
   price: number;
   currency: string;
-  imageUrl: string | StaticImageData;
+  eventImages: (string | StaticImageData)[];
   description: string;
 }
 export interface Expo {
