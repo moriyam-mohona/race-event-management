@@ -1,17 +1,56 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MapPin, List } from "lucide-react";
 import ListView from "./EventViews/ListView";
 import MapView from "./EventViews/MapView";
+import { useSearchParams } from "next/navigation";
+import { Pagination } from "antd";
+import { useGetAllApprovedEventsQuery } from "@/redux/features/event/eventApi";
 
-// interface EventContentProps {
-//   filters: FilterState;
-// }
-
-const EventContent: React.FC<any> = ({ data }: { data: any }) => {
+const EventContent: React.FC<any> = () => {
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+  const searchParams = useSearchParams();
+
+  const raceType = searchParams.get("raceType");
+  console.log("raceType", raceType);
+
+  const [objectQuery, setObjectQuery] = useState<any>([
+    { name: "page", value: page },
+    { name: "limit", value: pageSize },
+    { name: "active_status", value: "active" },
+  ]);
+
+  useEffect(() => {
+    setPage(1);
+    setPageSize(5);
+  }, [raceType]);
+
+  useEffect(() => {
+    const queryParams: any[] = [
+      { name: "page", value: page },
+      { name: "limit", value: pageSize },
+    ];
+
+    if (raceType) {
+      queryParams.push({ name: "raceType", value: raceType });
+    }
+
+    setObjectQuery(queryParams);
+  }, [raceType, page, pageSize]);
+
+  const { data: approvedEvent } = useGetAllApprovedEventsQuery({
+    queryObj: objectQuery,
+  });
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPage(page);
+    setPageSize(pageSize);
+  };
+  const totalCount = approvedEvent?.data?.meta?.total || 0;
 
   // Filter events based on the provided filters
   // const filteredEvents = filterEvents(raceEvents, filters);
@@ -48,54 +87,21 @@ const EventContent: React.FC<any> = ({ data }: { data: any }) => {
 
       <div className="h-[calc(100%-4rem)]">
         {viewMode === "list" ? (
-          <ListView events={data} />
+          <ListView events={approvedEvent} />
         ) : (
-          <MapView events={data} />
+          <MapView events={approvedEvent} />
         )}
+        <div className="p-4 w-full flex flex-wrap justify-center">
+          <Pagination
+            current={page}
+            pageSize={pageSize}
+            total={totalCount}
+            onChange={handlePaginationChange}
+          />
+        </div>
       </div>
     </div>
   );
 };
-
-// Helper function to filter events based on selected filters
-// function data(events: RaceEvent[], filters: FilterState): RaceEvent[] {
-//   return events.filter((event) => {
-//     // Filter by categories if any are selected
-//     if (
-//       filters.categories.length > 0 &&
-//       !filters.categories.includes(event.category)
-//     ) {
-//       return false;
-//     }
-
-//     // Filter by race type
-//     if (
-//       filters.raceType.hybrid ||
-//       filters.raceType.onSite ||
-//       filters.raceType.virtual
-//     ) {
-//       // This is a simplification - in a real app you'd have a race type field on the event
-//       const isVirtual = event.location.city === "Any Location";
-
-//       if (filters.raceType.virtual && !isVirtual) return false;
-//       if (filters.raceType.onSite && isVirtual) return false;
-//       // Hybrid is more complex and would need specific logic
-//     }
-
-//     // Filter by location (simple string matching for demo)
-//     if (
-//       filters.country &&
-//       !event.location.country
-//         .toLowerCase()
-//         .includes(filters.country.toLowerCase())
-//     ) {
-//       return false;
-//     }
-
-//     // More complex filters would go here (distance, date, etc.)
-
-//     return true;
-//   });
-// }
 
 export default EventContent;
