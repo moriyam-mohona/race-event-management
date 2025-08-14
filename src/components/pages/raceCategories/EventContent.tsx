@@ -8,6 +8,7 @@ import MapView from "./EventViews/MapView";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "antd";
 import { useGetAllApprovedEventsQuery } from "@/redux/features/event/eventApi";
+import Loading from "@/components/shared/Loading/Loading";
 
 const EventContent: React.FC<any> = () => {
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
@@ -42,7 +43,12 @@ const EventContent: React.FC<any> = () => {
     setObjectQuery(queryParams);
   }, [raceType, page, pageSize]);
 
-  const { data: approvedEvent } = useGetAllApprovedEventsQuery({
+  const {
+    data: approvedEvent,
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetAllApprovedEventsQuery({
     queryObj: objectQuery,
   });
 
@@ -58,6 +64,33 @@ const EventContent: React.FC<any> = () => {
   const toggleViewMode = () => {
     setViewMode(viewMode === "list" ? "map" : "list");
   };
+  if (isLoading || isFetching) return <Loading />;
+  if (isError) return <div className="text-center">Something went wrong</div>;
+  if (!approvedEvent?.data?.data?.length)
+    return (
+      <div className="flex flex-col items-center justify-center py-20 text-center text-gray-500">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-16 w-16 mb-4 text-gray-300 animate-pulse"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 17v-2a4 4 0 018 0v2m1 0a2 2 0 002 2H6a2 2 0 002-2m6-10V7a4 4 0 10-8 0v2"
+          />
+        </svg>
+        <h2 className="text-xl font-semibold text-gray-700 mb-2">
+          No Events Found
+        </h2>
+        <p className="text-gray-400">
+          Try adjusting your filters or check back later.
+        </p>
+      </div>
+    );
 
   return (
     <div className="bg-white rounded-lg shadow-sm border p-4 h-full">
@@ -97,6 +130,7 @@ const EventContent: React.FC<any> = () => {
             pageSize={pageSize}
             total={totalCount}
             onChange={handlePaginationChange}
+            disabled={isFetching}
           />
         </div>
       </div>
