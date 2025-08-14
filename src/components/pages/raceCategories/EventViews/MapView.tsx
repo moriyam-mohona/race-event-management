@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
@@ -5,9 +6,9 @@ import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
 import { MapPin, Calendar, Activity, Bookmark } from "lucide-react";
 import { RaceEvent } from "@/types/Common";
 
-interface MapViewProps {
-  events: RaceEvent[];
-}
+// interface MapViewProps {
+//   events: RaceEvent[];
+// }
 
 const containerStyle = {
   width: "100%",
@@ -19,7 +20,7 @@ const defaultCenter = {
   lng: 0,
 };
 
-const MapView: React.FC<MapViewProps> = ({ events }) => {
+const MapView: React.FC<any> = ({ events }) => {
   const [selectedEvent, setSelectedEvent] = useState<RaceEvent | null>(null);
 
   const { isLoaded } = useJsApiLoader({
@@ -51,12 +52,13 @@ const MapView: React.FC<MapViewProps> = ({ events }) => {
           ],
         }}
       >
-        {events.map((event) => (
+        {/* {events?.data?.data.map((event: any) => ( */}
+        {events?.data?.data.map((event: any) => (
           <Marker
-            key={event.id}
+            key={event?.id}
             position={{
-              lat: event.location.coordinates[1],
-              lng: event.location.coordinates[0],
+              lat: event?.location?.coordinates[1],
+              lng: event?.location?.coordinates[0],
             }}
             onClick={() => setSelectedEvent(event)}
           />

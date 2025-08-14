@@ -20,7 +20,7 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 
 const CreateEventDetails = () => {
   const dispatch = useAppDispatch();
-  const eventData = useAppSelector((state) => state.event);
+  const eventData = useAppSelector((state) => state?.event);
 
   type Faq = { question: string; answer: string };
 
