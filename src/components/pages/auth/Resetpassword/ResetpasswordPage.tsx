@@ -115,7 +115,7 @@ const ResetpasswordPage = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600 cursor-pointer"
                 tabIndex={-1}
               >
                 {showConfirmPassword ? (
@@ -129,7 +129,7 @@ const ResetpasswordPage = () => {
 
           <Button
             type="submit"
-            className="w-full bg-primary hover:bg-primary/80 h-10 text-sm md:text-base text-white"
+            className="w-full bg-primary hover:bg-primary/80 h-10 text-sm md:text-base text-white cursor-pointer"
           >
             Submit
           </Button>

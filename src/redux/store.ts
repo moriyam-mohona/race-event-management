@@ -15,8 +15,6 @@ import {
   REHYDRATE,
 } from "redux-persist";
 import authReducer from "./features/auth/authSlice";
-import bookingReducer from "./features/booking/bookingSlice";
-import eventReducer from "./features/event/eventSlice";
 import { baseApi } from "./api/baseApi";
 
 const createNoopStorage = () => {
@@ -42,29 +40,14 @@ const persistAuthConfig = {
   key: "auth",
   storage,
 };
-const persistBookingConfig = {
-  key: "booking",
-  storage,
-};
-const persistEventConfig = {
-  key: "event",
-  storage,
-};
 
 const persistedAuthReducer = persistReducer(persistAuthConfig, authReducer);
-const persistedBookingReducer = persistReducer(
-  persistBookingConfig,
-  bookingReducer
-);
-const persistedEventReducer = persistReducer(persistEventConfig, eventReducer);
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       [baseApi.reducerPath]: baseApi.reducer,
       auth: persistedAuthReducer,
-      booking: persistedBookingReducer,
-      event: persistedEventReducer,
     },
     middleware: (getDefaultMiddlewares) =>
       getDefaultMiddlewares({

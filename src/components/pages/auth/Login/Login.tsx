@@ -142,7 +142,7 @@ const Login = () => {
 
             <Button
               type="submit"
-              className="w-full bg-primary hover:bg-primary/80 h-12 text-lg text-white"
+              className="w-full bg-primary hover:bg-primary/80 h-12 text-lg text-white cursor-pointer"
             >
               {isLoading ? <ButtonLoading /> : "Login"}
             </Button>

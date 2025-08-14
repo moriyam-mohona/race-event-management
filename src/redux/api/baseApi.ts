@@ -7,23 +7,23 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
 import { logout, setUser } from "../features/auth/authSlice";
-import Swal from "sweetalert2";
+// import Swal from "sweetalert2";
 import { signOut } from "next-auth/react";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
-    const accessToken = (getState() as RootState).auth.accessToken;
+    const access_token = (getState() as RootState).auth.access_token;
     headers.set("accept", "application/json");
-    if (accessToken) {
-      headers.set("Authorization", `${accessToken}`);
+    if (access_token) {
+      headers.set("authorization", `${access_token}`);
     }
     return headers;
   },
 });
 
-const baseQueryWithrefreshToken: BaseQueryFn<
+const baseQueryWithRefreshToken: BaseQueryFn<
   string | FetchArgs,
   unknown,
   FetchBaseQueryError
@@ -31,24 +31,22 @@ const baseQueryWithrefreshToken: BaseQueryFn<
   let result = await baseQuery(args, api, extraOptions);
 
   if (result.error?.status === 401) {
+    const state = api.getState() as RootState;
+    const refreshToken = state.auth.refresh_token;
+    const accessToken = state.auth.access_token;
+
+    // ✅ Don't try to refresh if user is already logged out
+    if (!refreshToken || !accessToken) {
+      api.dispatch(logout());
+      return result;
+    }
+
     try {
-      const refreshToken = (api.getState() as RootState).auth.refreshToken;
-
-      // if (!refreshToken) {
-      //   api.dispatch(logout());
-      //   Swal.fire({
-      //     icon: "error",
-      //     title: "Session Expired",
-      //     text: "Please login again to continue",
-      //   });
-      //   return result;
-      // }
-
-      // Make a request to refresh the token
+      // Try refreshing token
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh-token`,
         {
-          method: "POST",
+          method: "GET",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
@@ -59,34 +57,17 @@ const baseQueryWithrefreshToken: BaseQueryFn<
 
       const data = await res.json();
       if (data?.success) {
-        const user = (api.getState() as RootState).auth.user;
+        const user = state.auth.user;
         api.dispatch(
-          setUser({
-            user,
-            token: data?.data?.accessToken,
-            refreshToken: data?.data?.refreshToken,
-          })
+          setUser({ user, token: data.data.token, refresh_token: refreshToken })
         );
 
-        // Retry the original query with the new token
+        // Retry original query
         result = await baseQuery(args, api, extraOptions);
       } else {
-        Swal.fire({
-          icon: "error",
-          title: "Session Expired",
-          text: "Please login again to continue",
-          showConfirmButton: false,
-          showCancelButton: true,
-          cancelButtonText: "Stay Logged Out",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            api.dispatch(logout());
-            signOut();
-          } else if (result.isDismissed) {
-            api.dispatch(logout());
-            signOut();
-          }
-        });
+        // If refresh failed and user is still "logged in"
+        api.dispatch(logout());
+        signOut();
       }
     } catch (error) {
       console.error("Error during token refresh:", error);
@@ -98,7 +79,7 @@ const baseQueryWithrefreshToken: BaseQueryFn<
 
 export const baseApi = createApi({
   reducerPath: "baseApi",
-  baseQuery: baseQueryWithrefreshToken,
+  baseQuery: baseQueryWithRefreshToken,
   tagTypes: ["user", "example"],
   endpoints: () => ({}),
 });

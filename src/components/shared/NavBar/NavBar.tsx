@@ -8,11 +8,13 @@ import Link from "next/link";
 import { ProgressProvider } from "@bprogress/next/app";
 import Image from "next/image";
 import logo from "@/assets/logo.png";
-import { useAppSelector } from "@/redux/hooks";
-import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
+import Swal from "sweetalert2";
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const user = useAppSelector(selectCurrentUser);
+  const dispatch = useAppDispatch();
   console.log(user);
 
   // Navigation links
@@ -22,6 +24,38 @@ const Navbar = () => {
     { name: "Contact", href: "/contact-us" },
     { name: "Community", href: "/community" },
   ];
+
+  const handleLogout = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Log out",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        // Redux logout
+        await dispatch(logout());
+
+        Swal.fire({
+          title: "Logged out!",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      } catch (error) {
+        console.error("Logout failed:", error);
+        Swal.fire({
+          title: "Error!",
+          text: "Logout failed. Please try again.",
+          icon: "error",
+        });
+      }
+    }
+  };
 
   return (
     <ProgressProvider color="#0B7077">
@@ -90,7 +124,10 @@ const Navbar = () => {
 
                   {user ? (
                     <>
-                      <button className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full">
+                      <button
+                        onClick={handleLogout}
+                        className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full"
+                      >
                         Logout
                       </button>
                     </>
@@ -126,18 +163,32 @@ const Navbar = () => {
 
           {/* Search and Login */}
           <div className="hidden lg:flex items-center space-x-3">
-            <Link
-              href="/auth/login"
-              className="text-base hover:text-primary hover:font-semibold hover:underline border-r-2 pr-3 border-black "
-            >
-              Login
-            </Link>
-            <Link
-              href="/auth/register"
-              className="text-base hover:text-primary hover:font-semibold hover:underline"
-            >
-              Sign up
-            </Link>
+            {user ? (
+              <>
+                <button
+                  onClick={handleLogout}
+                  className="text-base hover:text-primary hover:font-semibold hover:underline border-r-2 pr-3 border-black "
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                {" "}
+                <Link
+                  href="/auth/login"
+                  className="text-base hover:text-primary hover:font-semibold hover:underline border-r-2 pr-3 border-black "
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/auth/register"
+                  className="text-base hover:text-primary hover:font-semibold hover:underline"
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
             <Link
               href="/dashboard/vendor/create-event"
               className="text-base bg-primary hover:bg-primary/80 text-white py-3 px-5 ml-3 rounded-full text-center transition-colors"

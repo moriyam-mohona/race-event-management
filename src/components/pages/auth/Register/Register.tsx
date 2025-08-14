@@ -260,7 +260,7 @@ const Register = () => {
                 </div>
 
                 <Button
-                  className="w-full h-12 text-sm md:text-lg bg-primary text-white"
+                  className="w-full h-12 text-sm md:text-lg bg-primary text-white cursor-pointer"
                   onClick={handleNext}
                 >
                   Next
@@ -356,13 +356,13 @@ const Register = () => {
                     type="button"
                     variant="outline"
                     onClick={handlePrevious}
-                    className="w-full h-12 text-sm md:text-base hover:bg-primary hover:text-white bg-transparent border border-primary text-primary"
+                    className="w-full h-12 text-sm md:text-base hover:bg-primary hover:text-white bg-transparent border border-primary text-primary cursor-pointer"
                   >
                     Previous
                   </Button>
                   <Button
                     type="submit"
-                    className="w-full h-12 text-sm md:text-lg bg-primary text-white"
+                    className="w-full h-12 text-sm md:text-lg bg-primary text-white cursor-pointer"
                   >
                     {isLoading ? <ButtonLoading /> : "Sign Up"}
                   </Button>

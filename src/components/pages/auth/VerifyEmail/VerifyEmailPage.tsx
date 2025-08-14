@@ -179,7 +179,7 @@ const VerifyEmailPage = () => {
 
             <Button
               type="submit"
-              className="w-full bg-primary hover:bg-primary/80 h-12 text-sm md:text-base text-white"
+              className="w-full bg-primary hover:bg-primary/80 h-12 text-sm md:text-base text-white cursor-pointer"
             >
               Submit
             </Button>

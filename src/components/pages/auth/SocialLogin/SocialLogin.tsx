@@ -17,11 +17,11 @@ const SocialLogin = ({ provider }: { provider: string }) => {
         onClick={() => handleSocialLogin(provider)}
       >
         {provider === "Google" ? (
-          <div className="bg-white w-6 h-6 flex items-center justify-center rounded-full">
+          <div className="bg-white w-6 h-6 flex items-center justify-center rounded-full cursor-pointer">
             <FcGoogle />
           </div>
         ) : (
-          <div className="bg-[#4C6ABE] w-6 h-6 flex items-center justify-center rounded-full">
+          <div className="bg-[#4C6ABE] w-6 h-6 flex items-center justify-center rounded-full cursor-pointer">
             <TfiFacebook className="text-white " />
           </div>
         )}

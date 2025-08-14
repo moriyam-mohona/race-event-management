@@ -6,6 +6,9 @@ import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
 import { useForgotPasswordMutation } from "@/redux/features/auth/authApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import Link from "next/link";
+import Image from "next/image";
+import logo from "@/assets/logo.png";
 
 interface ForgotPasswordData {
   email: string;
@@ -42,7 +45,16 @@ const ForgotPasswordPage = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen p-4">
+    <div className="flex flex-col gap-5 justify-center items-center min-h-screen p-4">
+      <Link href="/">
+        <Image
+          src={logo}
+          alt="logo"
+          width={1000}
+          height={1000}
+          className="h-18 w-24"
+        />
+      </Link>{" "}
       <div className="w-full max-w-lg bg-white rounded-lg border p-8">
         <h1 className="text-center mb-4 text-2xl font-semibold">
           Enter Your Email
@@ -66,7 +78,7 @@ const ForgotPasswordPage = () => {
 
           <Button
             type="submit"
-            className="w-full bg-primary hover:bg-primary/80 h-10 text-sm md:text-base text-white"
+            className="w-full bg-primary hover:bg-primary/80 h-10 text-sm md:text-base text-white cursor-pointer"
           >
             Submit
           </Button>
