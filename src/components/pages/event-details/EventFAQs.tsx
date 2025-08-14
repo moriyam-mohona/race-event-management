@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { T_Event } from "@/types/Events";
 
-export function EventFAQs({ faqs }: T_Event) {
+export function EventFAQs({ data }: { data: T_Event }) {
   const [openFaq, setOpenFaq] = useState<number | null>(1);
 
   const toggleFaq = (id: number) => {
@@ -18,23 +18,23 @@ export function EventFAQs({ faqs }: T_Event) {
       </h2>
 
       <div className="space-y-3">
-        {faqs.map((faq) => (
-          <div key={faq.id} className="border rounded-md overflow-hidden">
+        {data?.frequentlyAskedQuestions.map((faq, index) => (
+          <div key={index} className="border rounded-md overflow-hidden">
             <button
               className="flex justify-between items-center w-full p-4 text-left"
-              onClick={() => toggleFaq(faq.id)}
+              onClick={() => toggleFaq(index)}
             >
               <span className="font-medium text-green-700">
-                {faq.id}. {faq.question}
+                {index + 1}. {faq.question}
               </span>
-              {openFaq === faq.id ? (
+              {openFaq === index ? (
                 <ChevronUp className="h-5 w-5 text-green-700" />
               ) : (
                 <ChevronDown className="h-5 w-5 text-green-700" />
               )}
             </button>
 
-            {openFaq === faq.id && (
+            {openFaq === index && (
               <div className="p-4 pt-0 text-gray-700">{faq.answer}</div>
             )}
           </div>

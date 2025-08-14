@@ -1,42 +1,55 @@
-import { StaticImageData } from "next/image";
-
-interface Gear {
+export interface Gear {
   id: string;
-  name: string;
-  type: string;
-  image: string | StaticImageData;
+  gearTitle: string;
+  categoryName: string;
+  price: number;
+  sizes: string[];
+  gearImages: string[];
+  colors: string[];
+  userId: string;
+  eventId: string;
+  createdAt: string;
+  updatedAt: string;
 }
+
 interface FAQ {
-  id: number;
   question: string;
   answer: string;
 }
 
-export interface T_Event {
-  title: string;
-  eventImage: string | StaticImageData;
-  location: {
-    city: string;
-    country: string;
-  };
-  date: string;
-  eventType: string;
-  venueType: string;
-  participants: string;
-  season: string;
-  price: string;
-  registration: {
-    hostLocation: number;
-    hostCountry: number;
-    entryFee: number;
-  };
-  description: string;
-  startAddress: string;
-  finishAddress: string;
+export interface Community {
   id: string;
-  // name: string;
+}
+
+export interface T_Event {
+  id: string;
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  time: string;
+  eventStatus: string;
+  continent: string;
+  country: string;
+  region: string;
+  address: string;
+  location: Location;
+  category: string;
   type: string;
-  image: string | StaticImageData;
-  gears: Gear[];
-  faqs: FAQ[];
+  venueType: string;
+  season: string;
+  size: number;
+  price: number;
+  startAddress: string;
+  endAddress: string;
+  distance: number;
+  ageLimit: string;
+  frequentlyAskedQuestions: FAQ[];
+  eventImages: string[];
+  eventUrl: string | null;
+  userId: string;
+  createdAt: string;
+  updatedAt: string;
+  Gear: Gear[];
+  Community: Community;
 }

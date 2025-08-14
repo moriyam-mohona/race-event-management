@@ -20,7 +20,15 @@ const eventApi = baseApi.injectEndpoints({
       },
       providesTags: ["event"],
     }),
+    getSingleEvent: builder.query({
+      query: (id) => ({
+        url: `admin/get-event-details-by-id/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["event"],
+    }),
   }),
 });
 
-export const { useGetAllApprovedEventsQuery } = eventApi;
+export const { useGetAllApprovedEventsQuery, useGetSingleEventQuery } =
+  eventApi;

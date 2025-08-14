@@ -1,4 +1,3 @@
-import { Bookmark } from "lucide-react";
 import Image from "next/image";
 import { SlCalender } from "react-icons/sl";
 import { GiCycling } from "react-icons/gi";
@@ -8,28 +7,27 @@ import { TiWeatherWindy } from "react-icons/ti";
 import { IoLocationOutline } from "react-icons/io5";
 import { T_Event } from "@/types/Events";
 import Link from "next/link";
+import { format, isSameMonth, isSameYear } from "date-fns";
 
-export function EventHeader({
-  title,
-  eventImage,
-  location,
-  date,
-  eventType,
-  venueType,
-  participants,
-  season,
-  price,
-  registration,
-}: T_Event) {
+// export function EventHeader({ title, eventImage, registration }: T_Event) {
+export function EventHeader({ data }: { data: T_Event }) {
+  const start = new Date(data?.startDate);
+  const end = new Date(data?.endDate);
+
+  const displayDate = isSameYear(start, end)
+    ? isSameMonth(start, end)
+      ? `${format(start, "d")}-${format(end, "d MMM, yyyy")}` // 8-10 Aug, 2025
+      : `${format(start, "d MMM")} - ${format(end, "d MMM, yyyy")}` // 28 Aug - 2 Sep, 2025
+    : `${format(start, "d MMM, yyyy")} - ${format(end, "d MMM, yyyy")}`;
   return (
     <div className="flex flex-col md:flex-row gap-6 mb-8">
       <div className="md:w-1/3">
         <Image
-          src={eventImage}
-          alt={title}
+          src={data?.eventImages[0] || "/placeholder.svg"}
+          alt={data?.title}
           width={1000}
           height={1000}
-          className="w-[486px] h-[443px] rounded-lg object-cover"
+          className="bg-gray-100 w-[486px] h-[443px] rounded-lg object-cover"
         />
       </div>
       <div className="md:w-2/3 space-y-4">
@@ -37,68 +35,72 @@ export function EventHeader({
           <div className="flex items-center gap-4">
             <p className="font-semibold">Registered From : </p>
             <p className="text-gray-600">
-              Your location ·
+              Location ·
               <span className="font-semibold text-black">
                 {" "}
-                {registration.hostLocation} |{" "}
+                {data?.address} |{" "}
               </span>
             </p>
             <p className="text-gray-600">
               Hosted country ·
               <span className="font-semibold text-black">
                 {" "}
-                {registration.hostCountry} |{" "}
+                {data?.country} |{" "}
               </span>
             </p>
             <p className="text-gray-600">
               Entryfy ·{" "}
               <span className="font-semibold text-black">
-                {registration.entryFee}
+                {data?.eventStatus}
               </span>
             </p>
           </div>
         </div>
 
         <div className="flex justify-between items-center ">
-          <h1 className="text-3xl font-semibold">{title}</h1>
-          <Bookmark className="h-6 w-6" />
+          <h1 className="text-3xl font-semibold">{data?.title}</h1>
         </div>
 
         <div className="mt-8 space-y-2">
           {/* Location  */}
           <div className="flex items-center gap-3">
             <IoLocationOutline className="w-6 h-6 text-secondary/80" />
-
             <span className="font-medium text-gray-600">
-              {location.city}, {location.country}
+              {data?.address}, {data?.region}, {data?.country},{" "}
+              {data?.continent}
             </span>
           </div>
           {/* Date  */}
           <div className="flex items-center gap-4">
             <SlCalender className="w-5 h-5 text-secondary/80" />
-            <span className="font-medium text-gray-600">{date}</span>
+            <span className="font-medium text-gray-600">{displayDate}</span>
           </div>
+
           <div className="flex items-center gap-4">
             <GiCycling className="w-5 h-5 text-secondary/80" />
-            <span className="font-medium text-gray-600">{eventType}</span>
+            <span className="font-medium text-gray-600">{data?.category}</span>
           </div>
           <div className="flex items-center gap-4">
             <TiWeatherWindy className="w-5 h-5 text-secondary/80" />
 
-            <span className="font-medium text-gray-600">{season}</span>
+            <span className="font-medium text-gray-600">{data?.venueType}</span>
           </div>
           <div className="flex items-center gap-4">
             <PiMountainsLight className="w-5 h-5 text-secondary/80" />
 
-            <span className="font-medium text-gray-600">{venueType}</span>
+            <span className="font-medium text-gray-600">
+              {data?.size} runners
+            </span>
           </div>
           <div className="flex items-center gap-4">
             <SiStreamrunners className="w-5 h-5 text-secondary/80" />
-            <span className="font-medium text-gray-600">{participants}</span>
+            <span className="font-medium text-gray-600">{data?.season}</span>
           </div>
 
           <div className="mt-10">
-            <p className="text-xl font-semibold text-gray-700">{price}</p>
+            <p className="text-xl font-semibold text-gray-700">
+              ${data?.price} USD
+            </p>
           </div>
 
           <div className="flex gap-3 mt-4">
