@@ -28,26 +28,8 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
           width={1000}
           height={1000}
           priority
-          className="w-full h-48 object-cover"
+          className="w-full bg-gray-50/70 h-48 shadow object-cover"
         />
-        <button
-          className="absolute top-4 right-4 p-2 bg-white/70 rounded-full hover:bg-white transition-colors duration-200"
-          aria-label="Bookmark event"
-        >
-          <svg
-            className="w-5 h-5 text-gray-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"
-            />
-          </svg>
-        </button>
       </div>
 
       <div className="px-5 py-8">
