@@ -42,11 +42,7 @@ export interface FilterState {
     max: string;
     unit: string;
   };
-  date: {
-    day: string;
-    month: string;
-    year: string;
-  };
+  date: string;
   continent: string;
   country: string;
   region: string;

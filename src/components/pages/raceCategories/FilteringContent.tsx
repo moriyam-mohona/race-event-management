@@ -23,11 +23,7 @@ const FilteringContent = () => {
       max: "",
       unit: "km | har | min | fit",
     },
-    date: {
-      day: "",
-      month: "",
-      year: "",
-    },
+    date: "",
     continent: "",
     country: "",
     region: "",
@@ -45,9 +41,7 @@ const FilteringContent = () => {
     if (newFilters.distance.max)
       params.set("maxDistance", newFilters.distance.max);
     if (newFilters.distance.unit) params.set("unit", newFilters.distance.unit);
-    if (newFilters.date.day) params.set("day", newFilters.date.day);
-    if (newFilters.date.month) params.set("month", newFilters.date.month);
-    if (newFilters.date.year) params.set("year", newFilters.date.year);
+    if (newFilters.date) params.set("date", newFilters.date);
     if (newFilters.continent) params.set("continent", newFilters.continent);
     if (newFilters.country) params.set("country", newFilters.country);
     if (newFilters.region) params.set("region", newFilters.region);
@@ -106,14 +100,9 @@ const FilteringContent = () => {
       />
 
       <DateFilter
-        day={filters.date.day}
-        month={filters.date.month}
-        year={filters.date.year}
-        onDateChange={(field, value) =>
-          handleFilterChange({
-            ...filters,
-            date: { ...filters.date, [field]: value },
-          })
+        date={filters.date}
+        onDateChange={(dateString) =>
+          handleFilterChange({ ...filters, date: dateString })
         }
       />
 
