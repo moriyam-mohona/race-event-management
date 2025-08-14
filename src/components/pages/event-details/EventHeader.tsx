@@ -5,20 +5,25 @@ import { PiMountainsLight } from "react-icons/pi";
 import { SiStreamrunners } from "react-icons/si";
 import { TiWeatherWindy } from "react-icons/ti";
 import { IoLocationOutline } from "react-icons/io5";
-import { T_Event } from "@/types/Events";
+// import { T_Event } from "@/types/Events";
 import Link from "next/link";
 import { format, isSameMonth, isSameYear } from "date-fns";
 
 // export function EventHeader({ title, eventImage, registration }: T_Event) {
-export function EventHeader({ data }: { data: T_Event }) {
-  const start = new Date(data?.startDate);
-  const end = new Date(data?.endDate);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function EventHeader({ data }: { data: any }) {
+  const start = data?.startDate ? new Date(data.startDate) : null;
+  const end = data?.endDate ? new Date(data.endDate) : null;
 
-  const displayDate = isSameYear(start, end)
-    ? isSameMonth(start, end)
-      ? `${format(start, "d")}-${format(end, "d MMM, yyyy")}` // 8-10 Aug, 2025
-      : `${format(start, "d MMM")} - ${format(end, "d MMM, yyyy")}` // 28 Aug - 2 Sep, 2025
-    : `${format(start, "d MMM, yyyy")} - ${format(end, "d MMM, yyyy")}`;
+  let displayDate = "";
+  if (start && end) {
+    displayDate = isSameYear(start, end)
+      ? isSameMonth(start, end)
+        ? `${format(start, "d")}-${format(end, "d MMM, yyyy")}` // 8-10 Aug, 2025
+        : `${format(start, "d MMM")} - ${format(end, "d MMM, yyyy")}` // 28 Aug - 2 Sep, 2025
+      : `${format(start, "d MMM, yyyy")} - ${format(end, "d MMM, yyyy")}`;
+  }
+
   return (
     <div className="flex flex-col md:flex-row gap-6 mb-8">
       <div className="md:w-1/3">
@@ -73,7 +78,9 @@ export function EventHeader({ data }: { data: T_Event }) {
           {/* Date  */}
           <div className="flex items-center gap-4">
             <SlCalender className="w-5 h-5 text-secondary/80" />
-            <span className="font-medium text-gray-600">{displayDate}</span>
+            <span className="font-medium text-gray-600">
+              {displayDate || "Date not available"}
+            </span>
           </div>
 
           <div className="flex items-center gap-4">
