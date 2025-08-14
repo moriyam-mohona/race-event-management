@@ -17,12 +17,13 @@ const EventContent: React.FC<any> = () => {
   const searchParams = useSearchParams();
 
   const raceType = searchParams.get("raceType");
-  console.log("raceType", raceType);
+  const category = searchParams.get("category");
+  const continent = searchParams.get("continent");
+  const country = searchParams.get("country");
 
   const [objectQuery, setObjectQuery] = useState<any>([
     { name: "page", value: page },
     { name: "limit", value: pageSize },
-    { name: "active_status", value: "active" },
   ]);
 
   useEffect(() => {
@@ -39,9 +40,18 @@ const EventContent: React.FC<any> = () => {
     if (raceType) {
       queryParams.push({ name: "raceType", value: raceType });
     }
+    if (category) {
+      queryParams.push({ name: "category", value: category });
+    }
+    if (continent) {
+      queryParams.push({ name: "continent", value: continent });
+    }
+    if (country) {
+      queryParams.push({ name: "country", value: country });
+    }
 
     setObjectQuery(queryParams);
-  }, [raceType, page, pageSize]);
+  }, [raceType, category, continent, country, page, pageSize]);
 
   const {
     data: approvedEvent,
