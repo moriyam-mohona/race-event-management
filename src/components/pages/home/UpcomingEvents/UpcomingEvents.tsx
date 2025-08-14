@@ -16,11 +16,10 @@ import { useGetAllApprovedEventsQuery } from "@/redux/features/event/eventApi";
 const UpcomingEvents: React.FC = () => {
   const prevRef = useRef<HTMLButtonElement | null>(null);
   const nextRef = useRef<HTMLButtonElement | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const swiperRef = useRef<any>(null);
 
+  // Fetch Data
   const { data: approvedEvent } = useGetAllApprovedEventsQuery({});
-  console.log(approvedEvent);
 
   useEffect(() => {
     if (
