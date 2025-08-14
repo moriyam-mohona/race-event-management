@@ -17,7 +17,7 @@ const baseQuery = fetchBaseQuery({
     const accessToken = (getState() as RootState).auth.accessToken;
     headers.set("accept", "application/json");
     if (accessToken) {
-      headers.set("authorization", `Bearer ${accessToken}`);
+      headers.set("Authorization", `${accessToken}`);
     }
     return headers;
   },
@@ -46,13 +46,13 @@ const baseQueryWithrefreshToken: BaseQueryFn<
 
       // Make a request to refresh the token
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}refresh-token`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh-token`,
         {
           method: "POST",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
-            authorization: `Bearer ${refreshToken}`,
+            authorization: `${refreshToken}`,
           },
         }
       );
@@ -64,7 +64,7 @@ const baseQueryWithrefreshToken: BaseQueryFn<
           setUser({
             user,
             token: data?.data?.accessToken,
-            refreshToken: refreshToken,
+            refreshToken: data?.data?.refreshToken,
           })
         );
 

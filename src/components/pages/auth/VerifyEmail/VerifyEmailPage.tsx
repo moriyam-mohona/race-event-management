@@ -21,6 +21,7 @@ interface DecodedUser extends JwtPayload {
 const VerifyEmailPage = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
+  const page = searchParams.get("page");
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -31,6 +32,7 @@ const VerifyEmailPage = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   // const router = useRouter();
+
   const handleInputChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return;
     const newCode = [...code];
@@ -90,18 +92,22 @@ const VerifyEmailPage = () => {
       if (response?.data?.success) {
         console.log(response);
         const user = (await verifyToken(
-          response?.data?.data?.token
+          response?.data?.data?.accessToken
         )) as DecodedUser;
         console.log(user);
         await dispatch(
           setUser({
             user: user,
-            access_token: response?.data?.data?.token,
-            refresh_token: response?.data?.data?.refresh_token,
+            access_token: response?.data?.data?.accessToken,
+            refresh_token: response?.data?.data?.refreshToken,
           })
         );
         // reset();
-        router.push("/");
+        if (page === "register") {
+          router.push("/");
+        } else {
+          router.push("/auth/reset-password");
+        }
       }
 
       // router.push("/auth/login");

@@ -111,8 +111,10 @@ const Register = () => {
       return register(dataToSUbmit);
     });
     if (response?.data?.success && response?.data?.data?.isVerified === false) {
-      const email = encodeURIComponent(response?.data?.data?.email);
-      router.push(`/auth/verify-email?email=${email}`);
+      const email = response?.data?.data?.email; // keep raw email here
+      router.push(
+        `/auth/verify-email?email=${encodeURIComponent(email)}&page=register`
+      );
     }
 
     console.log(response);

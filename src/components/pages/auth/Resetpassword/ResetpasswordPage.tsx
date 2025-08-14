@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useResetPasswordMutation } from "@/redux/features/auth/authApi";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 
 interface LoginData {
   password: string;
@@ -12,6 +14,8 @@ interface LoginData {
 }
 
 const ResetpasswordPage = () => {
+  const [resetPassword] = useResetPasswordMutation();
+
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -29,7 +33,7 @@ const ResetpasswordPage = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     const { password, confirmPassword } = loginData;
@@ -38,7 +42,18 @@ const ResetpasswordPage = () => {
       setPasswordError("Passwords do not match");
       return;
     }
-    router.push("/auth/login");
+
+    const data = {
+      password: loginData.password,
+    };
+
+    const response = await handleAsyncWithToast(async () => {
+      return resetPassword(data);
+    });
+
+    if (response?.data?.success) {
+      router.push("/auth/login");
+    }
     console.log("Password:", password);
     // Proceed with password reset logic here
   };

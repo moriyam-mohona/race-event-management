@@ -16,7 +16,7 @@ const authApi = baseApi.injectEndpoints({
       query: (userInfo) => {
         console.log({ userInfo });
         return {
-          url: "forgot-password",
+          url: "/auth/forget-password",
           method: "POST",
           body: userInfo,
         };
@@ -27,7 +27,7 @@ const authApi = baseApi.injectEndpoints({
       query: (userInfo) => {
         console.log({ userInfo });
         return {
-          url: "reset-password",
+          url: "auth/reset-password",
           method: "POST",
           body: userInfo,
         };

@@ -4,12 +4,15 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useRouter } from "next/navigation";
+import { useForgotPasswordMutation } from "@/redux/features/auth/authApi";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 
 interface ForgotPasswordData {
   email: string;
 }
 
 const ForgotPasswordPage = () => {
+  const [forgotPassword] = useForgotPasswordMutation();
   const router = useRouter();
   const [emailData, setEmailData] = useState<ForgotPasswordData>({
     email: "",
@@ -23,10 +26,19 @@ const ForgotPasswordPage = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Email", emailData);
-    router.push("/auth/reset-password");
+    const response = await handleAsyncWithToast(async () => {
+      return forgotPassword(emailData);
+    });
+    if (response?.data?.success) {
+      router.push(
+        `/auth/verify-email?email=${encodeURIComponent(
+          emailData.email
+        )}&page=forgetpass`
+      );
+    }
   };
 
   return (
