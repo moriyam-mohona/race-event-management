@@ -31,7 +31,7 @@ const UpdatePassword = () => {
   };
 
   return (
-    <div className="bg-white border rounded-lg shadow-lg p-6">
+    <div className="bg-white border rounded-lg shadow-lg p-6 mt-10">
       <MyFormWrapper
         onSubmit={handleSubmit}
         resolver={zodResolver(validationSchema)}

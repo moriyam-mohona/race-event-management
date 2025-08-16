@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,25 +17,29 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CalendarIcon, Eye, EyeOff } from "lucide-react";
-import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { format, parseISO } from "date-fns";
 import { T_User } from "@/types/User";
 import Image from "next/image";
 import profile from "@/assets/images/Human.png";
 import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation";
-import { useGetMeQuery } from "@/redux/features/auth/authApi";
+import {
+  useGetMeQuery,
+  useUpdateUserMutation,
+} from "@/redux/features/auth/authApi";
 import UpdatePassword from "./UpdatePassword";
-const UpdateUserProfile = () => {
-  const router = useRouter();
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+const UpdateUserProfile = () => {
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
+    null
+  );
+
   const [formData, setFormData] = useState<T_User>({
-    firstName: "",
-    lastName: "",
+    fullName: "",
     dateOfBirth: undefined,
     gender: "",
-    email: "demo@gmail.com",
     continent: "",
     country: "",
     region: "",
@@ -42,9 +47,28 @@ const UpdateUserProfile = () => {
   });
 
   const { data: getme } = useGetMeQuery({});
-  console.log(getme);
+  const [updateUser] = useUpdateUserMutation();
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // Populate default values when getme loads
+  useEffect(() => {
+    if (getme?.data) {
+      setFormData({
+        fullName: getme?.data?.fullName || "",
+        dateOfBirth: getme?.data?.dateOfBirth
+          ? parseISO(getme?.data?.dateOfBirth)
+          : undefined,
+        gender: getme?.data?.gender || "",
+        continent: getme?.data?.continent || "",
+        country: getme?.data?.country || "",
+        region: getme?.data?.region || "",
+        zipCode: getme?.data?.zipCode || "",
+      });
+      if (getme?.data?.profileImage) {
+        setProfileImagePreview(getme?.data?.profileImage);
+      }
+    }
+  }, [getme]);
+
   const handleInputChange = (field: keyof T_User, value: any) => {
     setFormData((prev) => ({
       ...prev,
@@ -55,23 +79,40 @@ const UpdateUserProfile = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setProfileImageFile(file);
       const reader = new FileReader();
       reader.onload = (event) => {
-        setProfileImage(event.target?.result as string);
+        setProfileImagePreview(event.target?.result as string);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Log the form data to the console
-    console.log("Profile Update Data:", {
-      ...formData,
-      profileImage: profileImage ? "Image data exists" : "No image uploaded",
-    });
 
-    // router.push("/dashboard/user/profile");
+    const payload = new FormData();
+
+    const data = {
+      fullName: formData.fullName,
+      dateOfBirth: formData.dateOfBirth
+        ? formData.dateOfBirth.toISOString()
+        : null,
+      gender: formData.gender.toUpperCase(),
+      continent: formData.continent,
+      country: formData.country,
+      region: formData.region,
+      zipCode: formData.zipCode,
+    };
+
+    payload.append("data", JSON.stringify(data));
+
+    if (profileImageFile) {
+      payload.append("profilePic", profileImageFile);
+    }
+    await handleAsyncWithToast(async () => {
+      return updateUser(payload);
+    });
   };
 
   return (
@@ -82,13 +123,13 @@ const UpdateUserProfile = () => {
 
       <form onSubmit={handleSubmit}>
         {/* Profile Photo */}
-        <div className="mb-8 flex flex-col md:flex-row justify-start items-start md:gap-10 max-w-2xl border border-gray-200 rounded-lg p-5">
+        <div className="mb-8 flex flex-col md:flex-row justify-start items-start md:gap-10 max-w-2xl bg-white border border-gray-200 rounded-lg p-5">
           <Label className="text-lg">Profile Photo</Label>
           <div className="flex items-center gap-4">
             <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
-              {profileImage ? (
+              {profileImagePreview ? (
                 <Image
-                  src={profileImage}
+                  src={profileImagePreview}
                   width={1000}
                   height={1000}
                   alt="Profile"
@@ -128,29 +169,16 @@ const UpdateUserProfile = () => {
         </div>
 
         {/* Personal Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border border-gray-200 rounded-lg p-5">
-          {/* First Name */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 bg-white border border-gray-200 rounded-lg p-5">
           <div>
-            <Label className="text-base md:text-lg mb-2">First Name</Label>
+            <Label className="text-base md:text-lg mb-2">Full Name</Label>
             <Input
-              placeholder="First Name"
-              value={formData.firstName}
-              onChange={(e) => handleInputChange("firstName", e.target.value)}
+              placeholder="Full Name"
+              value={formData.fullName}
+              onChange={(e) => handleInputChange("fullName", e.target.value)}
               className="bg-gray-50"
             />
           </div>
-          {/* Last Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2"></label>
-            <Label className="text-base md:text-lg mb-2">Last Name</Label>
-            <Input
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChange={(e) => handleInputChange("lastName", e.target.value)}
-              className="bg-gray-50"
-            />
-          </div>
-          {/* Date of Birth */}
           <div>
             <Label className="text-base md:text-lg mb-2">Date of Birth</Label>
             <Popover>
@@ -173,15 +201,15 @@ const UpdateUserProfile = () => {
                   selected={formData.dateOfBirth}
                   onSelect={(date) => handleInputChange("dateOfBirth", date)}
                   initialFocus
+                  className="bg-white"
                 />
               </PopoverContent>
             </Popover>
           </div>
-          {/* Gender */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2"></label>
             <Label className="text-base md:text-lg mb-2">Gender</Label>
             <Select
+              value={formData.gender.toLowerCase()}
               onValueChange={(value) => handleInputChange("gender", value)}
             >
               <SelectTrigger className="bg-gray-50">
@@ -194,25 +222,13 @@ const UpdateUserProfile = () => {
               </SelectContent>
             </Select>
           </div>
-          {/* E-mail */}
-          <div>
-            <Label className="text-base md:text-lg mb-2">E-mail</Label>
-            <Input
-              type="email"
-              placeholder="email@example.com"
-              value={formData.email}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              className="bg-gray-50"
-            />
-          </div>
         </div>
 
         {/* Location Details */}
         <h3 className="text-xl md:text-2xl font-medium text-gray-800 mb-4">
           Location Details
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 border border-gray-200 rounded-lg p-5">
-          {/* Continent */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 bg-white border border-gray-200 rounded-lg p-5">
           <div>
             <Label className="text-base md:text-lg mb-2">Continent</Label>
             <Input
@@ -223,7 +239,6 @@ const UpdateUserProfile = () => {
               className="bg-gray-50"
             />
           </div>
-          {/* Country */}
           <div>
             <Label className="text-base md:text-lg mb-2">Country</Label>
             <Input
@@ -234,7 +249,6 @@ const UpdateUserProfile = () => {
               className="bg-gray-50"
             />
           </div>
-          {/* Region */}
           <div>
             <Label className="text-base md:text-lg mb-2">Region</Label>
             <Input
@@ -245,14 +259,13 @@ const UpdateUserProfile = () => {
               className="bg-gray-50"
             />
           </div>
-          {/* Zip code/ Postal code */}
           <div>
             <Label className="text-base md:text-lg mb-2">
               Zip code/ Postal code
             </Label>
             <Input
               type="text"
-              placeholder="Zip code/ Postal code  "
+              placeholder="Zip code/ Postal code"
               value={formData.zipCode}
               onChange={(e) => handleInputChange("zipCode", e.target.value)}
               className="bg-gray-50"
@@ -260,23 +273,17 @@ const UpdateUserProfile = () => {
           </div>
         </div>
 
-        {/* Password */}
         {/* Action Buttons */}
         <div className="flex justify-end gap-4 mt-8">
           <button
-            type="button"
-            className="text-sm md:text-base py-2 px-6 rounded-md border"
-          >
-            Cancel
-          </button>
-          <button
             type="submit"
-            className="text-sm md:text-base bg-primary hover:bg-primary/90 py-2 px-4 rounded-md text-white"
+            className="w-full text-sm md:text-base bg-primary hover:bg-primary/90 py-2 px-4 rounded-md text-white cursor-pointer"
           >
             Save Changes
           </button>
         </div>
       </form>
+
       <UpdatePassword />
     </div>
   );
