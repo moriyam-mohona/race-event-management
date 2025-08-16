@@ -52,6 +52,41 @@ const eventApi = baseApi.injectEndpoints({
       },
       providesTags: ["event"],
     }),
+
+    getAllMyRegisteredEvents: builder.query({
+      query: (data) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `event/get-all-my-registered-events`,
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["event"],
+    }),
+
+    // Get all shared events for user
+    getAllSharedEvents: builder.query({
+      query: (data) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `event/get-all-share-events`,
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["event"],
+    }),
   }),
 });
 
@@ -60,4 +95,6 @@ export const {
   useGetSingleEventQuery,
   useAddEventToSavedMutation,
   useGetAllSavedEventsQuery,
+  useGetAllSharedEventsQuery,
+  useGetAllMyRegisteredEventsQuery,
 } = eventApi;
