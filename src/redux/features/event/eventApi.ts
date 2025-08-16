@@ -35,6 +35,23 @@ const eventApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["event"],
     }),
+    // Get All My Saved Events by user
+    getAllSavedEvents: builder.query({
+      query: (data) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `event/get-all-my-saved-events`,
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["event"],
+    }),
   }),
 });
 
@@ -42,4 +59,5 @@ export const {
   useGetAllApprovedEventsQuery,
   useGetSingleEventQuery,
   useAddEventToSavedMutation,
+  useGetAllSavedEventsQuery,
 } = eventApi;

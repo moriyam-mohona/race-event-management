@@ -77,7 +77,7 @@ export function EventHeader({ data }: { data: any }) {
 
         <div className="flex justify-between items-center ">
           <h1 className="text-3xl font-semibold">{data?.title}</h1>
-          <button onClick={handleAddToBookmark}>
+          <button onClick={handleAddToBookmark} className="cursor-pointer">
             <FaRegBookmark className="text-xl font-semibold" />
           </button>
         </div>

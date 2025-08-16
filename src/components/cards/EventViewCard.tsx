@@ -12,10 +12,9 @@ const EventViewCard: React.FC<any> = ({ event }) => {
   const [addEventToSaved] = useAddEventToSavedMutation();
 
   const handleAddToBookmark = () => {
-    const res = handleAsyncWithToast(() => {
+    handleAsyncWithToast(() => {
       return addEventToSaved(event?._id?.$oid);
     });
-    console.log(res);
   };
 
   return (
@@ -36,7 +35,7 @@ const EventViewCard: React.FC<any> = ({ event }) => {
             <h3 className="font-semibold font-montserrat text-lg sm:text-xl text-gray-800 mb-2 sm:mb-4 pr-2">
               {event?.title}
             </h3>
-            <button onClick={handleAddToBookmark}>
+            <button onClick={handleAddToBookmark} className="cursor-pointer">
               <FaRegBookmark className="text-xl font-semibold" />
             </button>
           </div>
