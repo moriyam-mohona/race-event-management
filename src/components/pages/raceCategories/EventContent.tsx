@@ -66,6 +66,7 @@ const EventContent: React.FC<any> = () => {
     setPage(page);
     setPageSize(pageSize);
   };
+
   const totalCount = approvedEvent?.data?.meta?.total || 0;
 
   // Filter events based on the provided filters

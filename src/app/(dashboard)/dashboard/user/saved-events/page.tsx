@@ -1,4 +1,4 @@
-import SavedEventsPage from "@/components/dashboard/UserDashboard/events/SavedEventsPage";
+import SavedEventsPage from "@/components/dashboard/UserDashboard/events/SavedEvents/SavedEventsPage";
 import React from "react";
 
 const SavedEvents = () => {

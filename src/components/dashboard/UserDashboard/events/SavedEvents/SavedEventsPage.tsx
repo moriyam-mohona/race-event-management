@@ -1,18 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import EventViewCard from "@/components/cards/EventViewCard";
 import Loading from "@/components/shared/Loading/Loading";
 import { useGetAllSavedEventsQuery } from "@/redux/features/event/eventApi";
 import Link from "next/link";
+import SavedEventCard from "./SavedEventCard";
+import { useEffect, useState } from "react";
+import { Pagination } from "antd";
 
 const SavedEventsPage = () => {
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+
+  const objectQuery = [
+    { name: "page", value: page },
+    { name: "limit", value: pageSize },
+  ];
+
+  useEffect(() => {
+    setPage(1);
+    setPageSize(5);
+  }, []);
+
   const {
     data: savedEvents,
     isLoading,
     isError,
+    isFetching,
     error,
-  } = useGetAllSavedEventsQuery({});
+  } = useGetAllSavedEventsQuery({ queryObj: objectQuery });
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPage(page);
+    setPageSize(pageSize);
+  };
+  const totalCount = savedEvents?.data?.meta?.total || 0;
 
   if (isLoading) {
     return <Loading />;
@@ -61,10 +83,20 @@ const SavedEventsPage = () => {
       <h2 className="text-2xl md:text-3xl font-medium mt-4 mb-8">
         Saved Race List
       </h2>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4">
         {events.map((saved: any) => (
-          <EventViewCard key={saved?.id} event={saved?.events} />
+          <SavedEventCard key={saved?.id} event={saved?.events} />
         ))}
+      </div>
+
+      <div className="p-4 w-full flex flex-wrap justify-center">
+        <Pagination
+          current={page}
+          pageSize={pageSize}
+          total={totalCount}
+          onChange={handlePaginationChange}
+          disabled={isFetching}
+        />
       </div>
     </div>
   );
