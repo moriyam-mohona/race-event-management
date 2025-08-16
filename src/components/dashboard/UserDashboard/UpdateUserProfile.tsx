@@ -23,10 +23,11 @@ import Image from "next/image";
 import profile from "@/assets/images/Human.png";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import { useGetMeQuery } from "@/redux/features/auth/authApi";
+import UpdatePassword from "./UpdatePassword";
 const UpdateUserProfile = () => {
   const router = useRouter();
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
+
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [formData, setFormData] = useState<T_User>({
     firstName: "",
@@ -38,9 +39,10 @@ const UpdateUserProfile = () => {
     country: "",
     region: "",
     zipCode: "",
-    oldPassword: "",
-    newPassword: "",
   });
+
+  const { data: getme } = useGetMeQuery({});
+  console.log(getme);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleInputChange = (field: keyof T_User, value: any) => {
@@ -69,7 +71,7 @@ const UpdateUserProfile = () => {
       profileImage: profileImage ? "Image data exists" : "No image uploaded",
     });
 
-    router.push("/dashboard/user/profile");
+    // router.push("/dashboard/user/profile");
   };
 
   return (
@@ -259,65 +261,6 @@ const UpdateUserProfile = () => {
         </div>
 
         {/* Password */}
-        <div className="grid grid-cols-1 gap-6 mb-8 border border-gray-200 rounded-lg p-5">
-          <div>
-            <Label className="text-base md:text-lg mb-2">Old Password</Label>
-            <div className="relative">
-              <Input
-                name="password"
-                type={showOldPassword ? "text" : "password"}
-                placeholder="••••••••••"
-                value={formData.oldPassword}
-                onChange={(e) =>
-                  handleInputChange("oldPassword", e.target.value)
-                }
-                required
-                className="pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowOldPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
-                tabIndex={-1}
-              >
-                {showOldPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
-            </div>
-          </div>
-          <div>
-            <Label className="text-base md:text-lg mb-2">New Password</Label>
-            <div className="relative">
-              <Input
-                name="password"
-                type={showNewPassword ? "text" : "password"}
-                placeholder="••••••••••"
-                value={formData.newPassword}
-                onChange={(e) =>
-                  handleInputChange("newPassword", e.target.value)
-                }
-                required
-                className="pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowNewPassword((prev) => !prev)}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
-                tabIndex={-1}
-              >
-                {showNewPassword ? (
-                  <EyeOff className="w-5 h-5" />
-                ) : (
-                  <Eye className="w-5 h-5" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-
         {/* Action Buttons */}
         <div className="flex justify-end gap-4 mt-8">
           <button
@@ -334,6 +277,7 @@ const UpdateUserProfile = () => {
           </button>
         </div>
       </form>
+      <UpdatePassword />
     </div>
   );
 };
