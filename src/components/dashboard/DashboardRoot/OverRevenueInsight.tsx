@@ -10,12 +10,12 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { useUserRole } from "@/lib/auth";
+import { useAppSelector } from "@/redux/hooks";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 const OverRevenueInsight = () => {
-  const pathname = window.location.pathname.split("/")[2];
-
-  const role = useUserRole(pathname);
+  const user = useAppSelector(selectCurrentUser);
+  const role = user?.role;
 
   // Different data based on user role
   const adminData = [

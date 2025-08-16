@@ -8,15 +8,14 @@ import {
   Tooltip,
 } from "recharts";
 import { Card, CardHeader } from "@/components/ui/card";
-import { useUserRole } from "@/lib/auth";
+import { useAppSelector } from "@/redux/hooks";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 const COLORS = ["#F8B195", "#1E5631", "#2E7D32"];
 
 const UploadedRaceReport = () => {
-  const pathname = window.location.pathname.split("/")[2];
-
-  const role = useUserRole(pathname);
-
+  const user = useAppSelector(selectCurrentUser);
+  const role = user?.role;
   // Different data based on user role
   const adminData = [
     { name: "Uploaded Events", value: 5 },

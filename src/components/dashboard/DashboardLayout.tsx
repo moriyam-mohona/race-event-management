@@ -1,16 +1,17 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { useUserRole } from "@/lib/auth";
 import Sidebar from "./Sidebar";
 import { cn } from "@/lib/utils";
 import Navbar from "../shared/NavBar/NavBar";
 import { GoSidebarCollapse } from "react-icons/go";
+import { useAppSelector } from "@/redux/hooks";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
-  const pathname = window.location.pathname.split("/")[2];
+  const user = useAppSelector(selectCurrentUser);
+  const role = user?.role;
 
-  const role = useUserRole(pathname);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (

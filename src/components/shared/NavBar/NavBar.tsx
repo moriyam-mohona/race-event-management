@@ -14,7 +14,9 @@ import Swal from "sweetalert2";
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const user = useAppSelector(selectCurrentUser);
+  const role = user?.role;
   const dispatch = useAppDispatch();
+
   // Navigation links
   const navLinks = [
     { name: "Home", href: "/" },
@@ -22,6 +24,15 @@ const Navbar = () => {
     { name: "Contact", href: "/contact-us" },
     { name: "Community", href: "/community" },
   ];
+
+  const profileHref =
+    role === "USER"
+      ? "/dashboard/user/profile"
+      : role === "VENDOR"
+      ? "/dashboard/vendor/profile"
+      : role === "ADMIN"
+      ? "/dashboard/admin/profile"
+      : "/auth/login";
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -122,12 +133,21 @@ const Navbar = () => {
 
                   {user ? (
                     <>
-                      <button
-                        onClick={handleLogout}
-                        className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full"
-                      >
-                        Logout
-                      </button>
+                      <div className="flex items-center justify-between gap-5 space-y-2">
+                        <Link
+                          href="/auth/login"
+                          className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          Profile
+                        </Link>
+                        <button
+                          onClick={handleLogout}
+                          className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full"
+                        >
+                          Logout
+                        </button>
+                      </div>
                     </>
                   ) : (
                     <>
@@ -163,9 +183,16 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center space-x-3">
             {user ? (
               <>
+                {" "}
+                <Link
+                  href={profileHref}
+                  className="text-base hover:text-primary hover:font-semibold hover:underline border-r-2 pr-3 border-black"
+                >
+                  Profile
+                </Link>
                 <button
                   onClick={handleLogout}
-                  className="text-base hover:text-primary hover:font-semibold hover:underline border-r-2 pr-3 border-black "
+                  className="text-base hover:text-primary hover:font-semibold hover:underline  pr-3 border-black "
                 >
                   Logout
                 </button>
