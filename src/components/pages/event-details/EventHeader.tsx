@@ -8,6 +8,10 @@ import { IoLocationOutline } from "react-icons/io5";
 // import { T_Event } from "@/types/Events";
 import Link from "next/link";
 import { format, isSameMonth, isSameYear } from "date-fns";
+import { FaRegBookmark } from "react-icons/fa";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import { useAddEventToSavedMutation } from "@/redux/features/event/eventApi";
+import { useParams } from "next/navigation";
 
 // export function EventHeader({ title, eventImage, registration }: T_Event) {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,6 +27,15 @@ export function EventHeader({ data }: { data: any }) {
         : `${format(start, "d MMM")} - ${format(end, "d MMM, yyyy")}` // 28 Aug - 2 Sep, 2025
       : `${format(start, "d MMM, yyyy")} - ${format(end, "d MMM, yyyy")}`;
   }
+  const id = useParams().id;
+  const [addEventToSaved] = useAddEventToSavedMutation();
+
+  const handleAddToBookmark = () => {
+    const res = handleAsyncWithToast(() => {
+      return addEventToSaved(id);
+    });
+    console.log(res);
+  };
 
   return (
     <div className="flex flex-col md:flex-row gap-6 mb-8">
@@ -64,6 +77,9 @@ export function EventHeader({ data }: { data: any }) {
 
         <div className="flex justify-between items-center ">
           <h1 className="text-3xl font-semibold">{data?.title}</h1>
+          <button onClick={handleAddToBookmark}>
+            <FaRegBookmark className="text-xl font-semibold" />
+          </button>
         </div>
 
         <div className="mt-8 space-y-2">
