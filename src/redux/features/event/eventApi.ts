@@ -27,8 +27,19 @@ const eventApi = baseApi.injectEndpoints({
       }),
       providesTags: ["event"],
     }),
+    // Bookmark any event
+    addEventToSaved: builder.mutation({
+      query: (id) => ({
+        url: `event/add-or-remove-events-from-saved-list/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["event"],
+    }),
   }),
 });
 
-export const { useGetAllApprovedEventsQuery, useGetSingleEventQuery } =
-  eventApi;
+export const {
+  useGetAllApprovedEventsQuery,
+  useGetSingleEventQuery,
+  useAddEventToSavedMutation,
+} = eventApi;

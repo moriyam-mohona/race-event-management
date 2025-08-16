@@ -4,8 +4,20 @@ import Image from "next/image";
 import Link from "next/link";
 import image from "@/assets/event.png";
 import { format } from "date-fns";
+import { FaRegBookmark } from "react-icons/fa";
+import { useAddEventToSavedMutation } from "@/redux/features/event/eventApi";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 
 const EventViewCard: React.FC<any> = ({ event }) => {
+  const [addEventToSaved] = useAddEventToSavedMutation();
+
+  const handleAddToBookmark = () => {
+    const res = handleAsyncWithToast(() => {
+      return addEventToSaved(event?._id?.$oid);
+    });
+    console.log(res);
+  };
+
   return (
     <div className="flex flex-col md:flex-row gap-4 lg:gap-6 rounded-lg overflow-hidden mb-6 bg-white border border-gray-100 shadow hover:shadow-md transition-shadow duration-300 p-3 sm:p-4 relative">
       <div className="w-full md:w-1/3 overflow-hidden">
@@ -24,6 +36,9 @@ const EventViewCard: React.FC<any> = ({ event }) => {
             <h3 className="font-semibold font-montserrat text-lg sm:text-xl text-gray-800 mb-2 sm:mb-4 pr-2">
               {event?.title}
             </h3>
+            <button onClick={handleAddToBookmark}>
+              <FaRegBookmark className="text-xl font-semibold" />
+            </button>
           </div>
 
           <div className="space-y-1 mb-3">

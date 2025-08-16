@@ -51,25 +51,21 @@ const Login = () => {
     const response = await handleAsyncWithToast(async () => {
       return login(loginData);
     });
-
     if (response?.data?.success) {
-      // console.log(response);
+      console.log(response);
       const user = (await verifyToken(
         response?.data?.data?.accessToken
       )) as DecodedUser;
-      console.log(response?.data);
+      console.log(user);
       await dispatch(
         setUser({
           user: user,
-          accessToken: response?.data?.data?.accessToken,
-          refreshToken: response?.data?.data?.refreshToken,
+          access_token: response?.data?.data?.accessToken,
+          refresh_token: response?.data?.data?.refreshToken,
         })
       );
-      if (user?.role === "admin") {
-        router.push("/admin/subscription-management");
-      } else {
-        router.push("/");
-      }
+
+      router.push("/");
     }
   };
 

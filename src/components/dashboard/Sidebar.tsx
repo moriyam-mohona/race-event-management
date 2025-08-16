@@ -21,7 +21,7 @@ const sidebars: Record<
   string,
   { name: string; href: string; icon: React.ReactNode }[]
 > = {
-  admin: [
+  ADMIN: [
     {
       name: "Dashboard",
       href: "/dashboard/vendor/dashboard",
@@ -49,7 +49,7 @@ const sidebars: Record<
       icon: <GoPerson />,
     },
   ],
-  user: [
+  USER: [
     { name: "Profile", href: "/dashboard/user/profile", icon: <GoPerson /> },
     {
       name: "Community",
@@ -67,7 +67,7 @@ const sidebars: Record<
       icon: <BsBookmark />,
     },
   ],
-  vendor: [
+  VENDOR: [
     {
       name: "Dashboard",
       href: "/dashboard/vendor/dashboard",
@@ -132,11 +132,11 @@ const Sidebar = ({ role }: { role: string }) => {
       <div className="mt-20 flex flex-col items-center gap-5">
         <div className="flex flex-col items-center">
           <Image
-            src={profile}
+            src={getme?.data?.profileImage || profile}
             alt="profile"
             width={1000}
             height={1000}
-            className="w-24 h-24"
+            className="w-28 h-28 bg-gray-100 rounded-full object-cover"
           />
           <h2 className="mt-5 text-2xl font-medium">{getme?.data?.fullName}</h2>
           {getme?.data?.uniqueId && (

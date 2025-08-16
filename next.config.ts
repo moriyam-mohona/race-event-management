@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.pexels.com", // external images
       },
+      {
+        protocol: "https",
+        hostname: "flagcdn.com", // ✅ allow flagcdn
+      },
     ],
   },
 };

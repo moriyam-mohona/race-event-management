@@ -106,7 +106,7 @@ const EventContent: React.FC<any> = () => {
     <div className="bg-white rounded-lg shadow-sm border p-4 h-full">
       <div className="flex justify-between items-center mb-6">
         {/* <h2 className="text-xl font-semibold text-gray-800">
-          Events {data?.length > 0 && `(${data.length})`}
+          Events {approvedEvent?.length > 0 && `(${approvedEvent.length})`}
         </h2> */}
 
         <button
