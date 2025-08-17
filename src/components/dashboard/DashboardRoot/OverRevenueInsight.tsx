@@ -48,7 +48,7 @@ const OverRevenueInsight = () => {
     { name: "Dec", value: 23000 },
   ];
 
-  const data = role === "admin" ? adminData : vendorData;
+  const data = role === "SUPER_ADMIN" ? adminData : vendorData;
 
   const formatYAxis = (value: any) => {
     if (value === 0) return "$0";

@@ -30,7 +30,7 @@ const Navbar = () => {
       ? "/dashboard/user/profile"
       : role === "VENDOR"
       ? "/dashboard/vendor/profile"
-      : role === "ADMIN"
+      : role === "SUPER_ADMIN"
       ? "/dashboard/admin/profile"
       : "/auth/login";
 

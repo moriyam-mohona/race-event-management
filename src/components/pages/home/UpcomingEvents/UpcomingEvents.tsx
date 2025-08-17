@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import SectionHeader from "@/components/shared/SectionHeader/SectionHeader";
 import EventCard from "@/components/cards/EventCard";
@@ -33,6 +33,16 @@ const UpcomingEvents: React.FC = () => {
       swiperRef.current.navigation.update();
     }
   }, []);
+
+  // Memoize Swiper slides
+  const slides = useMemo(() => {
+    return approvedEvent?.data?.data?.map((event: Event) => (
+      <SwiperSlide key={event?._id?.$oid}>
+        <EventCard event={event} />
+      </SwiperSlide>
+    ));
+  }, [approvedEvent?.data?.data]);
+
   return (
     <section className="py-20 px-4 bg-green-50">
       <div className=" mx-auto max-w-[1320px]">
@@ -59,11 +69,12 @@ const UpcomingEvents: React.FC = () => {
               nextEl: nextRef.current,
             }}
           >
-            {approvedEvent?.data?.data?.map((event: Event) => (
+            {/* {approvedEvent?.data?.data?.map((event: Event) => (
               <SwiperSlide key={event?._id?.$oid}>
                 <EventCard event={event} />
               </SwiperSlide>
-            ))}
+            ))} */}
+            {slides}
           </Swiper>
 
           {/* Navigation Buttons */}

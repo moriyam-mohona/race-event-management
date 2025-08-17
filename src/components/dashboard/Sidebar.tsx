@@ -21,7 +21,7 @@ const sidebars: Record<
   string,
   { name: string; href: string; icon: React.ReactNode }[]
 > = {
-  ADMIN: [
+  SUPER_ADMIN: [
     {
       name: "Dashboard",
       href: "/dashboard/vendor/dashboard",

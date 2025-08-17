@@ -7,14 +7,24 @@ import { format } from "date-fns";
 import { FaRegBookmark } from "react-icons/fa";
 import { useAddEventToSavedMutation } from "@/redux/features/event/eventApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import { useRouter } from "next/navigation";
 
 const EventViewCard: React.FC<any> = ({ event }) => {
   const [addEventToSaved] = useAddEventToSavedMutation();
+  const router = useRouter();
 
-  const handleAddToBookmark = () => {
-    handleAsyncWithToast(() => {
-      return addEventToSaved(event?._id?.$oid);
-    });
+  const handleAddToBookmark = async () => {
+    const response = await handleAsyncWithToast(() =>
+      addEventToSaved(event?._id?.$oid)
+    );
+
+    // Check carefully if response has the right shape
+    const message = response?.data?.message || response?.message; // fallback if wrapped
+    const success = response?.data?.success ?? response?.success;
+
+    if (success === false && message?.includes("not authorized")) {
+      router.push("/auth/login");
+    }
   };
 
   return (
@@ -36,7 +46,11 @@ const EventViewCard: React.FC<any> = ({ event }) => {
               {event?.title}
             </h3>
             <button onClick={handleAddToBookmark} className="cursor-pointer">
-              <FaRegBookmark className="text-xl font-semibold" />
+              <FaRegBookmark
+                className={`text-xl font-semibold ${
+                  event?.isSaved ? "text-secondary" : "text-gray-700"
+                }`}
+              />
             </button>
           </div>
 

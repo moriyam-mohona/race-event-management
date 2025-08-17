@@ -9,12 +9,17 @@ import { useSearchParams } from "next/navigation";
 import { Pagination } from "antd";
 import { useGetAllApprovedEventsQuery } from "@/redux/features/event/eventApi";
 import Loading from "@/components/shared/Loading/Loading";
+import { useAppSelector } from "@/redux/hooks";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 const EventContent: React.FC<any> = () => {
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(5);
   const searchParams = useSearchParams();
+
+  const user = useAppSelector(selectCurrentUser);
+  const userId = user?.id;
 
   const raceType = searchParams.get("raceType");
   const category = searchParams.get("category");
@@ -24,6 +29,7 @@ const EventContent: React.FC<any> = () => {
   const [objectQuery, setObjectQuery] = useState<any>([
     { name: "page", value: page },
     { name: "limit", value: pageSize },
+    { name: "userId", value: userId },
   ]);
 
   useEffect(() => {
@@ -35,6 +41,7 @@ const EventContent: React.FC<any> = () => {
     const queryParams: any[] = [
       { name: "page", value: page },
       { name: "limit", value: pageSize },
+      { name: "userId", value: userId || "" },
     ];
 
     if (raceType) {
@@ -51,7 +58,7 @@ const EventContent: React.FC<any> = () => {
     }
 
     setObjectQuery(queryParams);
-  }, [raceType, category, continent, country, page, pageSize]);
+  }, [raceType, category, continent, country, page, pageSize, userId]);
 
   const {
     data: approvedEvent,
