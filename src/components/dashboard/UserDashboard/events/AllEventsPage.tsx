@@ -8,51 +8,92 @@ import {
   useGetAllSharedEventsQuery,
 } from "@/redux/features/event/eventApi";
 import Loading from "@/components/shared/Loading/Loading";
+import { useState } from "react";
 
 const AllEventsPage = () => {
-  // Query with status for my registered events
-  const { data: activeEvents, isLoading: isActiveLoading } =
-    useGetAllMyRegisteredEventsQuery({
-      queryObj: [{ name: "status", value: "ACTIVE" }],
-    });
+  const [activeTab, setActiveTab] = useState("upcoming");
 
-  const { data: upcomingEvents, isLoading: isUpcomingLoading } =
-    useGetAllMyRegisteredEventsQuery({
-      queryObj: [{ name: "status", value: "APPROVED" }],
-    });
+  // Query for my registered events with dynamic status
+  const {
+    data: registeredEvents,
+    isLoading: isRegisteredLoading,
+    isError: isRegisteredError,
+    error: registeredError,
+  } = useGetAllMyRegisteredEventsQuery(
+    {
+      queryObj: [
+        {
+          name: "status",
+          value:
+            activeTab === "active"
+              ? "ACTIVE"
+              : activeTab === "completed"
+              ? "COMPLETED"
+              : "APPROVED",
+        },
+      ],
+    },
+    { skip: activeTab === "shared" }
+  );
 
-  const { data: completedEvents, isLoading: isCompletedLoading } =
-    useGetAllMyRegisteredEventsQuery({
-      queryObj: [{ name: "status", value: "COMPLETED" }],
-    });
-
+  // Query for shared events
   const {
     data: sharedEvents,
     isLoading: isSharedLoading,
     isError: isSharedError,
     error: sharedError,
-  } = useGetAllSharedEventsQuery({});
+  } = useGetAllSharedEventsQuery({}, { skip: activeTab !== "shared" });
 
   const normalizeEvents = (raw: any[] = []) =>
     Array.isArray(raw) ? raw.map((item: any) => item?.events ?? item) : [];
 
-  const renderEvents = (events: any[], isLoading: boolean) =>
-    isLoading ? (
-      <Loading />
-    ) : !Array.isArray(events) || events.length === 0 ? (
-      <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed">
-        <p className="text-lg font-medium">No events found</p>
-        <p className="text-sm text-muted-foreground">
-          Check back later for new updates.
-        </p>
-      </div>
-    ) : (
+  const renderEvents = (
+    events: any[],
+    isLoading: boolean,
+    isError: boolean,
+    error: any
+  ) => {
+    if (isLoading) {
+      return <Loading />;
+    }
+
+    if (isError) {
+      return (
+        <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed text-red-500">
+          <p className="font-medium">Failed to load events</p>
+          <pre className="mt-2 max-w-full overflow-auto text-xs text-gray-400">
+            {JSON.stringify(error, null, 2)}
+          </pre>
+        </div>
+      );
+    }
+
+    if (!Array.isArray(events) || events.length === 0) {
+      return (
+        <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed">
+          <p className="text-lg font-medium">No events found</p>
+          <p className="text-sm text-muted-foreground">
+            Check back later for new updates.
+          </p>
+        </div>
+      );
+    }
+
+    return (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {events.map((event: any) => (
           <EventViewCard key={event?.id} event={event} />
         ))}
       </div>
     );
+  };
+
+  const getCurrentEvents = () => {
+    if (activeTab === "shared") {
+      return normalizeEvents(sharedEvents?.data?.data ?? []);
+    }
+    return registeredEvents?.data?.data ?? [];
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -60,7 +101,11 @@ const AllEventsPage = () => {
         <h1 className="text-2xl md:text-3xl font-medium">All Events</h1>
       </div>
 
-      <Tabs defaultValue="upcoming" className="w-full">
+      <Tabs
+        defaultValue="upcoming"
+        className="w-full"
+        onValueChange={(value) => setActiveTab(value)}
+      >
         <TabsList className="mb-6 w-full justify-start gap-2 md:gap-6">
           {["active", "upcoming", "completed", "shared"].map((status) => (
             <TabsTrigger
@@ -73,32 +118,28 @@ const AllEventsPage = () => {
           ))}
         </TabsList>
 
-        <TabsContent value="active">
-          {renderEvents(activeEvents?.data?.data ?? [], isActiveLoading)}
-        </TabsContent>
-
-        <TabsContent value="upcoming">
-          {renderEvents(upcomingEvents?.data?.data ?? [], isUpcomingLoading)}
-        </TabsContent>
-
-        <TabsContent value="completed">
-          {renderEvents(completedEvents?.data?.data ?? [], isCompletedLoading)}
-        </TabsContent>
-
-        <TabsContent value="shared">
-          {isSharedLoading ? (
-            <Loading />
-          ) : isSharedError ? (
-            <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed text-red-500">
-              <p className="font-medium">Failed to load shared events</p>
-              <pre className="mt-2 max-w-full overflow-auto text-xs text-gray-400">
-                {JSON.stringify(sharedError, null, 2)}
-              </pre>
-            </div>
-          ) : (
-            renderEvents(normalizeEvents(sharedEvents?.data?.data ?? []), false)
-          )}
-        </TabsContent>
+        {["active", "upcoming", "completed", "shared"].map((tab) => (
+          <TabsContent key={tab} value={tab}>
+            {renderEvents(
+              tab === activeTab ? getCurrentEvents() : [],
+              tab === activeTab && activeTab === "shared"
+                ? isSharedLoading
+                : tab === activeTab && activeTab !== "shared"
+                ? isRegisteredLoading
+                : false,
+              tab === activeTab && activeTab === "shared"
+                ? isSharedError
+                : tab === activeTab && activeTab !== "shared"
+                ? isRegisteredError
+                : false,
+              tab === activeTab && activeTab === "shared"
+                ? sharedError
+                : tab === activeTab && activeTab !== "shared"
+                ? registeredError
+                : null
+            )}
+          </TabsContent>
+        ))}
       </Tabs>
     </div>
   );

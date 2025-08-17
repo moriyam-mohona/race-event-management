@@ -7,7 +7,6 @@ import { FiEdit3 } from "react-icons/fi";
 
 const UserProfile = () => {
   const { data: getme } = useGetMeQuery({});
-  console.log(getme);
 
   return (
     <div className="h-screen">
