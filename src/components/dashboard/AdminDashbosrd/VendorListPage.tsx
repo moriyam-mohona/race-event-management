@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { Table, Button, Dropdown, Pagination, Input } from "antd";
 import { MoreOutlined, SearchOutlined } from "@ant-design/icons";
 import { useRouter } from "next/navigation";
@@ -28,15 +28,29 @@ const VendorsListPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize] = useState(5);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+
+  // Debounce effect
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+      setPage(1); // reset page when search query changes
+    }, 500); // 500ms delay
+
+    return () => {
+      clearTimeout(timerId);
+    };
+  }, [searchQuery]);
 
   const queryObj = useMemo(() => {
     const obj: any[] = [
       { name: "page", value: page },
       { name: "limit", value: pageSize },
     ];
-    if (searchQuery) obj.push({ name: "searchField", value: searchQuery });
+    if (debouncedSearchQuery)
+      obj.push({ name: "searchField", value: debouncedSearchQuery });
     return obj;
-  }, [page, pageSize, searchQuery]);
+  }, [page, pageSize, debouncedSearchQuery]);
 
   const { data, isLoading, isFetching } = useGetAllVendorsQuery({
     queryObj,
@@ -77,72 +91,80 @@ const VendorsListPage = () => {
     }
   };
 
-  const handlePaginationChange = (page: number) => {
+  const handlePaginationChange = useCallback((page: number) => {
     setPage(page);
-  };
+  }, []);
 
-  const columns = [
-    { title: "SL", dataIndex: "sl", key: "sl" },
-    { title: "Vendor Name", dataIndex: "fullName", key: "fullName" },
-    { title: "Login Date", dataIndex: "loginDate", key: "loginDate" },
-    { title: "Location", dataIndex: "country", key: "country" },
-    { title: "Email", dataIndex: "email", key: "email" },
-    { title: "Events", dataIndex: "totalEvents", key: "totalEvents" },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "status",
-      render: (status: string) => (
-        <span
-          className={`font-medium ${
-            status === "PENDING"
-              ? "text-yellow-500"
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    },
+    []
+  );
+
+  const columns = useMemo(
+    () => [
+      { title: "SL", dataIndex: "sl", key: "sl" },
+      { title: "Vendor Name", dataIndex: "fullName", key: "fullName" },
+      { title: "Login Date", dataIndex: "loginDate", key: "loginDate" },
+      { title: "Location", dataIndex: "country", key: "country" },
+      { title: "Email", dataIndex: "email", key: "email" },
+      { title: "Events", dataIndex: "totalEvents", key: "totalEvents" },
+      {
+        title: "Status",
+        dataIndex: "status",
+        key: "status",
+        render: (status: string) => (
+          <span
+            className={`font-medium ${
+              status === "PENDING"
+                ? "text-yellow-500"
+                : status === "ACTIVE"
+                ? "text-green-700"
+                : "text-red-500"
+            }`}
+          >
+            {status === "PENDING"
+              ? "Pending"
               : status === "ACTIVE"
-              ? "text-green-700"
-              : "text-red-500"
-          }`}
-        >
-          {status === "PENDING"
-            ? "Pending"
-            : status === "ACTIVE"
-            ? "Active"
-            : "Inactive"}
-        </span>
-      ),
-    },
-    {
-      title: "Action",
-      key: "action",
-      render: (_: any, record: Vendor) => (
-        <Dropdown
-          menu={{
-            items: [
-              {
-                key: "events",
-                label: "Events",
-                onClick: () => handleActionClick("Events", record.id),
-              },
-              {
-                key: "approve",
-                label: "Approve",
-                onClick: () => handleStatusUpdate(record.id, "ACTIVE"),
-              },
-              {
-                key: "reject",
-                label: "Reject",
-                onClick: () => handleStatusUpdate(record.id, "INACTIVE"),
-              },
-            ],
-          }}
-          trigger={["click"]}
-        >
-          <Button type="text" icon={<MoreOutlined />} />
-        </Dropdown>
-      ),
-    },
-  ];
-
-  // if (isLoading || isFetching) return <Loading />;
+              ? "Active"
+              : "Inactive"}
+          </span>
+        ),
+      },
+      {
+        title: "Action",
+        key: "action",
+        render: (_: any, record: Vendor) => (
+          <Dropdown
+            menu={{
+              items: [
+                {
+                  key: "events",
+                  label: "Events",
+                  onClick: () => handleActionClick("Events", record.id),
+                },
+                {
+                  key: "approve",
+                  label: "Approve",
+                  onClick: () => handleStatusUpdate(record.id, "ACTIVE"),
+                },
+                {
+                  key: "reject",
+                  label: "Reject",
+                  onClick: () => handleStatusUpdate(record.id, "INACTIVE"),
+                },
+              ],
+            }}
+            trigger={["click"]}
+          >
+            <Button type="text" icon={<MoreOutlined />} />
+          </Dropdown>
+        ),
+      },
+    ],
+    []
+  );
 
   return (
     <div className="p-4 sm:p-6">
@@ -156,10 +178,7 @@ const VendorsListPage = () => {
             className="h-10 !rounded-lg"
             prefix={<SearchOutlined className="text-gray-400" />}
             value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setPage(1); // reset page on search
-            }}
+            onChange={handleSearchChange}
           />
         </div>
       </div>
