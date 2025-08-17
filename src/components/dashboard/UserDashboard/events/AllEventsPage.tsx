@@ -2,13 +2,13 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import EventViewCard from "@/components/cards/EventViewCard";
 import {
   useGetAllMyRegisteredEventsQuery,
   useGetAllSharedEventsQuery,
 } from "@/redux/features/event/eventApi";
 import Loading from "@/components/shared/Loading/Loading";
 import { useState } from "react";
+import SavedEventCard from "./SavedEvents/SavedEventCard";
 
 const AllEventsPage = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -80,9 +80,9 @@ const AllEventsPage = () => {
     }
 
     return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="">
         {events.map((event: any) => (
-          <EventViewCard key={event?.id} event={event} />
+          <SavedEventCard key={event?.id} event={event} />
         ))}
       </div>
     );

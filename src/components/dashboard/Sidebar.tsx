@@ -53,7 +53,7 @@ const sidebars: Record<
     { name: "Profile", href: "/dashboard/user/profile", icon: <GoPerson /> },
     {
       name: "Community",
-      href: "/community",
+      href: "/dashboard/user/community",
       icon: <LuMessagesSquare />,
     },
     {
