@@ -1,12 +1,16 @@
 "use client";
 
+import Loading from "@/components/shared/Loading/Loading";
 import { useGetMeQuery } from "@/redux/features/auth/authApi";
 import Link from "next/link";
 import React from "react";
 import { FiEdit3 } from "react-icons/fi";
 
 const UserProfile = () => {
-  const { data: getme } = useGetMeQuery({});
+  const { data: getme, isLoading } = useGetMeQuery({});
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="h-screen">
