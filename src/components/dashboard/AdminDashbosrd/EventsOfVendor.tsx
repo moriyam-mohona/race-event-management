@@ -1,20 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { raceEvents } from "@/lib/Events";
 import EventViewCard from "@/components/cards/EventViewCard";
 import image from "@/assets/profile.png";
 import Image from "next/image";
-const EventsOfVendor = () => {
-  const eventsByStatus = {
-    pending: raceEvents.filter((event) => event.status === "pending"),
-    upcoming: raceEvents.filter((event) => event.status === "upcoming"),
-    completed: raceEvents.filter((event) => event.status === "completed"),
-  };
+import { useParams } from "next/navigation";
+import { useGetAllEventsByVendorQuery } from "@/redux/features/admin/adminApi";
+import { useState } from "react";
+import Loading from "@/components/shared/Loading/Loading";
 
-  const renderEvents = (events: typeof raceEvents) =>
-    events.length > 0 ? (
-      <div>
+const EventsOfVendor = () => {
+  const params = useParams();
+  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+
+  const [status, setStatus] = useState<"PENDING" | "ACTIVE" | "COMPLETED">(
+    "PENDING"
+  );
+
+  const { data: events, isLoading } = useGetAllEventsByVendorQuery({
+    id,
+    queryObj: [{ name: "eventStatus", value: status }],
+  });
+
+  const renderEvents = (events: any[]) =>
+    events && events.length > 0 ? (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {events.map((event) => (
           <EventViewCard key={event.id} event={event} />
         ))}
@@ -46,28 +57,42 @@ const EventsOfVendor = () => {
       </div>
 
       <h2 className="mt-16 mb-5 font-medium text-2xl">All Events</h2>
+
       {/* Tabs */}
-      <Tabs defaultValue="upcoming" className="w-full">
+      <Tabs
+        value={status.toLowerCase()}
+        onValueChange={(val) => setStatus(val.toUpperCase() as any)}
+        className="w-full"
+      >
         <TabsList className="mb-6 w-full justify-start gap-2 md:gap-4">
-          {["pending", "upcoming", "completed"].map((status) => (
-            <TabsTrigger
-              key={status}
-              value={status}
-              className="flex-1 md:flex-none capitalize"
-            >
-              {status} Events
-            </TabsTrigger>
-          ))}
+          <TabsTrigger
+            value="pending"
+            className="flex-1 md:flex-none capitalize"
+          >
+            Pending Events
+          </TabsTrigger>
+          <TabsTrigger
+            value="active"
+            className="flex-1 md:flex-none capitalize"
+          >
+            Active Events
+          </TabsTrigger>
+          <TabsTrigger
+            value="completed"
+            className="flex-1 md:flex-none capitalize"
+          >
+            Completed Events
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="pending">
-          {renderEvents(eventsByStatus.pending)}
+          {isLoading ? <Loading /> : renderEvents(events?.data?.data ?? [])}
         </TabsContent>
-        <TabsContent value="upcoming">
-          {renderEvents(eventsByStatus.upcoming)}
+        <TabsContent value="active">
+          {isLoading ? <Loading /> : renderEvents(events?.data?.data ?? [])}
         </TabsContent>
         <TabsContent value="completed">
-          {renderEvents(eventsByStatus.completed)}
+          {isLoading ? <Loading /> : renderEvents(events?.data?.data ?? [])}
         </TabsContent>
       </Tabs>
     </div>

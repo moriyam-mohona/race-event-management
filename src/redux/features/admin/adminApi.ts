@@ -28,8 +28,34 @@ const adminApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["admin"],
     }),
+    // Get all events by vendor
+    getAllEventsByVendor: builder.query({
+      query: ({
+        id,
+        queryObj,
+      }: {
+        id: string | number | undefined;
+        queryObj?: any[];
+      }) => {
+        const params = new URLSearchParams();
+        if (queryObj) {
+          queryObj.forEach((item) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `admin/get-all-events-for-admin-by-vendorId/${id}`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["admin"],
+    }),
   }),
 });
 
-export const { useGetAllVendorsQuery, useApproveOrRejectVendorMutation } =
-  adminApi;
+export const {
+  useGetAllVendorsQuery,
+  useApproveOrRejectVendorMutation,
+  useGetAllEventsByVendorQuery,
+} = adminApi;
