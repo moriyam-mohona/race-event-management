@@ -2,13 +2,13 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import EventViewCard from "@/components/cards/EventViewCard";
 import image from "@/assets/profile.png";
 import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useGetAllEventsOfVendorQuery } from "@/redux/features/admin/adminApi";
 import { useState } from "react";
 import Loading from "@/components/shared/Loading/Loading";
+import AllEventsByAdminCard from "./AllEvents/AllEventsByAdminCard";
 
 const EventsOfVendor = () => {
   const params = useParams();
@@ -25,9 +25,9 @@ const EventsOfVendor = () => {
 
   const renderEvents = (events: any[]) =>
     events && events.length > 0 ? (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="">
         {events.map((event) => (
-          <EventViewCard key={event?.id} event={event} />
+          <AllEventsByAdminCard key={event?.id} event={event} />
         ))}
       </div>
     ) : (
