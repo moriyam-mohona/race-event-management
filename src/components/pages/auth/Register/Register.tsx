@@ -116,8 +116,6 @@ const Register = () => {
         `/auth/verify-email?email=${encodeURIComponent(email)}&page=register`
       );
     }
-
-    console.log(response);
   };
 
   return (

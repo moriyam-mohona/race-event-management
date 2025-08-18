@@ -17,7 +17,6 @@ const EventsOfVendor = () => {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const { data: vendor } = useGetSingleVendorQuery(id);
-  console.log(vendor?.data, "vendor");
   const [status, setStatus] = useState<
     "APPROVED" | "PENDING" | "ACTIVE" | "COMPLETED"
   >("PENDING");

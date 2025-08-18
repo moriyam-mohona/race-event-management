@@ -16,8 +16,6 @@ const AllEventsByAdminCard: React.FC<any> = ({ event }) => {
 
   // Unified handler that accepts isAccepted
   const handleApproveOrReject = async (isAccepted: boolean) => {
-    console.log(`${isAccepted ? "Approve" : "Reject"} event:`, event?.id);
-
     await handleAsyncWithToast(() =>
       approveOrRejectEvent({
         id: event?.id,

@@ -110,9 +110,7 @@ const CommunityMember: React.FC = () => {
 
   // Handler
   const handleToggleFollow = async (id: string, isFollowing: boolean) => {
-    const data = { isFollowing: !isFollowing }; // 👈 match "data"
-    console.log("Toggling follow for:", id, data);
-
+    const data = { isFollowing: !isFollowing };
     await handleAsyncWithToast(() => pauseMember({ id, data }));
   };
 
