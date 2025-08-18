@@ -5,6 +5,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import { Pagination, Table, Tag, Input } from "antd";
 import { useGetAllCommunityByAdminQuery } from "@/redux/features/admin/adminApi";
 import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
 
 const { Search } = Input;
 
@@ -26,14 +27,16 @@ const CommunityListPage: React.FC = () => {
     current: 1,
     pageSize: 9,
   });
-  const [searchTerm, setSearchTerm] = useState(""); // search input
+  const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+
+  const router = useRouter();
 
   // Debounce Effect (wait 500ms after user stops typing)
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchTerm);
-      setPagination((prev) => ({ ...prev, current: 1 })); // reset to page 1 on new search
+      setPagination((prev) => ({ ...prev, current: 1 }));
     }, 500);
     return () => clearTimeout(handler);
   }, [searchTerm]);
@@ -84,7 +87,16 @@ const CommunityListPage: React.FC = () => {
       title: "Event Name",
       dataIndex: "eventName",
       key: "eventName",
-      render: (text: string) => <a>{text}</a>,
+      render: (_: any, record: Community) => (
+        <a
+          className="text-blue-600 hover:underline cursor-pointer"
+          onClick={() =>
+            router.push(`/dashboard/admin/community-list/${record?.id}`)
+          }
+        >
+          {record.eventName}
+        </a>
+      ),
     },
     { title: "Vendor Name", dataIndex: "vendorName", key: "vendorName" },
     { title: "Signup Date", dataIndex: "signupDate", key: "signupDate" },
@@ -110,16 +122,19 @@ const CommunityListPage: React.FC = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-medium mb-6">Communities</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-medium mb-6">Communities</h1>
 
-      {/* Search Box */}
-      <div className="mb-4 max-w-sm">
-        <Search
-          placeholder="Search by event or vendor"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          allowClear
-        />
+        {/* Search Box */}
+        <div className="w-full h-12 max-w-sm">
+          <Search
+            placeholder="Search by event name..."
+            value={searchTerm}
+            className="w-full h-full"
+            onChange={(e) => setSearchTerm(e.target.value)}
+            allowClear
+          />
+        </div>
       </div>
 
       {/* Table */}

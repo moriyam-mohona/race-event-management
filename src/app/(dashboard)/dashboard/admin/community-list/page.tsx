@@ -1,4 +1,4 @@
-import CommunityListPage from "@/components/dashboard/AdminDashbosrd/CommunityListPage";
+import CommunityListPage from "@/components/dashboard/AdminDashbosrd/ComunityList/CommunityListPage";
 import React from "react";
 
 const CommunityList = () => {
