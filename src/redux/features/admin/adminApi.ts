@@ -68,6 +68,16 @@ const adminApi = baseApi.injectEndpoints({
       },
       providesTags: ["admin"],
     }),
+    // Get all community titles for dropdown
+    getAllCommunityTitles: builder.query({
+      query: () => {
+        return {
+          url: `admin/get-community-titles-for-dropdown`,
+          method: "GET",
+        };
+      },
+      providesTags: ["admin"],
+    }),
     // Get all members of any single comunity
     getAllMembersByCommunityId: builder.query({
       query: ({
@@ -99,5 +109,6 @@ export const {
   useApproveOrRejectVendorMutation,
   useGetAllEventsByVendorQuery,
   useGetAllCommunityByAdminQuery,
+  useGetAllCommunityTitlesQuery,
   useGetAllMembersByCommunityIdQuery,
 } = adminApi;

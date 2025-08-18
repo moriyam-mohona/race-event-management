@@ -2,10 +2,22 @@
 "use client";
 
 import React, { useMemo, useState, useEffect } from "react";
-import { Table, Tag, Pagination, Input } from "antd";
-import { useGetAllMembersByCommunityIdQuery } from "@/redux/features/admin/adminApi";
+import {
+  Table,
+  Tag,
+  Pagination,
+  Input,
+  Button,
+  Dropdown,
+  ConfigProvider,
+} from "antd";
+import {
+  useGetAllCommunityTitlesQuery,
+  useGetAllMembersByCommunityIdQuery,
+} from "@/redux/features/admin/adminApi";
 import { useParams, useRouter } from "next/navigation";
 import dayjs from "dayjs";
+import { FilterOutlined } from "@ant-design/icons";
 
 const { Search } = Input;
 
@@ -23,16 +35,30 @@ const CommunityMember: React.FC = () => {
   const params = useParams();
   const router = useRouter();
   const communityId = Array.isArray(params.id) ? params.id[0] : params.id;
-
   const [pagination, setPagination] = useState({ current: 1, pageSize: 10 });
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+
+  const { data: communityTitles } = useGetAllCommunityTitlesQuery({});
+
+  const menuItems =
+    communityTitles?.data?.data.map((item: any) => ({
+      key: item.id,
+      label: item.title,
+    })) || [];
+
+  const menu = {
+    items: menuItems,
+    onClick: ({ key }: { key: string }) => {
+      router.push(`/dashboard/admin/community-list/${key}`);
+    },
+  };
 
   // Debounce search input
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(searchTerm);
-      setPagination((prev) => ({ ...prev, current: 1 })); // reset page on search
+      setPagination((prev) => ({ ...prev, current: 1 }));
     }, 500);
 
     return () => clearTimeout(handler);
@@ -40,10 +66,9 @@ const CommunityMember: React.FC = () => {
 
   // API Query Params
   const queryObj = [
-    { name: "communityId", value: communityId },
     { name: "page", value: pagination.current },
     { name: "limit", value: pagination.pageSize },
-    { name: "searchField", value: debouncedSearch || "" }, // server-side search
+    { name: "searchField", value: debouncedSearch || "" },
   ];
 
   const { data, isLoading, isFetching } = useGetAllMembersByCommunityIdQuery({
@@ -83,14 +108,6 @@ const CommunityMember: React.FC = () => {
       title: "Full Name",
       dataIndex: "fullName",
       key: "fullName",
-      render: (_: any, record: Member) => (
-        <a
-          className="text-blue-600 hover:underline cursor-pointer"
-          onClick={() => router.push(`/dashboard/admin/user/${record.id}`)}
-        >
-          {record.fullName}
-        </a>
-      ),
     },
     { title: "Email", dataIndex: "email", key: "email" },
     { title: "Country", dataIndex: "country", key: "country" },
@@ -117,14 +134,24 @@ const CommunityMember: React.FC = () => {
         <h1 className="text-2xl font-medium mb-6">Community Members</h1>
 
         {/* Search Box */}
-        <div className="w-full h-12 max-w-sm">
-          <Search
-            placeholder="Search community member..."
-            value={searchTerm}
-            className="w-full h-full"
-            onChange={(e) => setSearchTerm(e.target.value)}
-            allowClear
-          />
+        <div className="flex items-center">
+          <div className="w-full max-w-sm">
+            <Search
+              placeholder="Search community member..."
+              value={searchTerm}
+              className="w-full h-full"
+              onChange={(e) => setSearchTerm(e.target.value)}
+              allowClear
+            />
+          </div>
+
+          <ConfigProvider prefixCls="ant">
+            <Dropdown menu={menu} placement="bottomLeft">
+              <Button type="primary" className="ml-4" icon={<FilterOutlined />}>
+                Filter by
+              </Button>
+            </Dropdown>
+          </ConfigProvider>
         </div>
       </div>
 
