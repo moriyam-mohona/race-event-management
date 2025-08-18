@@ -5,7 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import image from "@/assets/profile.png";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useGetAllEventsOfVendorQuery } from "@/redux/features/admin/adminApi";
+import {
+  useGetAllEventsOfVendorQuery,
+  useGetSingleVendorQuery,
+} from "@/redux/features/admin/adminApi";
 import { useState } from "react";
 import Loading from "@/components/shared/Loading/Loading";
 import AllEventsByAdminCard from "./AllEvents/AllEventsByAdminCard";
@@ -13,7 +16,8 @@ import AllEventsByAdminCard from "./AllEvents/AllEventsByAdminCard";
 const EventsOfVendor = () => {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
-
+  const { data: vendor } = useGetSingleVendorQuery(id);
+  console.log(vendor?.data, "vendor");
   const [status, setStatus] = useState<
     "APPROVED" | "PENDING" | "ACTIVE" | "COMPLETED"
   >("PENDING");
@@ -44,15 +48,14 @@ const EventsOfVendor = () => {
       {/* Page Header */}
       <div className="mb-8 flex items-center gap-5">
         <Image
-          src={image}
+          src={vendor?.data?.profileImage || image}
           alt="profile"
           width={1000}
           height={1000}
-          className="w-20 h-20"
+          className="w-16 h-16"
         />
         <div>
-          <h1 className="text-2xl font-semibold">Global Marathon</h1>
-          <p className="mt-2 text-muted-foreground">I D - 1244</p>
+          <h1 className="text-2xl font-semibold">{vendor?.data?.fullName}</h1>
         </div>
       </div>
 

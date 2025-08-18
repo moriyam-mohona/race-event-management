@@ -45,6 +45,14 @@ const adminApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["admin"],
     }),
+    // get a single vendor bg id
+    getSingleVendor: builder.query({
+      query: (id) => ({
+        url: `admin/get-vendor-by-id/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["admin"],
+    }),
     // Get all events of a  vendor
     getAllEventsOfVendor: builder.query({
       query: ({
@@ -169,6 +177,7 @@ export const {
   useGetAdminCardsDataQuery,
   useGetAllVendorsQuery,
   useApproveOrRejectVendorMutation,
+  useGetSingleVendorQuery,
   useGetAllEventsOfVendorQuery,
   useGetAllCommunityByAdminQuery,
   useGetAllCommunityTitlesQuery,
