@@ -51,6 +51,23 @@ const adminApi = baseApi.injectEndpoints({
       },
       providesTags: ["admin"],
     }),
+    // Get All Community
+    getAllCommunityByAdmin: builder.query({
+      query: (data) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `admin/get-all-community`,
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["admin"],
+    }),
   }),
 });
 
@@ -58,4 +75,5 @@ export const {
   useGetAllVendorsQuery,
   useApproveOrRejectVendorMutation,
   useGetAllEventsByVendorQuery,
+  useGetAllCommunityByAdminQuery,
 } = adminApi;

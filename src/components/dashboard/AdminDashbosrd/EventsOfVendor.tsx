@@ -14,9 +14,9 @@ const EventsOfVendor = () => {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
-  const [status, setStatus] = useState<"PENDING" | "ACTIVE" | "COMPLETED">(
-    "PENDING"
-  );
+  const [status, setStatus] = useState<
+    "APPROVED" | "PENDING" | "ACTIVE" | "COMPLETED"
+  >("PENDING");
 
   const { data: events, isLoading } = useGetAllEventsByVendorQuery({
     id,
@@ -27,7 +27,7 @@ const EventsOfVendor = () => {
     events && events.length > 0 ? (
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {events.map((event) => (
-          <EventViewCard key={event.id} event={event} />
+          <EventViewCard key={event?.id} event={event} />
         ))}
       </div>
     ) : (
@@ -72,6 +72,12 @@ const EventsOfVendor = () => {
             Pending Events
           </TabsTrigger>
           <TabsTrigger
+            value="approved"
+            className="flex-1 md:flex-none capitalize"
+          >
+            Upcoming Events
+          </TabsTrigger>
+          <TabsTrigger
             value="active"
             className="flex-1 md:flex-none capitalize"
           >
@@ -86,6 +92,9 @@ const EventsOfVendor = () => {
         </TabsList>
 
         <TabsContent value="pending">
+          {isLoading ? <Loading /> : renderEvents(events?.data?.data ?? [])}
+        </TabsContent>
+        <TabsContent value="approved">
           {isLoading ? <Loading /> : renderEvents(events?.data?.data ?? [])}
         </TabsContent>
         <TabsContent value="active">
