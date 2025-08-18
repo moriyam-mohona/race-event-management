@@ -19,7 +19,7 @@ const adminApi = baseApi.injectEndpoints({
       },
       providesTags: ["admin"],
     }),
-    //     approve/reject vendor
+    // Approve/reject vendor
     approveOrRejectVendor: builder.mutation({
       query: ({ data, id }) => ({
         url: `admin/approve-vendor/${id}`,
@@ -28,8 +28,8 @@ const adminApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["admin"],
     }),
-    // Get all events by vendor
-    getAllEventsByVendor: builder.query({
+    // Get all events of a  vendor
+    getAllEventsOfVendor: builder.query({
       query: ({
         id,
         queryObj,
@@ -118,16 +118,34 @@ const adminApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["admin"],
     }),
+    // Get All Events By Admin
+    getAllEventsByAdmin: builder.query({
+      query: (data) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `admin/get-all-events-for-admin`,
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["admin"],
+    }),
   }),
 });
 
 export const {
   useGetAllVendorsQuery,
   useApproveOrRejectVendorMutation,
-  useGetAllEventsByVendorQuery,
+  useGetAllEventsOfVendorQuery,
   useGetAllCommunityByAdminQuery,
   useGetAllCommunityTitlesQuery,
   useGetAllMembersByCommunityIdQuery,
   useRemoveMemberFromCommunityMutation,
   usePauseMemberFromCommunityMutation,
+  useGetAllEventsByAdminQuery,
 } = adminApi;

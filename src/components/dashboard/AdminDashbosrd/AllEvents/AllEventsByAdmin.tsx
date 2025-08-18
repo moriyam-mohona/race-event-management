@@ -2,53 +2,34 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  useGetAllMyRegisteredEventsQuery,
-  useGetAllSharedEventsQuery,
-} from "@/redux/features/event/eventApi";
 import Loading from "@/components/shared/Loading/Loading";
 import { useState } from "react";
 import AllEventsByAdminCard from "./AllEventsByAdminCard";
+import { useGetAllEventsByAdminQuery } from "@/redux/features/admin/adminApi";
 
 const AllEventsByAdmin = () => {
   const [activeTab, setActiveTab] = useState("upcoming");
-
-  // Query for my registered events with dynamic status
   const {
     data: registeredEvents,
     isLoading: isRegisteredLoading,
     isError: isRegisteredError,
     error: registeredError,
-  } = useGetAllMyRegisteredEventsQuery(
-    {
-      queryObj: [
-        {
-          name: "status",
-          value:
-            activeTab === "active"
-              ? "ACTIVE"
-              : activeTab === "completed"
-              ? "COMPLETED"
-              : "APPROVED",
-        },
-      ],
-    },
-    { skip: activeTab === "shared" }
-  );
-
-  // Query for shared events
-  const {
-    data: sharedEvents,
-    isLoading: isSharedLoading,
-    isError: isSharedError,
-    error: sharedError,
-  } = useGetAllSharedEventsQuery({}, { skip: activeTab !== "shared" });
-
-  const normalizeEvents = (raw: any[] = []) =>
-    Array.isArray(raw) ? raw.map((item: any) => item?.events ?? item) : [];
+  } = useGetAllEventsByAdminQuery({
+    queryObj: [
+      {
+        name: "eventStatus",
+        value:
+          activeTab === "active"
+            ? "ACTIVE"
+            : activeTab === "completed"
+            ? "COMPLETED"
+            : "APPROVED",
+      },
+    ],
+  });
 
   const renderEvents = (
-    events: any[],
+    events: any[] = [],
     isLoading: boolean,
     isError: boolean,
     error: any
@@ -80,19 +61,12 @@ const AllEventsByAdmin = () => {
     }
 
     return (
-      <div className="">
+      <div>
         {events.map((event: any) => (
           <AllEventsByAdminCard key={event?.id} event={event} />
         ))}
       </div>
     );
-  };
-
-  const getCurrentEvents = () => {
-    if (activeTab === "shared") {
-      return normalizeEvents(sharedEvents?.data?.data ?? []);
-    }
-    return registeredEvents?.data?.data ?? [];
   };
 
   return (
@@ -104,39 +78,27 @@ const AllEventsByAdmin = () => {
       <Tabs
         defaultValue="upcoming"
         className="w-full"
-        onValueChange={(value) => setActiveTab(value)}
+        onValueChange={(value: string) => setActiveTab(value)}
       >
         <TabsList className="mb-6 w-full justify-start gap-2 md:gap-6">
-          {["active", "upcoming", "completed", "shared"].map((status) => (
+          {["upcoming", "active", "completed"].map((eventStatus) => (
             <TabsTrigger
-              key={status}
-              value={status}
+              key={eventStatus}
+              value={eventStatus}
               className="flex-1 md:flex-none capitalize"
             >
-              {status} Events
+              {eventStatus} Events
             </TabsTrigger>
           ))}
         </TabsList>
 
-        {["active", "upcoming", "completed", "shared"].map((tab) => (
+        {["upcoming", "active", "completed"].map((tab) => (
           <TabsContent key={tab} value={tab}>
             {renderEvents(
-              tab === activeTab ? getCurrentEvents() : [],
-              tab === activeTab && activeTab === "shared"
-                ? isSharedLoading
-                : tab === activeTab && activeTab !== "shared"
-                ? isRegisteredLoading
-                : false,
-              tab === activeTab && activeTab === "shared"
-                ? isSharedError
-                : tab === activeTab && activeTab !== "shared"
-                ? isRegisteredError
-                : false,
-              tab === activeTab && activeTab === "shared"
-                ? sharedError
-                : tab === activeTab && activeTab !== "shared"
-                ? registeredError
-                : null
+              tab === activeTab ? registeredEvents?.data?.data ?? [] : [],
+              tab === activeTab ? isRegisteredLoading : false,
+              tab === activeTab ? isRegisteredError : false,
+              tab === activeTab ? registeredError : null
             )}
           </TabsContent>
         ))}

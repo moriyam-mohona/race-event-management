@@ -6,7 +6,7 @@ import EventViewCard from "@/components/cards/EventViewCard";
 import image from "@/assets/profile.png";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useGetAllEventsByVendorQuery } from "@/redux/features/admin/adminApi";
+import { useGetAllEventsOfVendorQuery } from "@/redux/features/admin/adminApi";
 import { useState } from "react";
 import Loading from "@/components/shared/Loading/Loading";
 
@@ -18,7 +18,7 @@ const EventsOfVendor = () => {
     "APPROVED" | "PENDING" | "ACTIVE" | "COMPLETED"
   >("PENDING");
 
-  const { data: events, isLoading } = useGetAllEventsByVendorQuery({
+  const { data: events, isLoading } = useGetAllEventsOfVendorQuery({
     id,
     queryObj: [{ name: "eventStatus", value: status }],
   });
@@ -61,7 +61,7 @@ const EventsOfVendor = () => {
       {/* Tabs */}
       <Tabs
         value={status.toLowerCase()}
-        onValueChange={(val) => setStatus(val.toUpperCase() as any)}
+        onValueChange={(val: string) => setStatus(val.toUpperCase() as any)}
         className="w-full"
       >
         <TabsList className="mb-6 w-full justify-start gap-2 md:gap-4">
