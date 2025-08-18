@@ -135,6 +135,15 @@ const adminApi = baseApi.injectEndpoints({
       },
       providesTags: ["admin"],
     }),
+    // Approve or Reject Event
+    approveOrRejectEvent: builder.mutation({
+      query: ({ data, id }) => ({
+        url: `admin/approve-events/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["admin"],
+    }),
   }),
 });
 
@@ -148,4 +157,5 @@ export const {
   useRemoveMemberFromCommunityMutation,
   usePauseMemberFromCommunityMutation,
   useGetAllEventsByAdminQuery,
+  useApproveOrRejectEventMutation,
 } = adminApi;

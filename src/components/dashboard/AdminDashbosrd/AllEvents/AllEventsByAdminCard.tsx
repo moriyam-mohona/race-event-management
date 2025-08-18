@@ -1,21 +1,45 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { MapPin, Calendar, Activity } from "lucide-react";
+import { MapPin, Calendar, Activity, MoreVertical } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import placeholderImage from "@/assets/event.png";
 import { format } from "date-fns";
-import { FaRegBookmark } from "react-icons/fa";
-import { useAddEventToSavedMutation } from "@/redux/features/event/eventApi";
+import { Dropdown, MenuProps } from "antd";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import { useApproveOrRejectEventMutation } from "@/redux/features/admin/adminApi";
 
 const AllEventsByAdminCard: React.FC<any> = ({ event }) => {
-  const [addEventToSaved] = useAddEventToSavedMutation();
+  // const [addEventToSaved] = useAddEventToSavedMutation();
+  const [approveOrRejectEvent] = useApproveOrRejectEventMutation();
 
-  const handleAddToBookmark = () => {
-    handleAsyncWithToast(() => addEventToSaved(event?.id));
+  // Unified handler that accepts isAccepted
+  const handleApproveOrReject = async (isAccepted: boolean) => {
+    console.log(`${isAccepted ? "Approve" : "Reject"} event:`, event?.id);
+
+    await handleAsyncWithToast(() =>
+      approveOrRejectEvent({
+        id: event?.id,
+        data: { isAccepted },
+      })
+    );
   };
+
+  // Menu items with correct payload
+  const menuItems: MenuProps["items"] = [
+    {
+      key: "approve",
+      label: "✅ Approve",
+      onClick: () => handleApproveOrReject(true), // isAccepted: true
+    },
+    {
+      key: "reject",
+      label: "❌ Reject",
+      danger: true,
+      onClick: () => handleApproveOrReject(false), // isAccepted: false
+    },
+  ];
 
   return (
     <div className="w-full flex flex-col md:flex-row gap-4 lg:gap-6 rounded-lg overflow-hidden mb-6 bg-white border border-gray-100 shadow hover:shadow-md transition-shadow duration-300 p-3 sm:p-4 relative">
@@ -37,12 +61,19 @@ const AllEventsByAdminCard: React.FC<any> = ({ event }) => {
             <h3 className="font-semibold font-montserrat text-lg sm:text-xl text-gray-800 mb-2 sm:mb-4">
               {event?.title}
             </h3>
-            <button
-              onClick={handleAddToBookmark}
-              className="cursor-pointer flex-shrink-0"
-            >
-              <FaRegBookmark className="text-xl font-semibold" />
-            </button>
+
+            {/* Three dot action menu */}
+            {event?.eventStatus === "PENDING" && (
+              <Dropdown
+                menu={{ items: menuItems }}
+                trigger={["click"]}
+                placement="bottomRight"
+              >
+                <button className="cursor-pointer flex-shrink-0 p-1 hover:bg-gray-100 rounded-full">
+                  <MoreVertical size={20} className="text-gray-600" />
+                </button>
+              </Dropdown>
+            )}
           </div>
 
           <div className="space-y-2 mb-3">
