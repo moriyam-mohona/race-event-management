@@ -1,11 +1,10 @@
-import AllEventsPage from "@/components/dashboard/UserDashboard/events/AllEventsPage";
-import React from "react";
+import AllEventsByAdmin from "@/components/dashboard/AdminDashbosrd/AllEvents/AllEventsByAdmin";
 
 const AllEvents = () => {
   return (
     <div>
       {" "}
-      <AllEventsPage />
+      <AllEventsByAdmin />
     </div>
   );
 };
