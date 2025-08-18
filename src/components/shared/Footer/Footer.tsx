@@ -5,14 +5,31 @@ import { Linkedin, Twitter, Facebook, Instagram } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/assets/logo.png";
+import { useCreateSubscriberMutation } from "@/redux/features/subscriber/subscriberApi";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
   const emailRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = () => {
+  const [createSubscriber] = useCreateSubscriberMutation();
+
+  const handleSubmit = async () => {
     const email = emailRef.current?.value;
-    console.log("Submitted email:", email);
+    if (!email) return;
+
+    try {
+      const data = {
+        email: email,
+      };
+      await handleAsyncWithToast(() => createSubscriber(data));
+      // ✅ Clear the input field after submit
+      if (emailRef.current) {
+        emailRef.current.value = "";
+      }
+    } catch (error) {
+      console.error("Subscription failed:", error);
+    }
   };
 
   return (
