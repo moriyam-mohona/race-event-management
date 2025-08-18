@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import {
   PieChart,
   Pie,
@@ -8,28 +10,13 @@ import {
   Tooltip,
 } from "recharts";
 import { Card, CardHeader } from "@/components/ui/card";
-import { useAppSelector } from "@/redux/hooks";
-import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useGetAdminCardsDataQuery } from "@/redux/features/admin/adminApi";
 
 const COLORS = ["#F8B195", "#1E5631", "#2E7D32"];
 
 const UploadedRaceReport = () => {
-  const user = useAppSelector(selectCurrentUser);
-  const role = user?.role;
-  // Different data based on user role
-  const adminData = [
-    { name: "Uploaded Events", value: 5 },
-    { name: "Active Event", value: 1 },
-    { name: "Active Gears", value: 21 },
-  ];
-
-  const vendorData = [
-    { name: "Uploaded Events", value: 3 },
-    { name: "Active Event", value: 1 },
-    { name: "Active Gears", value: 12 },
-  ];
-
-  const data = role === "admin" ? adminData : vendorData;
+  const { data } = useGetAdminCardsDataQuery({});
+  const stats = data?.data?.[0] || [];
 
   const renderCustomizedLabel = ({
     cx,
@@ -77,7 +64,7 @@ const UploadedRaceReport = () => {
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
-              data={data}
+              data={stats} // use the API stats
               cx="50%"
               cy="50%"
               labelLine={false}
@@ -87,7 +74,7 @@ const UploadedRaceReport = () => {
               fill="#8884d8"
               dataKey="value"
             >
-              {data.map((entry, index) => (
+              {stats.map((entry: any, index: number) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
@@ -102,7 +89,7 @@ const UploadedRaceReport = () => {
               formatter={(value, entry, index) => {
                 return (
                   <span className="text-sm">
-                    {data[index].value.toString().padStart(2, "0")} {value}
+                    {stats[index].value.toString().padStart(2, "0")} {value}
                   </span>
                 );
               }}

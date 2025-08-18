@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import {
   LineChart,
   Line,
@@ -10,50 +11,22 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAppSelector } from "@/redux/hooks";
-import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useGetAdminRevenueQuery } from "@/redux/features/admin/adminApi";
 
 const OverRevenueInsight = () => {
-  const user = useAppSelector(selectCurrentUser);
-  const role = user?.role;
+  const { data } = useGetAdminRevenueQuery({});
 
-  // Different data based on user role
-  const adminData = [
-    { name: "Jan", value: 5000 },
-    { name: "Feb", value: 8000 },
-    { name: "Mar", value: 12000 },
-    { name: "Apr", value: 16000 },
-    { name: "May", value: 25000 },
-    { name: "Jun", value: 28000 },
-    { name: "Jul", value: 26000 },
-    { name: "Aug", value: 38000 },
-    { name: "Sep", value: 48000 },
-    { name: "Oct", value: 52000 },
-    { name: "Nov", value: 45000 },
-    { name: "Dec", value: 55000 },
-  ];
+  // Convert API strings to numbers
+  const chartData =
+    data?.data?.map((item: any) => ({
+      month: item.month,
+      value: Number(item.value),
+    })) || [];
 
-  const vendorData = [
-    { name: "Jan", value: 2000 },
-    { name: "Feb", value: 3500 },
-    { name: "Mar", value: 5000 },
-    { name: "Apr", value: 7000 },
-    { name: "May", value: 10000 },
-    { name: "Jun", value: 12000 },
-    { name: "Jul", value: 11000 },
-    { name: "Aug", value: 15000 },
-    { name: "Sep", value: 20000 },
-    { name: "Oct", value: 22000 },
-    { name: "Nov", value: 19000 },
-    { name: "Dec", value: 23000 },
-  ];
-
-  const data = role === "SUPER_ADMIN" ? adminData : vendorData;
-
-  const formatYAxis = (value: any) => {
+  const formatYAxis = (value: number) => {
     if (value === 0) return "$0";
     if (value < 1000) return `$${value}`;
-    return `$${value / 1000}k`;
+    return `$${(value / 1000).toFixed(1)}k`;
   };
 
   return (
@@ -63,41 +36,43 @@ const OverRevenueInsight = () => {
           Over Revenue Insight
         </CardTitle>
       </CardHeader>
-      <>
-        <div className="h-[300px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={data}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" axisLine={false} tickLine={false} />
-              <YAxis
-                tickFormatter={formatYAxis}
-                axisLine={false}
-                tickLine={false}
-              />
-              <Tooltip
-                formatter={(value) => [`$${value.toLocaleString()}`, "Revenue"]}
-                labelFormatter={(label) => `${label}`}
-              />
-              <Line
-                type="monotone"
-                dataKey="value"
-                stroke="#4CAF50"
-                strokeWidth={2}
-                dot={{ r: 4 }}
-                activeDot={{ r: 6 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
-      </>
+
+      <div className="h-[300px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={chartData}
+            margin={{
+              top: 5,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="month" axisLine={false} tickLine={false} />
+            <YAxis
+              tickFormatter={formatYAxis}
+              axisLine={false}
+              tickLine={false}
+            />
+            <Tooltip
+              formatter={(value: number) => [
+                `$${value.toLocaleString()}`,
+                "Revenue",
+              ]}
+              labelFormatter={(label) => `${label}`}
+            />
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke="#4CAF50"
+              strokeWidth={2}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </Card>
   );
 };

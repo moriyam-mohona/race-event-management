@@ -24,7 +24,7 @@ const sidebars: Record<
   SUPER_ADMIN: [
     {
       name: "Dashboard",
-      href: "/dashboard/vendor/dashboard",
+      href: "/dashboard/admin/dashboard",
       icon: <GoPerson />,
     },
     { name: " Profile", href: "/dashboard/admin/profile", icon: <GoPerson /> },

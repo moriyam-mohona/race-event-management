@@ -3,6 +3,23 @@ import { baseApi } from "../../api/baseApi";
 
 const adminApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // Get admin cards data for dashboard page
+    getAdminCardsData: builder.query({
+      query: () => ({
+        url: `admin/get-race-report-for-admin`,
+        method: "GET",
+      }),
+      providesTags: ["admin"],
+    }),
+    // Get admin revenue
+    getAdminRevenue: builder.query({
+      query: () => ({
+        url: `admin/get-admin-revenue-per-month`,
+        method: "GET",
+      }),
+      providesTags: ["admin"],
+    }),
+    // Get all vendors
     getAllVendors: builder.query({
       query: (data) => {
         const params = new URLSearchParams();
@@ -148,6 +165,8 @@ const adminApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetAdminRevenueQuery,
+  useGetAdminCardsDataQuery,
   useGetAllVendorsQuery,
   useApproveOrRejectVendorMutation,
   useGetAllEventsOfVendorQuery,

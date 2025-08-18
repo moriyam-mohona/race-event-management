@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -9,27 +10,13 @@ import {
   Tooltip,
 } from "recharts";
 import { Card, CardHeader } from "@/components/ui/card";
-import { useAppSelector } from "@/redux/hooks";
-import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useGetAdminCardsDataQuery } from "@/redux/features/admin/adminApi";
 
 const COLORS = ["#F8B195", "#1E5631"];
 
 const UserActivitiesReports = () => {
-  const user = useAppSelector(selectCurrentUser);
-  const role = user?.role;
-
-  // Different data based on user role
-  const adminData = [
-    { name: "Users have Booked", value: 300 },
-    { name: "Gear have been sold", value: 200 },
-  ];
-
-  const vendorData = [
-    { name: "Users have Booked", value: 120 },
-    { name: "Gear have been sold", value: 80 },
-  ];
-
-  const data = role === "admin" ? adminData : vendorData;
+  const { data } = useGetAdminCardsDataQuery({});
+  const stats = data?.data?.[1] || [];
 
   const renderCustomizedLabel = ({
     cx,
@@ -72,45 +59,42 @@ const UserActivitiesReports = () => {
           User Activities Reports
         </h2>
       </CardHeader>
-      <>
-        <div className="h-[200px]">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={renderCustomizedLabel}
-                outerRadius={80}
-                innerRadius={40}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  />
-                ))}
-              </Pie>
-              <Tooltip formatter={(value) => [`${value}`, ""]} />
-              <Legend
-                layout="vertical"
-                verticalAlign="middle"
-                align="right"
-                formatter={(value, entry, index) => {
-                  return (
-                    <span className="text-sm">
-                      {data[index].value} {value}
-                    </span>
-                  );
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-      </>
+
+      <div className="h-[200px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={stats}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              label={renderCustomizedLabel}
+              outerRadius={80}
+              innerRadius={40}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {stats.map((entry: any, index: number) => (
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
+              ))}
+            </Pie>
+            <Tooltip formatter={(value) => [`${value}`, ""]} />
+            <Legend
+              layout="vertical"
+              verticalAlign="middle"
+              align="right"
+              formatter={(value, entry, index) => (
+                <span className="text-sm">
+                  {stats[index]?.value ?? 0} {value}
+                </span>
+              )}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
     </Card>
   );
 };
