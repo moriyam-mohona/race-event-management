@@ -78,7 +78,7 @@ const adminApi = baseApi.injectEndpoints({
       },
       providesTags: ["admin"],
     }),
-    // Get all members of any single comunity
+    // Get all members of any single community
     getAllMembersByCommunityId: builder.query({
       query: ({
         id,
@@ -101,6 +101,23 @@ const adminApi = baseApi.injectEndpoints({
       },
       providesTags: ["admin"],
     }),
+    // Remove member form community
+    removeMemberFromCommunity: builder.mutation({
+      query: (id) => ({
+        url: `admin/remove-from-the-community/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["admin"],
+    }),
+    // Pause a Member from community
+    pauseMemberFromCommunity: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `admin/pause-membership/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["admin"],
+    }),
   }),
 });
 
@@ -111,4 +128,6 @@ export const {
   useGetAllCommunityByAdminQuery,
   useGetAllCommunityTitlesQuery,
   useGetAllMembersByCommunityIdQuery,
+  useRemoveMemberFromCommunityMutation,
+  usePauseMemberFromCommunityMutation,
 } = adminApi;

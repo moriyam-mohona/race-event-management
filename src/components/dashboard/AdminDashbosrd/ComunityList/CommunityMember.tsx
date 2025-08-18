@@ -10,14 +10,18 @@ import {
   Button,
   Dropdown,
   ConfigProvider,
+  MenuProps,
 } from "antd";
 import {
   useGetAllCommunityTitlesQuery,
   useGetAllMembersByCommunityIdQuery,
+  usePauseMemberFromCommunityMutation,
+  useRemoveMemberFromCommunityMutation,
 } from "@/redux/features/admin/adminApi";
 import { useParams, useRouter } from "next/navigation";
 import dayjs from "dayjs";
-import { FilterOutlined } from "@ant-design/icons";
+import { FilterOutlined, MoreOutlined } from "@ant-design/icons";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 
 const { Search } = Input;
 
@@ -40,6 +44,8 @@ const CommunityMember: React.FC = () => {
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
   const { data: communityTitles } = useGetAllCommunityTitlesQuery({});
+  const [removeMember] = useRemoveMemberFromCommunityMutation();
+  const [pauseMember] = usePauseMemberFromCommunityMutation();
 
   const menuItems =
     communityTitles?.data?.data.map((item: any) => ({
@@ -97,6 +103,19 @@ const CommunityMember: React.FC = () => {
     setPagination({ current: page, pageSize });
   };
 
+  // Action Handlers
+  const handleRemove = async (memberId: string) => {
+    await handleAsyncWithToast(() => removeMember(memberId));
+  };
+
+  // Handler
+  const handleToggleFollow = async (id: string, isFollowing: boolean) => {
+    const data = { isFollowing: !isFollowing }; // 👈 match "data"
+    console.log("Toggling follow for:", id, data);
+
+    await handleAsyncWithToast(() => pauseMember({ id, data }));
+  };
+
   const columns = [
     {
       title: "SL",
@@ -125,6 +144,30 @@ const CommunityMember: React.FC = () => {
       key: "isFollowing",
       render: (following: boolean) =>
         following ? <Tag color="blue">Yes</Tag> : <Tag color="red">No</Tag>,
+    },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_: any, record: Member) => {
+        const actionItems: MenuProps["items"] = [
+          {
+            key: "remove",
+            label: "Remove",
+            onClick: () => handleRemove(record.id),
+          },
+          {
+            key: "toggle-follow",
+            label: record.isFollowing ? "Pause" : "Activate",
+            onClick: () => handleToggleFollow(record.id, record.isFollowing),
+          },
+        ];
+
+        return (
+          <Dropdown menu={{ items: actionItems }} trigger={["click"]}>
+            <Button type="text" icon={<MoreOutlined />} />
+          </Dropdown>
+        );
+      },
     },
   ];
 
