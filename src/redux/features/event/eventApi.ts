@@ -69,7 +69,6 @@ const eventApi = baseApi.injectEndpoints({
       },
       providesTags: ["event"],
     }),
-
     // Get all shared events for user
     getAllSharedEvents: builder.query({
       query: (data) => {

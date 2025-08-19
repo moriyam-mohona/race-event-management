@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { baseApi } from "../../api/baseApi";
 
 const vendorApi = baseApi.injectEndpoints({
@@ -29,6 +30,32 @@ const vendorApi = baseApi.injectEndpoints({
       },
       providesTags: ["vendor"],
     }),
+    getAllEventsForVendor: builder.query({
+      query: (data) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `event/get-all-events-for-vendor`,
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["vendor"],
+    }),
+    stopEventRegistration: builder.mutation<any, any>({
+      query: ({ id, data }) => {
+        return {
+          url: `event/stop-event-registration/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+      invalidatesTags: ["vendor"],
+    }),
   }),
 });
 
@@ -36,4 +63,6 @@ export const {
   useGetVendorDashboardCardInfoQuery,
   useGetVendorDashboardPieChartInfoQuery,
   useGetVendorRevenuePerMonthQuery,
+  useGetAllEventsForVendorQuery,
+  useStopEventRegistrationMutation,
 } = vendorApi;
