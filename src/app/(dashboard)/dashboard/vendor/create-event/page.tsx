@@ -1,4 +1,4 @@
-import CreateEventPage from "@/components/dashboard/VendorDashboard/CreateEventPage";
+import CreateEventPage from "@/components/dashboard/VendorDashboard/createEvent/CreateEventPage";
 
 const CreateEvent = () => {
   return (
