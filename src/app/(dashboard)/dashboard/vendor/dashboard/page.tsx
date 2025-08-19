@@ -1,11 +1,11 @@
 import Graphs from "@/components/dashboard/DashboardRoot/Graphs";
-import States from "@/components/dashboard/DashboardRoot/States";
+import VendorCardInfo from "@/components/dashboard/VendorDashboard/VendorDashboardRoot/VendorDashboardCard";
 import React from "react";
 
 const Dashboard = () => {
   return (
     <div>
-      <States />
+      <VendorCardInfo />
       <Graphs />
     </div>
   );

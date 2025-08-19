@@ -14,8 +14,7 @@ const iconMap: Record<string, React.ReactNode> = {
 
 const States = () => {
   const { data } = useGetAdminCardsDataQuery({});
-  const stats = data?.data?.[0] || []; // only first array
-
+  const stats = data?.data?.[0] || [];
   return (
     <div className="py-8">
       <h1 className="text-2xl md:text-3xl font-medium mb-6">

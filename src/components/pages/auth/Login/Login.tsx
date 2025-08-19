@@ -52,7 +52,6 @@ const Login = () => {
       return login(loginData);
     });
     if (response?.data?.success) {
-      console.log(response);
       const user = (await verifyToken(
         response?.data?.data?.accessToken
       )) as DecodedUser;
