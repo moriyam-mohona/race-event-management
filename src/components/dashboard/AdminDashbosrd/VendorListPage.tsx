@@ -76,21 +76,6 @@ const VendorsListPage = () => {
     [vendorsData, page, pageSize]
   );
 
-  const handleStatusUpdate = async (
-    vendorId: string,
-    status: "ACTIVE" | "INACTIVE"
-  ) => {
-    await handleAsyncWithToast(() =>
-      approveOrRejectVendor({ data: { status }, id: vendorId })
-    );
-  };
-
-  const handleActionClick = (action: string, vendorId: string) => {
-    if (action === "Events") {
-      router.push(`/dashboard/admin/vendor-list/${vendorId}`);
-    }
-  };
-
   const handlePaginationChange = useCallback((page: number) => {
     setPage(page);
   }, []);
@@ -102,8 +87,87 @@ const VendorsListPage = () => {
     []
   );
 
-  const columns = useMemo(
-    () => [
+  // const columns = useMemo(
+  //   () => [
+  //     { title: "SL", dataIndex: "sl", key: "sl" },
+  //     { title: "Vendor Name", dataIndex: "fullName", key: "fullName" },
+  //     { title: "Login Date", dataIndex: "loginDate", key: "loginDate" },
+  //     { title: "Location", dataIndex: "country", key: "country" },
+  //     { title: "Email", dataIndex: "email", key: "email" },
+  //     { title: "Events", dataIndex: "totalEvents", key: "totalEvents" },
+  //     {
+  //       title: "Status",
+  //       dataIndex: "status",
+  //       key: "status",
+  //       render: (status: string) => (
+  //         <span
+  //           className={`font-medium ${
+  //             status === "PENDING"
+  //               ? "text-yellow-500"
+  //               : status === "ACTIVE"
+  //               ? "text-green-700"
+  //               : "text-red-500"
+  //           }`}
+  //         >
+  //           {status === "PENDING"
+  //             ? "Pending"
+  //             : status === "ACTIVE"
+  //             ? "Active"
+  //             : "Inactive"}
+  //         </span>
+  //       ),
+  //     },
+  //     {
+  //       title: "Action",
+  //       key: "action",
+  //       render: (_: any, record: Vendor) => (
+  //         <Dropdown
+  //           menu={{
+  //             items: [
+  //               {
+  //                 key: "events",
+  //                 label: "Events",
+  //                 onClick: () => handleActionClick("Events", record.id),
+  //               },
+  //               {
+  //                 key: "approve",
+  //                 label: "Approve",
+  //                 onClick: () => handleStatusUpdate(record.id, "ACTIVE"),
+  //               },
+  //               {
+  //                 key: "reject",
+  //                 label: "Reject",
+  //                 onClick: () => handleStatusUpdate(record.id, "INACTIVE"),
+  //               },
+  //             ],
+  //           }}
+  //           trigger={["click"]}
+  //         >
+  //           <Button type="text" icon={<MoreOutlined />} />
+  //         </Dropdown>
+  //       ),
+  //     },
+  //   ],
+  //   [handleActionClick, handleStatusUpdate]
+  // );
+
+  const columns = useMemo(() => {
+    const handleStatusUpdate = async (
+      vendorId: string,
+      status: "ACTIVE" | "INACTIVE"
+    ) => {
+      await handleAsyncWithToast(() =>
+        approveOrRejectVendor({ data: { status }, id: vendorId })
+      );
+    };
+
+    const handleActionClick = (action: string, vendorId: string) => {
+      if (action === "Events") {
+        router.push(`/dashboard/admin/vendor-list/${vendorId}`);
+      }
+    };
+
+    return [
       { title: "SL", dataIndex: "sl", key: "sl" },
       { title: "Vendor Name", dataIndex: "fullName", key: "fullName" },
       { title: "Login Date", dataIndex: "loginDate", key: "loginDate" },
@@ -162,9 +226,8 @@ const VendorsListPage = () => {
           </Dropdown>
         ),
       },
-    ],
-    []
-  );
+    ];
+  }, [approveOrRejectVendor, router]);
 
   return (
     <div className="p-4 sm:p-6">

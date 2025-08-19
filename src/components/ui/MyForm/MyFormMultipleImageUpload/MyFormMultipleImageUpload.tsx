@@ -4,6 +4,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { cn } from "@/lib/utils";
 // import Image from "next/image";
 import { MdDelete } from "react-icons/md";
+import Image from "next/image";
 
 type TMultipleImageUploadProps = {
   name: string;
@@ -128,9 +129,11 @@ const MyFormMultipleImageUpload = ({
                     key={index}
                     className={cn("relative w-fit", previewImageClassName)}
                   >
-                    <img
+                    <Image
                       src={preview}
                       alt={`Preview ${index + 1}`}
+                      width={200}
+                      height={200}
                       className={cn(
                         "rounded-md object-cover",
                         previewImageClassName
