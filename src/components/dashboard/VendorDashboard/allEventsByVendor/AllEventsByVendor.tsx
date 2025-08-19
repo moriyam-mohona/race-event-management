@@ -15,7 +15,6 @@ const AllEventsByVendor = () => {
     data: registeredEvents,
     isLoading: isRegisteredLoading,
     isError: isRegisteredError,
-    error: registeredError,
   } = useGetAllEventsForVendorQuery({
     queryObj: [
       {
@@ -35,8 +34,7 @@ const AllEventsByVendor = () => {
   const renderEvents = (
     events: any[] = [],
     isLoading: boolean,
-    isError: boolean,
-    error: any
+    isError: boolean
   ) => {
     if (isLoading) {
       return <Loading />;
@@ -46,9 +44,6 @@ const AllEventsByVendor = () => {
       return (
         <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed text-red-500">
           <p className="font-medium">Failed to load events</p>
-          <pre className="mt-2 max-w-full overflow-auto text-xs text-gray-400">
-            {JSON.stringify(error, null, 2)}
-          </pre>
         </div>
       );
     }
@@ -103,8 +98,7 @@ const AllEventsByVendor = () => {
             {renderEvents(
               tab === activeTab ? getCurrentEvents() : [],
               tab === activeTab ? isRegisteredLoading : false,
-              tab === activeTab ? isRegisteredError : false,
-              tab === activeTab ? registeredError : null
+              tab === activeTab ? isRegisteredError : false
             )}
           </TabsContent>
         ))}
