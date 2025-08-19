@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-'use client'
+"use client";
 import { cn } from "@/lib/utils";
 import { Form, TimePicker } from "antd";
 import dayjs from "dayjs";
@@ -13,7 +13,7 @@ const MyFormTimePicker = ({
   timePickerClassName,
   placeHolder,
   defaultValue,
-  onValueChange
+  onValueChange,
 }: {
   name: string;
   label?: string;
@@ -37,7 +37,7 @@ const MyFormTimePicker = ({
 
   useEffect(() => {
     if (onValueChange) {
-      onValueChange(timeValue); 
+      onValueChange(timeValue);
     }
   }, [timeValue, onValueChange]);
 
@@ -63,12 +63,15 @@ const MyFormTimePicker = ({
             )}
             <Form.Item style={{ marginBottom: "0px" }}>
               <TimePicker
-              size="large"
+                size="large"
                 {...field}
-                  format="HH:mm"
-                className={cn("w-full dark:bg-gray-300", timePickerClassName)}
+                format="HH:mm"
+                className={cn(
+                  "w-full !h-12 dark:bg-gray-300",
+                  timePickerClassName
+                )}
                 placeholder={placeHolder}
-                showNow={false} 
+                showNow={false}
                 value={field.value ? dayjs(field.value) : null}
                 onChange={(time) => {
                   field.onChange(time ? dayjs(time).toISOString() : null);

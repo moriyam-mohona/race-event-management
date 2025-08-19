@@ -60,7 +60,7 @@ const MyFormInput = ({
             {label && (
               <p
                 className={cn(
-                  "ps-1 text-[#101828] 2xl:text-base font-normal leading-6",
+                  "ps-1 mb-2 text-[#101828] 2xl:text-base font-normal leading-6",
                   labelClassName
                 )}
               >

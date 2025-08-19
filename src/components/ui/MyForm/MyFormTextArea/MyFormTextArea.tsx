@@ -55,7 +55,7 @@ const MyFormTextArea = ({
           <div className="flex flex-col justify-center w-full">
             <p
               className={cn(
-                "ps-1 text-[#101828]   text-base font-normal leading-6",
+                "ps-1 mb-2 text-[#101828]   text-base font-normal leading-6",
                 labelClassName
               )}
             >

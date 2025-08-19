@@ -2,10 +2,10 @@
 
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { setCurrentStep } from "@/redux/features/event/eventSlice";
-import CreateEventDetails from "./CreateEventDetails";
 import CreateGearForm from "./CreateGearPage";
 import PublishEvent from "./PublishEventPage";
 import { Stepper } from "./Stepper";
+import EventCreate from "./EventCreate";
 
 const steps = [
   { id: 1, name: "Create Event" },
@@ -24,13 +24,13 @@ const CreateEventPage = () => {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <CreateEventDetails />;
+        return <EventCreate />;
       case 2:
         return <CreateGearForm />;
       case 3:
         return <PublishEvent />;
       default:
-        return <CreateEventDetails />;
+        return <EventCreate />;
     }
   };
 

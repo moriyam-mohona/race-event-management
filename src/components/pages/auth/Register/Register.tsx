@@ -282,7 +282,7 @@ const Register = () => {
                       </SelectTrigger>
                       <SelectContent>
                         {continents.map((c) => (
-                          <SelectItem key={c.code} value={c.name}>
+                          <SelectItem key={c.name} value={c.name}>
                             {c.name}
                           </SelectItem>
                         ))}

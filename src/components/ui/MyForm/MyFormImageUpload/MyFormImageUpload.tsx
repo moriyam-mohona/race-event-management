@@ -80,7 +80,7 @@ const MyFormImageUpload = ({
                   src={preview}
                   alt="Preview"
                   className={cn(
-                    "object-cover rounded-xl w-32 h-32",
+                    "object-cover rounded-xl w-96 h-60 bg-green-100/60",
                     previewImageClassName
                   )}
                 />
@@ -89,7 +89,7 @@ const MyFormImageUpload = ({
                   onClick={handleRemoveImage}
                   className="px-1 py-1 bg-white bg-opacity-80 text-white rounded-md absolute top-1 right-1 cursor-pointer"
                 >
-                  <RiDeleteBinLine size={20} className="hover:text-red-500" />
+                  <RiDeleteBinLine size={20} className="text-red-500" />
                 </button>
               </div>
             ) : (
