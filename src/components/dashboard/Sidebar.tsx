@@ -168,7 +168,7 @@ const Sidebar = ({ role }: { role: string }) => {
       </div>
       <button
         onClick={handleLogout}
-        className="w-full flex items-center justify-center gap-2 bg-red-500 text-white font-semibold text-sm px-5 py-2 rounded-lg shadow-md hover:bg-red-600 hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-300"
+        className="w-full flex items-center justify-center gap-2 bg-red-500 text-white font-semibold text-sm px-5 py-2 rounded-lg shadow-md hover:bg-red-600 hover:shadow-lg transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-red-300 mb-10"
       >
         <FiLogOut className="text-xl" />
         Log out

@@ -35,14 +35,12 @@ const CreateEventPage = () => {
   };
 
   return (
-    <div>
-      <div>
-        <Stepper
-          currentStep={currentStep}
-          steps={steps}
-          onStepClick={handleStepClick}
-        />
-      </div>
+    <div className="">
+      <Stepper
+        currentStep={currentStep}
+        steps={steps}
+        onStepClick={handleStepClick}
+      />
       {renderStep()}
     </div>
   );

@@ -15,8 +15,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="flex h-screen flex-col">
-      {/* Topbar */}
+    <div className="flex min-h-screen flex-col">
+      {/* TopBar */}
       <div className="flex items-center justify-between px-4 py-2 ml-2">
         {/* Mobile Toggle */}
         <button className="lg:hidden mt-24" onClick={() => setMobileOpen(true)}>
@@ -27,8 +27,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
 
       {/* Body */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Desktop Sidebar */}
-        <aside className="w-64 bg-white p-4 hidden lg:block">
+        {/* Desktop Sidebar - Fixed position */}
+        <aside className="w-64 bg-white p-4 hidden lg:block fixed h-[calc(100vh-80px)] top-24 left-0 overflow-y-auto">
           <Sidebar role={role} />
         </aside>
 
@@ -52,8 +52,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           />
         )}
 
-        {/* Main content */}
-        <main className="flex-1 overflow-auto bg-[#F9F9F9] p-4 lg:mt-24">
+        {/* Main content - With left margin to account for fixed sidebar */}
+        <main className="flex-1 overflow-auto bg-[#F9F9F9] p-4 lg:mt-24 lg:ml-64">
           {children}
         </main>
       </div>

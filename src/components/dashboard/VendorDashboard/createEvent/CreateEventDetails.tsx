@@ -107,7 +107,7 @@ const CreateEventDetails = () => {
   };
 
   return (
-    <div className="bg-red-300">
+    <div>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl md:text-3xl xl:text-4xl font-semibold lg:font-medium mb-6">
           Create Event
