@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         port: "5012", // add this for profile images
       },
       {
+        protocol: "http",
+        hostname: "172.252.13.76", // <-- add this
+        port: "5012",
+      },
+      {
         protocol: "https",
         hostname: "images.pexels.com", // external images
       },

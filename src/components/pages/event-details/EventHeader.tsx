@@ -41,7 +41,7 @@ export function EventHeader({ data }: { data: any }) {
     <div className="flex flex-col md:flex-row gap-6 mb-8">
       <div className="md:w-1/3">
         <Image
-          src={data?.eventImages[0] || "/placeholder.svg"}
+          src={data?.eventImages || "/placeholder.svg"}
           alt={data?.title}
           width={1000}
           height={1000}

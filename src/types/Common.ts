@@ -9,7 +9,7 @@ export interface Event {
   category: string;
   price: number;
   currency: string;
-  eventImages: (string | StaticImageData)[];
+  eventImages: string | StaticImageData;
   description: string;
 }
 export interface Expo {

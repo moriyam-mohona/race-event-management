@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import Image from "next/image";
 import MyFormInput from "@/components/ui/MyForm/MyFormInput/MyFormInput";
 import MyFormWrapper from "@/components/ui/MyForm/MyFormWrapper/MyFormWrapper";
 import { z } from "zod";
@@ -12,11 +13,11 @@ import MyFormImageUpload from "@/components/ui/MyForm/MyFormImageUpload/MyFormIm
 import { AiOutlineUpload } from "react-icons/ai";
 import FAQFormList from "@/components/ui/MyForm/MyFormFAQFormList/MyFormFAQFormList";
 import countries from "world-countries";
-import Image from "next/image";
 import MyFormAddress from "@/components/ui/MyForm/MyFormAddress/MyFormAddress";
 import { useCreateEventByVendorMutation } from "@/redux/features/event/eventApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
-import { useRouter } from "next/navigation";
+import { useAppDispatch } from "@/redux/hooks";
+import { nextStep } from "@/redux/features/event/eventSlice";
 
 const validationSchema = z.object({
   title: z.string().min(3, "Title is required"),
@@ -86,7 +87,8 @@ const EventCreate = () => {
   }));
 
   const [eventCreate] = useCreateEventByVendorMutation();
-  const router = useRouter();
+  const dispatch = useAppDispatch();
+
   const handleSubmit = async (formData: any) => {
     const dataToSend = new FormData();
 
@@ -123,7 +125,7 @@ const EventCreate = () => {
 
     const response = await handleAsyncWithToast(() => eventCreate(dataToSend));
     if (response?.data?.success) {
-      router.push("/dashboard/vendor/events");
+      dispatch(nextStep());
     }
     console.log(formData);
   };

@@ -23,7 +23,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
     <div className="border rounded-lg overflow-hidden transition-transform duration-300 hover:shadow-xl hover:-translate-y-1">
       <div className="relative">
         <Image
-          src={event?.eventImages[0]}
+          src={event?.eventImages}
           alt={event?.title}
           width={1000}
           height={1000}
