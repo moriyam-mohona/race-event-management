@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import MyFormInput from "@/components/ui/MyForm/MyFormInput/MyFormInput";
 import MyFormWrapper from "@/components/ui/MyForm/MyFormWrapper/MyFormWrapper";
 import { z } from "zod";
@@ -12,6 +13,10 @@ import { AiOutlineUpload } from "react-icons/ai";
 import FAQFormList from "@/components/ui/MyForm/MyFormFAQFormList/MyFormFAQFormList";
 import countries from "world-countries";
 import Image from "next/image";
+import MyFormAddress from "@/components/ui/MyForm/MyFormAddress/MyFormAddress";
+import { useCreateEventByVendorMutation } from "@/redux/features/event/eventApi";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import { useRouter } from "next/navigation";
 
 const validationSchema = z.object({
   title: z.string().min(3, "Title is required"),
@@ -24,6 +29,8 @@ const validationSchema = z.object({
   country: z.string().nonempty("Country is required"),
   region: z.string().nonempty("Region is required"),
   address: z.string().nonempty("Address is required"),
+  latitude: z.number().min(-90).max(90),
+  longitude: z.number().min(-180).max(180),
 
   category: z.string().nonempty("Category is required"),
   type: z.string().nonempty("Event type is required"),
@@ -41,17 +48,17 @@ const validationSchema = z.object({
 
   startAddress: z.string().nonempty("Start address is required"),
   endAddress: z.string().nonempty("End address is required"),
-  distance: z.string().nonempty("Distance is required"),
+  distance: z.preprocess(
+    (val) => (val === "" ? undefined : Number(val)),
+    z.number({ invalid_type_error: "Distance must be a number" }).nonnegative()
+  ),
 
   ageLimit: z.preprocess(
-    (val) => (val === "" ? undefined : Number(val)),
+    (val) => (val === "" ? undefined : Number(val)), // convert empty string to undefined
     z.number({ invalid_type_error: "Age must be a number" }).min(1)
   ),
 
-  images: z.union([
-    z.object({}), // single object
-    z.array(z.any()), // or array of files
-  ]),
+  image: z.any().refine((file) => !!file, "Image is required"),
 
   frequentlyAskedQuestions: z.array(
     z.object({
@@ -78,7 +85,46 @@ const EventCreate = () => {
     flagUrl: `https://flagcdn.com/w20/${country.cca2.toLowerCase()}.png`,
   }));
 
+  const [eventCreate] = useCreateEventByVendorMutation();
+  const router = useRouter();
   const handleSubmit = async (formData: any) => {
+    const dataToSend = new FormData();
+
+    const data = {
+      title: formData.title,
+      description: formData.description,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
+      time: formData.time,
+      continent: formData.continent,
+      country: formData.country,
+      region: formData.region,
+      address: formData.address,
+      latitude: formData.latitude,
+      longitude: formData.longitude,
+      category: formData.category,
+      type: formData.type,
+      venueType: formData.venueType,
+      season: formData.season,
+      size: formData.size,
+      price: formData.price,
+      startAddress: formData.startAddress,
+      endAddress: formData.endAddress,
+      distance: formData.distance,
+      ageLimit: String(formData.ageLimit),
+      frequentlyAskedQuestions: formData.frequentlyAskedQuestions,
+    };
+
+    dataToSend.append("data", JSON.stringify(data));
+
+    if (formData.image) {
+      dataToSend.append("event-file", formData.image);
+    }
+
+    const response = await handleAsyncWithToast(() => eventCreate(dataToSend));
+    if (response?.data?.success) {
+      router.push("/dashboard/vendor/events");
+    }
     console.log(formData);
   };
 
@@ -166,15 +212,16 @@ const EventCreate = () => {
                 className="!w-[770px]"
               />
             </div>
-            <div className="flex items-center justify-between w-full gap-4">
+            <div className="flex items-center justify-between gap-4">
               <MyFormInput
                 name="region"
                 label="Region"
                 inputClassName="!w-[770px]"
               />
-              <MyFormInput
+              <MyFormAddress
                 name="address"
                 label="Address"
+                placeHolder="Enter your address"
                 inputClassName="!w-[770px]"
               />
             </div>
@@ -192,12 +239,15 @@ const EventCreate = () => {
                 label="Category"
                 placeHolder="Select your event category"
                 options={[
-                  { value: "running", label: "Running" },
-                  { value: "cycling", label: "Cycling" },
-                  { value: "triathlon", label: "Triathlon" },
-                  { value: "swimming", label: "Swimming" },
-                  { value: "obstacle", label: "Obstacle & Adventure" },
-                  { value: "virtual", label: "Virtual Races" },
+                  { value: "RUNNING", label: "Running" },
+                  { value: "CYCLING", label: "Cycling" },
+                  { value: "TRIATHLON", label: "Triathlon" },
+                  { value: "SWIMMING", label: "Swimming" },
+                  {
+                    value: "OBSTACLE_ADVENTURE",
+                    label: "Obstacle & Adventure",
+                  },
+                  { value: "VIRTUAL_RACE", label: "Virtual Races" },
                 ]}
                 labelClassName="font-medium"
                 className="!w-[770px]"
@@ -207,9 +257,10 @@ const EventCreate = () => {
                 label="Event Type"
                 placeHolder="Select your event type"
                 options={[
-                  { value: "hybrid", label: "Hybrid" },
-                  { value: "onsite", label: "On site" },
-                  { value: "virtual", label: "Virtual" },
+                  { value: "HYBRID", label: "Hybrid" },
+                  { value: "ON_SITE", label: "On site" },
+                  { value: "VIRTUAL", label: "Virtual" },
+                  { value: "SHARED", label: "Shared" },
                 ]}
                 labelClassName="font-medium"
                 className="!w-[770px]"
@@ -221,8 +272,8 @@ const EventCreate = () => {
                 label="Venue type"
                 placeHolder="Select your venue type"
                 options={[
-                  { value: "Mountain", label: "Mountain" },
-                  { value: "Hilly", label: "Hilly" },
+                  { value: "MOUNTAIN", label: "Mountain" },
+                  { value: "HILLY", label: "Hilly" },
                 ]}
                 labelClassName="font-medium"
                 className="!w-[770px]"
@@ -232,8 +283,10 @@ const EventCreate = () => {
                 label="Season"
                 placeHolder="Select event season"
                 options={[
-                  { value: "Summer", label: "Summer" },
-                  { value: "Winter", label: "Winter" },
+                  { value: "SUMMER", label: "Summer" },
+                  { value: "WINTER", label: "Winter" },
+                  { value: "AUTUMN", label: "Autumn" },
+                  { value: "SPRING", label: "Spring" },
                 ]}
                 labelClassName="font-medium"
                 className="!w-[770px]"
@@ -263,7 +316,7 @@ const EventCreate = () => {
           <div className="w-full border border-gray-200 rounded-lg p-5 space-y-5">
             <MyFormInput name="startAddress" label="Start Address" />
             <MyFormInput name="endAddress" label="End Address" />
-            <MyFormInput name="distance" label="Distance" />
+            <MyFormInput type="number" name="distance" label="Distance" />
           </div>{" "}
         </div>
         {/* Set Age Limit */}
@@ -288,7 +341,7 @@ const EventCreate = () => {
         <div>
           <h2 className="font-medium text-xl mb-3">Upload Image</h2>
           <div className="w-96 h-60 ">
-            <MyFormImageUpload name="images">
+            <MyFormImageUpload name="image">
               <div className="rounded-2xl border border-dashed bg-green-50 flex flex-col items-center justify-center gap-3 py-10">
                 <AiOutlineUpload className="text-gray-500 text-3xl" />
                 <h2 className="font-medium text-lg">

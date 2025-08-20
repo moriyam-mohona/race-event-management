@@ -86,6 +86,15 @@ const eventApi = baseApi.injectEndpoints({
       },
       providesTags: ["event"],
     }),
+
+    createEventByVendor: builder.mutation({
+      query: (data) => ({
+        url: "event/create-events",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["event"],
+    }),
   }),
 });
 
@@ -96,4 +105,5 @@ export const {
   useGetAllSavedEventsQuery,
   useGetAllSharedEventsQuery,
   useGetAllMyRegisteredEventsQuery,
+  useCreateEventByVendorMutation,
 } = eventApi;
