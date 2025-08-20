@@ -33,9 +33,15 @@ const FAQFormList = () => {
             </Button>
           </div>
 
-          <MyFormInput name={`faqs.${index}.question`} label="Question" />
+          <MyFormInput
+            name={`frequentlyAskedQuestions.${index}.question`}
+            label="Question"
+          />
 
-          <MyFormTextArea name={`faqs.${index}.answer`} label="Answer" />
+          <MyFormTextArea
+            name={`frequentlyAskedQuestions.${index}.answer`}
+            label="Answer"
+          />
         </div>
       ))}
 

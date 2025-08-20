@@ -53,14 +53,12 @@ const validationSchema = z.object({
     z.array(z.any()), // or array of files
   ]),
 
-  frequentlyAskedQuestions: z
-    .array(
-      z.object({
-        question: z.string().nonempty("Question required"),
-        answer: z.string().nonempty("Answer required"),
-      })
-    )
-    .optional(),
+  frequentlyAskedQuestions: z.array(
+    z.object({
+      question: z.string().nonempty("Question required"),
+      answer: z.string().nonempty("Answer required"),
+    })
+  ),
 });
 
 const EventCreate = () => {
@@ -272,8 +270,8 @@ const EventCreate = () => {
         <div>
           <h2 className="font-medium text-xl mb-3">Set Age Limit</h2>
           <MyFormInput
-            type="number"
             name="ageLimit"
+            type="number"
             placeHolder="Enter age limit "
           />
         </div>
