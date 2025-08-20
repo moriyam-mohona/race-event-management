@@ -95,6 +95,14 @@ const eventApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["event"],
     }),
+    createGear: builder.mutation({
+      query: ({ data, id }) => ({
+        url: `event/create-gear/${id}`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["event"],
+    }),
   }),
 });
 
@@ -106,4 +114,5 @@ export const {
   useGetAllSharedEventsQuery,
   useGetAllMyRegisteredEventsQuery,
   useCreateEventByVendorMutation,
+  useCreateGearMutation,
 } = eventApi;

@@ -33,7 +33,7 @@ const MyFormMultipleImageUpload = ({
   previewContainerClassName = "",
   previewImageClassName = "",
   initialImages = [],
-  maxFiles = 5,
+  maxFiles = 10,
   children,
   setRemovedImages,
   removeImages,
@@ -127,7 +127,7 @@ const MyFormMultipleImageUpload = ({
                 {previews.map((preview, index) => (
                   <div
                     key={index}
-                    className={cn("relative w-fit", previewImageClassName)}
+                    className={cn("relative", previewImageClassName)}
                   >
                     <Image
                       src={preview}
@@ -142,7 +142,7 @@ const MyFormMultipleImageUpload = ({
                     <button
                       type="button"
                       onClick={() => handleRemoveImage(index, preview)}
-                      className="px-1 py-1 bg-white bg-opacity-80 !text-secondary rounded-md absolute top-2 right-2 cursor-pointer"
+                      className="px-1 py-1 bg-white bg-opacity-80 !text-red-500 rounded-md absolute top-2 right-2 cursor-pointer"
                     >
                       <MdDelete size={20} className="hover:text-red-500" />
                     </button>

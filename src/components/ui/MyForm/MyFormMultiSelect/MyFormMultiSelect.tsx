@@ -51,11 +51,11 @@ const MyFormMultiSelect = ({
           )}
 
           {/* Ant Design Multi Select */}
-          <Form.Item style={{ marginBottom: "0px" }}>
+          <Form.Item>
             <Select
               mode="tags"
-              style={{ width: "100%", minHeight: "48px" }}
-              className={cn(className, "placeholder:!text-text-secondary")}
+              style={{ width: "100%" }}
+              className={cn(className, " !h-12")}
               {...field}
               placeholder={placeHolder}
               size="large"
@@ -72,7 +72,6 @@ const MyFormMultiSelect = ({
                   e.preventDefault();
                 }
               }}
-              dropdownStyle={{ display: "none" }} // This completely hides the dropdown
               showSearch={true} // Still allows typing
               filterOption={false} // Disables filtering of options
               notFoundContent={null} // Removes the "Not Found" content
