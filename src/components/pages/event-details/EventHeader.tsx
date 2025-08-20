@@ -30,11 +30,10 @@ export function EventHeader({ data }: { data: any }) {
   const id = useParams().id;
   const [addEventToSaved] = useAddEventToSavedMutation();
 
-  const handleAddToBookmark = () => {
-    const res = handleAsyncWithToast(() => {
+  const handleAddToBookmark = async () => {
+    await handleAsyncWithToast(() => {
       return addEventToSaved(id);
     });
-    console.log(res);
   };
 
   return (
@@ -42,7 +41,7 @@ export function EventHeader({ data }: { data: any }) {
       <div className="md:w-1/3">
         <Image
           src={data?.eventImages || "/placeholder.svg"}
-          alt={data?.title}
+          alt={data?.title || "Event"}
           width={1000}
           height={1000}
           className="bg-gray-100 w-[486px] h-[443px] rounded-lg object-cover"

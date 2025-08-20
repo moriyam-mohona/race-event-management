@@ -11,7 +11,7 @@ import { LuMessagesSquare } from "react-icons/lu";
 import { LiaListAltSolid } from "react-icons/lia";
 import { BsBookmark } from "react-icons/bs";
 import { LuLayoutDashboard } from "react-icons/lu";
-import { IoCalendarOutline } from "react-icons/io5";
+// import { IoCalendarOutline } from "react-icons/io5";
 import { useAppDispatch } from "@/redux/hooks";
 import { logout } from "@/redux/features/auth/authSlice";
 import Swal from "sweetalert2";
@@ -79,11 +79,11 @@ const sidebars: Record<
       href: "/dashboard/vendor/all-events",
       icon: <LiaListAltSolid />,
     },
-    {
-      name: "Booking List",
-      href: "/dashboard/vendor/booking-list",
-      icon: <IoCalendarOutline />,
-    },
+    // {
+    //   name: "Booking List",
+    //   href: "/dashboard/vendor/booking-list",
+    //   icon: <IoCalendarOutline />,
+    // },
   ],
 };
 

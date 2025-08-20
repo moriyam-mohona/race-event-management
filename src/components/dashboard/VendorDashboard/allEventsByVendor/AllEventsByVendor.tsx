@@ -8,7 +8,7 @@ import { useGetAllEventsForVendorQuery } from "@/redux/features/vendor/vendorApi
 import VendorEventCard from "./VendorEventCard";
 
 const AllEventsByVendor = () => {
-  const [activeTab, setActiveTab] = useState("upcoming");
+  const [activeTab, setActiveTab] = useState("pending");
 
   // Query for my registered events with dynamic status
   const {
@@ -77,7 +77,7 @@ const AllEventsByVendor = () => {
       </div>
 
       <Tabs
-        defaultValue="upcoming"
+        defaultValue="pending"
         className="w-full"
         onValueChange={(value) => setActiveTab(value)}
       >

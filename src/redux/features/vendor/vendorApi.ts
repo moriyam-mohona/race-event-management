@@ -56,6 +56,22 @@ const vendorApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["vendor"],
     }),
+    getAllBookingByVendor: builder.query<any, any>({
+      query: ({ id, data }) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `vendor/get-all-booking-events/${id}`,
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["vendor"],
+    }),
   }),
 });
 
@@ -65,4 +81,5 @@ export const {
   useGetVendorRevenuePerMonthQuery,
   useGetAllEventsForVendorQuery,
   useStopEventRegistrationMutation,
+  useGetAllBookingByVendorQuery,
 } = vendorApi;

@@ -140,6 +140,13 @@ const VendorEventCard: React.FC<any> = ({ event }) => {
         {/* Details Button */}
         <div className="flex items-center justify-end mt-3">
           <Link
+            href={`/dashboard/vendor/all-events/${event?.id}`}
+            className="bg-transparent hover:bg-primary text-primary hover:text-white border border-primary px-4 sm:px-6 py-2 sm:py-3 rounded text-sm sm:text-base transition-colors duration-200"
+          >
+            View Booking list
+          </Link>
+
+          <Link
             href={`/race-categories/${event?.id}`}
             className="bg-transparent hover:bg-primary text-primary hover:text-white border border-primary px-4 sm:px-6 py-2 sm:py-3 rounded text-sm sm:text-base transition-colors duration-200"
           >
