@@ -17,7 +17,7 @@ import MyFormAddress from "@/components/ui/MyForm/MyFormAddress/MyFormAddress";
 import { useCreateEventByVendorMutation } from "@/redux/features/event/eventApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 import { useAppDispatch } from "@/redux/hooks";
-import { nextStep } from "@/redux/features/event/eventSlice";
+import { nextStep, setEventId } from "@/redux/features/event/eventSlice";
 
 const validationSchema = z.object({
   title: z.string().min(3, "Title is required"),
@@ -124,7 +124,12 @@ const EventCreate = () => {
     }
 
     const response = await handleAsyncWithToast(() => eventCreate(dataToSend));
+
     if (response?.data?.success) {
+      const newEventId = response?.data?.data?.id;
+      if (newEventId) {
+        dispatch(setEventId(newEventId));
+      }
       dispatch(nextStep());
     }
     console.log(formData);

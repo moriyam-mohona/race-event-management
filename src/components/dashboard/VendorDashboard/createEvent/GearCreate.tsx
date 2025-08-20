@@ -9,6 +9,10 @@ import MyFormMultiSelect from "@/components/ui/MyForm/MyFormMultiSelect/MyFormMu
 import MyFormMultipleImageUpload from "@/components/ui/MyForm/MyFormMultipleImageUpload/MyFormMultipleImageUpload";
 import { useCreateGearMutation } from "@/redux/features/event/eventApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { nextStep, setEventId } from "@/redux/features/event/eventSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 const validationSchema = z.object({
   gearTitle: z.string().min(3, "Gear Title is required"),
@@ -24,9 +28,10 @@ const validationSchema = z.object({
 
 const GearCreate = () => {
   const [createGear] = useCreateGearMutation();
-  const handleSubmit = async (formData: any, reset: any) => {
-    const id = "68a5656a25bc1c53bbed6efe";
+  const dispatch = useAppDispatch();
+  const eventId = useSelector((state: RootState) => state.event.eventId);
 
+  const handleSubmit = async (formData: any, reset: any) => {
     const dataToSubmit = new FormData();
     const body = {
       gearTitle: formData.gearTitle,
@@ -41,9 +46,14 @@ const GearCreate = () => {
       dataToSubmit.append("gear-file", image)
     );
     const response = await handleAsyncWithToast(() =>
-      createGear({ data: dataToSubmit, id })
+      createGear({ data: dataToSubmit, id: eventId })
     );
     if (response?.data?.success) {
+      const newEventId = response?.data?.data?.id;
+      if (newEventId) {
+        dispatch(setEventId(newEventId));
+      }
+      dispatch(nextStep());
       reset();
     }
   };

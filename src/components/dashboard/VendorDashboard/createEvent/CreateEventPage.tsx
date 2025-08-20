@@ -24,7 +24,7 @@ const CreateEventPage = () => {
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return <GearCreate />;
+        return <EventCreate />;
       case 2:
         return <GearCreate />;
       case 3:

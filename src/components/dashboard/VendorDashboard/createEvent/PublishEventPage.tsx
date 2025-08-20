@@ -1,37 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import {
-  completeEvent,
-  resetEvent,
-  prevStep,
-} from "@/redux/features/event/eventSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useGetSingleEventQuery } from "@/redux/features/event/eventApi";
 
 const PublishEvent = () => {
-  const dispatch = useAppDispatch();
+  const eventId = useSelector((state: RootState) => state.event.eventId);
   const router = useRouter();
-  const eventData = useAppSelector((state) => state.event);
+  const { data: eventData } = useGetSingleEventQuery(eventId);
+  console.log(eventData);
 
   const handleSubmit = () => {
-    dispatch(completeEvent());
-
-    // Log all data to console as requested
-    console.log("Final Event Data:", eventData);
-
-    // Show success message
-    alert("Event created successfully!");
-
-    // Reset form and redirect
-    dispatch(resetEvent());
     router.push("/");
   };
-
-  const handleBack = () => {
-    dispatch(prevStep());
-  };
-
   return (
     <div>
       <div className="mb-8">
@@ -51,14 +35,16 @@ const PublishEvent = () => {
 
             <div className="mb-4">
               <h4 className="text-sm font-medium text-gray-500 mb-1">Title</h4>
-              <p className="text-base text-gray-800">{eventData.title}</p>
+              <p className="text-base text-gray-800">{eventData?.title}</p>
             </div>
 
             <div>
               <h4 className="text-sm font-medium text-gray-500 mb-1">
                 Description
               </h4>
-              <p className="text-base text-gray-700">{eventData.description}</p>
+              <p className="text-base text-gray-700">
+                {eventData?.description}
+              </p>
             </div>
           </div>
 
@@ -71,17 +57,19 @@ const PublishEvent = () => {
                 <p className="text-sm font-medium text-gray-500 mb-1">
                   Start date
                 </p>
-                <p className="text-base text-gray-800">{eventData.startDate}</p>
+                <p className="text-base text-gray-800">
+                  {eventData?.startDate}
+                </p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500 mb-1">
                   End date
                 </p>
-                <p className="text-base text-gray-800">{eventData.endDate}</p>
+                <p className="text-base text-gray-800">{eventData?.endDate}</p>
               </div>
               <div>
                 <p className="text-sm font-medium text-gray-500 mb-1">Time</p>
-                <p className="text-base text-gray-800">{eventData.timezone}</p>
+                <p className="text-base text-gray-800">{eventData?.timezone}</p>
               </div>
             </div>
           </div>
@@ -92,19 +80,19 @@ const PublishEvent = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-500">Continent</p>
-                <p className="font-medium">{eventData.continent}</p>
+                <p className="font-medium">{eventData?.continent}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Country</p>
-                <p className="font-medium">{eventData.country}</p>
+                <p className="font-medium">{eventData?.country}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Region</p>
-                <p className="font-medium">{eventData.region}</p>
+                <p className="font-medium">{eventData?.region}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Address</p>
-                <p className="font-medium">{eventData.city}</p>
+                <p className="font-medium">{eventData?.city}</p>
               </div>
             </div>
           </div>
@@ -115,27 +103,27 @@ const PublishEvent = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-gray-500">Category</p>
-                <p className="font-medium">{eventData.category}</p>
+                <p className="font-medium">{eventData?.category}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Type</p>
-                <p className="font-medium">{eventData.event_type}</p>
+                <p className="font-medium">{eventData?.event_type}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Site</p>
-                <p className="font-medium">{eventData.venue}</p>
+                <p className="font-medium">{eventData?.venue}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Season</p>
-                <p className="font-medium">{eventData.season}</p>
+                <p className="font-medium">{eventData?.season}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Size</p>
-                <p className="font-medium">{eventData.size}</p>
+                <p className="font-medium">{eventData?.size}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Price</p>
-                <p className="font-medium">{eventData.prize}</p>
+                <p className="font-medium">{eventData?.prize}</p>
               </div>
             </div>
           </div>
@@ -151,15 +139,15 @@ const PublishEvent = () => {
               </div>
               <div>
                 <p className="text-sm text-gray-500">Start address</p>
-                <p className="font-medium">{eventData.startAddress}</p>
+                <p className="font-medium">{eventData?.startAddress}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Finish address </p>
-                <p className="font-medium">{eventData.finishAddress}</p>
+                <p className="font-medium">{eventData?.finishAddress}</p>
               </div>
               <div>
                 <p className="text-sm text-gray-500">Distance</p>
-                <p className="font-medium">{eventData.distance}</p>
+                <p className="font-medium">{eventData?.distance}</p>
               </div>
             </div>
           </div>
@@ -167,15 +155,15 @@ const PublishEvent = () => {
           {/* Age Limit */}
           <div>
             <h3 className="text-lg font-medium mb-4">Set Age Limit</h3>
-            <p className="font-medium">{eventData.ageLimit}</p>
+            <p className="font-medium">{eventData?.ageLimit}</p>
           </div>
 
           {/* Needed Gear */}
-          {eventData.gearItems.length > 0 && (
+          {eventData?.gearItems.length > 0 && (
             <div>
               <h3 className="text-lg font-medium mb-4">Needed gear</h3>
               <div className="space-y-4">
-                {eventData.gearItems.map((item) => (
+                {eventData?.gearItems.map((item: any) => (
                   <div
                     key={item.id}
                     className="flex items-center p-4 border rounded-lg bg-gray-50"
@@ -205,19 +193,19 @@ const PublishEvent = () => {
       </div>
 
       <div className="flex justify-between">
-        <button
+        {/* <button
           type="submit"
           onClick={handleBack}
           className="px-6 py-2 border rounded-lg bg-transparent hover:text-white hover:bg-green-900 "
         >
           Back
-        </button>
+        </button> */}
         <button
           type="submit"
           onClick={handleSubmit}
           className="px-6 py-2 rounded-lg text-white bg-primary hover:bg-primary"
         >
-          Submit
+          Done
         </button>
       </div>
     </div>

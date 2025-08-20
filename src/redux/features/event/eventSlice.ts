@@ -18,6 +18,7 @@ interface ImagePreview {
 }
 
 export interface EventState {
+  eventId: string | null;
   // Step 1: Event Details
   title: string;
   description: string;
@@ -63,6 +64,8 @@ export interface EventState {
 }
 
 const initialState: EventState = {
+  eventId: null,
+
   // Step 1: Event Details
   title: "",
   description: "",
@@ -123,6 +126,9 @@ export const eventSlice = createSlice({
         (item) => item.id !== action.payload
       );
     },
+    setEventId: (state, action: PayloadAction<string>) => {
+      state.eventId = action.payload;
+    },
     setCurrentStep: (state, action: PayloadAction<number>) => {
       state.currentStep = action.payload;
     },
@@ -145,6 +151,7 @@ export const {
   setEventDetails,
   addGearItem,
   removeGearItem,
+  setEventId,
   setCurrentStep,
   nextStep,
   prevStep,
