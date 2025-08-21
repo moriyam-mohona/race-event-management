@@ -8,7 +8,7 @@ import {
 import { RootState } from "../store";
 import { logout, setUser } from "../features/auth/authSlice";
 // import Swal from "sweetalert2";
-import { signOut } from "next-auth/react";
+// import { signOut } from "next-auth/react";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_BASE_URL,
@@ -67,7 +67,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
       } else {
         // If refresh failed and user is still "logged in"
         api.dispatch(logout());
-        signOut();
+        // signOut();
       }
     } catch (error) {
       console.error("Error during token refresh:", error);

@@ -47,7 +47,7 @@ const FindDreamRace = () => {
                 </p>
 
                 <Link
-                  href="/"
+                  href="/race-categories"
                   className="inline-flex items-center gap-2 bg-primary hover:bg-primary/80 text-white px-6 py-3 rounded transition-colors duration-300 mt-4"
                 >
                   Explore more <ArrowRight className="h-5 w-5" />
