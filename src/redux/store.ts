@@ -45,13 +45,23 @@ const persistAuthConfig = {
 
 const persistedAuthReducer = persistReducer(persistAuthConfig, authReducer);
 
+const persistBookingConfig = {
+  key: "booking",
+  storage,
+};
+
+const persistedBookingReducer = persistReducer(
+  persistBookingConfig,
+  bookingReducer
+);
+
 export const makeStore = () => {
   return configureStore({
     reducer: {
       [baseApi.reducerPath]: baseApi.reducer,
       auth: persistedAuthReducer,
       event: eventReducer,
-      booking: bookingReducer,
+      booking: persistedBookingReducer,
     },
     middleware: (getDefaultMiddlewares) =>
       getDefaultMiddlewares({

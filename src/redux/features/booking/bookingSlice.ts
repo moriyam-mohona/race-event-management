@@ -7,12 +7,17 @@ import {
 } from "@/types/Common";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
+const persistedBooking =
+  typeof window !== "undefined"
+    ? JSON.parse(localStorage.getItem("booking") || "{}")
+    : {};
+
 const initialState: BookingState = {
-  currentStep: 1,
-  ticket: {},
-  personalDetails: {},
-  addOns: {},
-  payment: { stripeId: "" },
+  currentStep: persistedBooking.currentStep || 1,
+  ticket: persistedBooking.ticket || {},
+  personalDetails: persistedBooking.personalDetails || {},
+  addOns: persistedBooking.addOns || {},
+  payment: persistedBooking.payment || { stripeId: "" },
 };
 
 export const bookingSlice = createSlice({
