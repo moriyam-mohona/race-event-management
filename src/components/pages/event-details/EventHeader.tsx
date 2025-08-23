@@ -133,7 +133,7 @@ export function EventHeader({ data }: { data: any }) {
               Community
             </Link>
             <Link
-              href="/booking"
+              href={`/race-categories/${id}/booking`}
               className="hover:border hover:border-primary hover:bg-primary/20 hover:text-primary bg-primary text-white px-8 py-2 rounded-lg text-lg"
             >
               Register Now
