@@ -12,7 +12,7 @@ const initialState: BookingState = {
   ticket: {},
   personalDetails: {},
   addOns: {},
-  payment: {},
+  payment: { stripeId: "" },
 };
 
 export const bookingSlice = createSlice({
@@ -48,7 +48,7 @@ export const bookingSlice = createSlice({
       state.ticket = {};
       state.personalDetails = {};
       state.addOns = {};
-      state.payment = {};
+      state.payment = { stripeId: "" };
     },
   },
 });

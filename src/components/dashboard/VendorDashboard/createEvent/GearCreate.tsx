@@ -109,7 +109,7 @@ const GearCreate = () => {
             <div className="w-full">
               <h2 className="text-xl font-medium mb-3">Sizes</h2>
               <MyFormMultiSelect
-                name="mixedValues"
+                name="sizes"
                 type="mixed"
                 placeHolder="Type text, number, or hex color"
               />

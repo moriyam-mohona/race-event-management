@@ -18,8 +18,7 @@ import MyFormDatePicker from "@/components/ui/MyForm/MyFormDatePicker/MyFormDate
 
 export const personalDetailsSchema = z.object({
   gender: z.string({ required_error: "Gender is required" }),
-  firstName: z.string({ required_error: "First name is required" }),
-  lastName: z.string({ required_error: "Last name is required" }),
+  fullName: z.string({ required_error: "First name is required" }),
   dateOfBirth: z.string({ required_error: "Date of birth is required" }),
   nationality: z.string({ required_error: "Nationality is required" }),
   email: z
@@ -80,14 +79,13 @@ export default function PersonalDetails() {
               <MyFormRadio
                 name="gender"
                 options={[
-                  { value: "male", label: "Male" },
-                  { value: "female", label: "Female" },
+                  { value: "MALE", label: "Male" },
+                  { value: "FEMALE", label: "Female" },
                 ]}
               />
             </div>
-            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <MyFormInput name="firstName" placeHolder="First Name" />
-              <MyFormInput name="lastName" placeHolder="Last Name" />
+            <div className="mb-4 grid grid-cols-1">
+              <MyFormInput name="fullName" placeHolder="Full Name" />
             </div>
 
             <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">

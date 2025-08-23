@@ -81,8 +81,7 @@ export interface TicketState {
 
 export interface PersonalDetailsState {
   gender?: string;
-  firstName?: string;
-  lastName?: string;
+  fullName?: string;
   dateOfBirth?: string;
   nationality?: string;
   email?: string;
@@ -127,13 +126,7 @@ export interface AddOnsState {
 }
 
 export interface PaymentState {
-  paymentMethod?: string;
-  cardName?: string;
-  cardNumber?: string;
-  cvv?: string;
-  expiryDate?: string;
-  agreeToTerms?: boolean;
-  country?: string;
+  stripeId: string;
 }
 
 export interface BookingState {

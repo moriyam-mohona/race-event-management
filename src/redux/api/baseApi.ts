@@ -88,6 +88,7 @@ export const baseApi = createApi({
     "admin",
     "subscriber",
     "vendor",
+    "booking",
   ],
   endpoints: () => ({}),
 });

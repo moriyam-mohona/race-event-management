@@ -22,6 +22,7 @@ import MyFormInput from "@/components/ui/MyForm/MyFormInput/MyFormInput";
 import MyFormSelect from "@/components/ui/MyForm/MyFormSelect/MyFormSelect";
 import MyFormWrapper from "@/components/ui/MyForm/MyFormWrapper/MyFormWrapper";
 import { AddedGearInfo, AddOnItem } from "@/types/Common";
+import MyFormTextArea from "@/components/ui/MyForm/MyFormTextArea/MyFormTextArea";
 
 // Schema for gear selection form
 const gearSelectionSchema = z.object({
@@ -67,7 +68,7 @@ export default function AddOns() {
     setModalOpen(true);
   };
 
-  const handleModalSubmit = (formData: any) => {
+  const handleModalSubmit = (formData: any, reset: any) => {
     if (!currentGear) return;
 
     const newGear: AddedGearInfo = {
@@ -80,6 +81,7 @@ export default function AddOns() {
 
     setAddedGearInfo([...addedGearInfo, newGear]);
     setModalOpen(false);
+    reset();
   };
 
   const handleContinue = () => {
@@ -192,12 +194,12 @@ export default function AddOns() {
         <MyFormWrapper
           onSubmit={handleModalSubmit}
           resolver={zodResolver(gearSelectionSchema)}
-          defaultValues={{
-            quantity: 1,
-            size: "",
-            color: "",
-            message: "I must need this product",
-          }}
+          // defaultValues={{
+          //   quantity: 1,
+          //   size: "",
+          //   color: "",
+          //   message: "I must need this product",
+          // }}
           className="space-y-4"
         >
           <MyFormInput name="quantity" type="number" label="Quantity" />
@@ -238,7 +240,7 @@ export default function AddOns() {
             />
           </div>
 
-          <MyFormInput name="message" type="text" label="Message (Optional)" />
+          <MyFormTextArea name="message" label="Message (Optional)" />
 
           <div className="flex justify-end gap-2 mt-4">
             <button
@@ -252,7 +254,7 @@ export default function AddOns() {
               type="submit"
               className="px-4 py-2 bg-primary text-white rounded"
             >
-              Add to Gear
+              Add
             </button>
           </div>
         </MyFormWrapper>

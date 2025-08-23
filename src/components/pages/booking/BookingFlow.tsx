@@ -5,13 +5,13 @@ import { useSelector, useDispatch } from "react-redux";
 import SelectTicket from "./SelectTicket";
 import PersonalDetails from "./PersonalDetails";
 import AddOns from "./AddOns";
-import Payment from "./Payment";
 import { RootState } from "@/redux/store";
 import StepIndicator from "./StepIndicator";
 import OrderSummary from "./OrderSummary";
 import { GrLocation } from "react-icons/gr";
 import { useParams } from "next/navigation";
 import { useGetSingleEventQuery } from "@/redux/features/event/eventApi";
+import Payment from "./Payment";
 
 export default function BookingFlow() {
   const params = useParams();
