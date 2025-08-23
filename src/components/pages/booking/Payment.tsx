@@ -11,12 +11,11 @@ import {
   setPayment,
 } from "@/redux/features/booking/bookingSlice";
 import SuccessModal from "@/components/shared/SuccessModal";
-import { FaStripe } from "react-icons/fa";
 import { useParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { Label } from "@/components/ui/label";
 import { useCreateBookingMutation } from "@/redux/features/booking/bookingApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import { ArrowLeft } from "lucide-react";
 // import Payment from "./Payment";
 // import { useCreatePaymentWithInvoiceIDMutation } from "@/redux/features/payment/paymentApi";
 
@@ -90,19 +89,22 @@ const Payment = () => {
   return (
     <div className="container mx-auto max-w-3xl mt-20">
       <div className="mb-6">
-        <button onClick={() => dispatch(prevStep())}>Back</button>
-        <h2 className="text-2xl md:text-3xl font-medium text-gray-700">
-          Payment Method
-        </h2>
-        <div className="mt-4">
-          <div className="flex items-center space-x-2">
-            <Label htmlFor="card" className="flex items-center">
-              <FaStripe className="text-4xl bg-[#72C197] text-white rounded-full p-1" />
-            </Label>
-          </div>
+        <div className="flex items-center gap-5">
+          <button
+            onClick={() => dispatch(prevStep())}
+            className="flex items-center gap-2 rounded-xl bg-gray-50 px-4 py-1 text-gray-700 hover:bg-gray-200 transition-all shadow-sm hover:shadow-md cursor-pointer"
+          >
+            <ArrowLeft size={18} />
+            <span className="font-medium">Back</span>
+          </button>
+
+          <h2 className="text-2xl md:text-3xl font-semibold text-gray-800 flex gap-3">
+            {/* <FaStripe className="text-4xl bg-[#72C197] text-white rounded-full p-1" /> */}
+            Payment
+          </h2>
         </div>
       </div>{" "}
-      <div className="mx-auto md:px-10 py-10 bg-gray-100 rounded-2xl">
+      <div className="mx-auto md:px-10 py-10 border rounded-2xl">
         {/* stripe setup */}
         <div>
           <Elements stripe={stripePromise}>

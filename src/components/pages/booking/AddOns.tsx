@@ -23,6 +23,8 @@ import MyFormSelect from "@/components/ui/MyForm/MyFormSelect/MyFormSelect";
 import MyFormWrapper from "@/components/ui/MyForm/MyFormWrapper/MyFormWrapper";
 import { AddedGearInfo, AddOnItem } from "@/types/Common";
 import MyFormTextArea from "@/components/ui/MyForm/MyFormTextArea/MyFormTextArea";
+import Loading from "@/components/shared/Loading/Loading";
+import { RiDeleteBin6Line } from "react-icons/ri";
 
 // Schema for gear selection form
 const gearSelectionSchema = z.object({
@@ -38,7 +40,11 @@ export default function AddOns() {
 
   const params = useParams();
   const id = params.id;
-  const { data: detailEventData } = useGetSingleEventQuery(id);
+  const {
+    data: detailEventData,
+    isLoading,
+    isFetching,
+  } = useGetSingleEventQuery(id);
 
   const [availableItems, setAvailableItems] = useState<AddOnItem[]>([]);
   const [addedGearInfo, setAddedGearInfo] = useState<AddedGearInfo[]>(
@@ -105,6 +111,8 @@ export default function AddOns() {
     setAddedGearInfo(updatedGearInfo);
   };
 
+  if (isLoading || isFetching) return <Loading />;
+
   return (
     <div className="rounded-lg border border-gray-200 bg-white p-4">
       {/* Gear Cards */}
@@ -131,7 +139,7 @@ export default function AddOns() {
             <div className="mt-4">
               <Button
                 variant="outline"
-                className="flex bg-primary text-white items-center gap-1 rounded px-10 py-4"
+                className="flex bg-primary text-white items-center gap-1 rounded px-10 py-4 cursor-pointer"
                 onClick={() => handleAddToCart(item)}
               >
                 <span>Add Item</span>
@@ -172,9 +180,9 @@ export default function AddOns() {
                   </div>
                   <button
                     onClick={() => removeGearItem(idx)}
-                    className="text-red-500 hover:text-red-700 ml-4"
+                    className="text-red-500 hover:text-red-700 ml-4 cursor-pointer"
                   >
-                    Remove
+                    <RiDeleteBin6Line className="text-xl" />
                   </button>
                 </li>
               );
@@ -246,13 +254,13 @@ export default function AddOns() {
             <button
               type="button"
               onClick={() => setModalOpen(false)}
-              className="px-4 py-2 border rounded"
+              className="px-4 py-2 border rounded cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-primary text-white rounded"
+              className="px-4 py-2 bg-primary text-white rounded cursor-pointer"
             >
               Add
             </button>
@@ -261,11 +269,14 @@ export default function AddOns() {
       </Modal>
 
       <div className="mt-8 flex justify-between">
-        <button onClick={handleBack} className="border px-10 py-2 rounded">
+        <button
+          onClick={handleBack}
+          className="border px-10 py-2 rounded cursor-pointer"
+        >
           Back
         </button>
         <button
-          className="bg-primary hover:bg-primary/90 text-white px-10 py-2 rounded"
+          className="bg-primary hover:bg-primary/90 text-white px-10 py-2 rounded cursor-pointer"
           onClick={handleContinue}
           disabled={addedGearInfo.length === 0}
         >

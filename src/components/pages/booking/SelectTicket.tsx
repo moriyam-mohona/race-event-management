@@ -12,11 +12,16 @@ import { MdOutlineWatchLater } from "react-icons/md";
 import { useGetSingleEventQuery } from "@/redux/features/event/eventApi";
 import { useParams } from "next/navigation";
 import { format } from "date-fns";
+import Loading from "@/components/shared/Loading/Loading";
 
 export default function SelectTicket() {
   const params = useParams();
   const id = params.id;
-  const { data: detailEventData } = useGetSingleEventQuery(id);
+  const {
+    data: detailEventData,
+    isLoading,
+    isFetching,
+  } = useGetSingleEventQuery(id);
 
   function formatEventDate(startDate: string, endDate: string) {
     const start = new Date(startDate);
@@ -68,6 +73,8 @@ export default function SelectTicket() {
 
     dispatch(nextStep());
   };
+
+  if (isLoading || isFetching) return <Loading />;
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 lg:p-6">

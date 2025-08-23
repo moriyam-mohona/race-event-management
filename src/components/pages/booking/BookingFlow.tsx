@@ -12,11 +12,16 @@ import { GrLocation } from "react-icons/gr";
 import { useParams } from "next/navigation";
 import { useGetSingleEventQuery } from "@/redux/features/event/eventApi";
 import Payment from "./Payment";
+import Loading from "@/components/shared/Loading/Loading";
 
 export default function BookingFlow() {
   const params = useParams();
   const id = params.id;
-  const { data: detailEventData } = useGetSingleEventQuery(id);
+  const {
+    data: detailEventData,
+    isLoading,
+    isFetching,
+  } = useGetSingleEventQuery(id);
 
   const { currentStep } = useSelector((state: RootState) => state.booking);
   const dispatch = useDispatch();
@@ -40,6 +45,8 @@ export default function BookingFlow() {
         return <SelectTicket />;
     }
   };
+
+  if (isLoading || isFetching) return <Loading />;
 
   return (
     <div className="container mx-auto max-w-7xl px-4 py-6">

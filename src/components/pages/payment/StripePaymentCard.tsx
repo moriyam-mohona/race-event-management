@@ -62,35 +62,36 @@ const StripePaymentCard = ({
   return (
     <form onSubmit={handleSubmit} className="mx-auto">
       <div className="mb-6">
-        <label className="block font-medium mb-2">Cardholder Name</label>
+        {/* <label className="block font-medium mb-2">Cardholder Name</label> */}
         <input
           type="text"
           value={cardHolderName}
           defaultValue={"Mahdi Hasan"}
           onChange={(e) => setCardHolderName(e.target.value)}
-          className="w-full bg-white p-3 rounded-md"
+          className="w-full bg-white p-3 rounded-md border"
+          placeholder="Enter Cardholder Name"
           required
         />
       </div>
 
       <div className="mb-6">
-        <label className="block font-medium mb-2">Card Number</label>
-        <div className="bg-white p-3 rounded-md">
+        {/* <label className="block font-medium mb-2">Card Number</label> */}
+        <div className="bg-white p-3 rounded-md border">
           <CardNumberElement className="w-full" />
         </div>
       </div>
 
       <div className="flex gap-6">
         <div className="w-1/2">
-          <label className="block font-medium mb-2">Expiry Date</label>
-          <div className="bg-white p-3 rounded-md">
+          {/* <label className="block font-medium mb-2">Expiry Date</label> */}
+          <div className="bg-white p-3 rounded-md border">
             <CardExpiryElement className="w-full" />
           </div>
         </div>
 
         <div className="w-1/2">
-          <label className="block font-medium mb-2">CVC</label>
-          <div className="bg-white p-3 rounded-md">
+          {/* <label className="block font-medium mb-2">CVC</label> */}
+          <div className="bg-white p-3 rounded-md border">
             <CardCvcElement className="w-full" />
           </div>
         </div>
