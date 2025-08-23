@@ -1,86 +1,49 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import type React from "react";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { RootState } from "@/redux/store";
 import {
   nextStep,
   prevStep,
   setPersonalDetails,
 } from "@/redux/features/booking/bookingSlice";
+import MyFormWrapper from "@/components/ui/MyForm/MyFormWrapper/MyFormWrapper";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import MyFormRadio from "@/components/ui/MyForm/MyFormRadio/MyFormRadio";
+import MyFormInput from "@/components/ui/MyForm/MyFormInput/MyFormInput";
+import MyFormDatePicker from "@/components/ui/MyForm/MyFormDatePicker/MyFormDatePicker";
+
+export const personalDetailsSchema = z.object({
+  gender: z.string({ required_error: "Gender is required" }),
+  firstName: z.string({ required_error: "First name is required" }),
+  lastName: z.string({ required_error: "Last name is required" }),
+  dateOfBirth: z.string({ required_error: "Date of birth is required" }),
+  nationality: z.string({ required_error: "Nationality is required" }),
+  email: z
+    .string({ required_error: "Email is required" })
+    .email("Email is invalid"),
+  address: z.string({ required_error: "Address is required" }),
+  continent: z.string({ required_error: "Continent is required" }),
+  country: z.string({ required_error: "Country is required" }),
+  region: z.string({ required_error: "Region is required" }),
+  zipCode: z.string({ required_error: "Zip code is required" }),
+  phoneNumber: z.string({ required_error: "Phone number is required" }),
+  emergencyContact: z.string({
+    required_error: "Emergency contact is required",
+  }),
+});
 
 export default function PersonalDetails() {
   const dispatch = useDispatch();
-  const { personalDetails } = useSelector((state: RootState) => state.booking);
+  const { ticket } = useSelector((state: RootState) => state.booking);
 
-  const [formData, setFormData] = useState({
-    gender: personalDetails.gender || "",
-    firstName: personalDetails.firstName || "",
-    lastName: personalDetails.lastName || "",
-    dateOfBirth: personalDetails.dateOfBirth || "",
-    nationality: personalDetails.nationality || "",
-    email: personalDetails.email || "",
-    address: personalDetails.address || "",
-    continent: personalDetails.continent || "",
-    country: personalDetails.country || "",
-    region: personalDetails.region || "",
-    zipCode: personalDetails.zipCode || "",
-    phoneNumber: personalDetails.phoneNumber || "",
-    emergencyContact: personalDetails.emergencyContact || "",
-  });
-
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {};
-
-    if (!formData.gender) newErrors.gender = "Gender is required";
-    if (!formData.firstName) newErrors.firstName = "First name is required";
-    if (!formData.lastName) newErrors.lastName = "Last name is required";
-    if (!formData.dateOfBirth)
-      newErrors.dateOfBirth = "Date of birth is required";
-    if (!formData.nationality)
-      newErrors.nationality = "Nationality is required";
-    if (!formData.email) {
-      newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Email is invalid";
-    }
-    if (!formData.address) newErrors.address = "Address is required";
-    if (!formData.continent) newErrors.continent = "Continent is required";
-    if (!formData.country) newErrors.country = "Country is required";
-    if (!formData.region) newErrors.region = "Region is required";
-    if (!formData.zipCode) newErrors.zipCode = "Zip code is required";
-    if (!formData.phoneNumber)
-      newErrors.phoneNumber = "Phone number is required";
-    if (!formData.emergencyContact)
-      newErrors.emergencyContact = "Emergency contact is required";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleContinue = () => {
-    if (validateForm()) {
-      dispatch(setPersonalDetails(formData));
-      dispatch(nextStep());
-
-      // Log data to console
-      console.log("Personal Details Data:", formData);
-    }
+  const handleSubmit = (formData: any) => {
+    console.log("Form submitted:", formData);
+    dispatch(setPersonalDetails(formData));
+    dispatch(nextStep());
   };
 
   const handleBack = () => {
@@ -89,249 +52,98 @@ export default function PersonalDetails() {
 
   return (
     <div className="rounded-lg bg-white">
-      <div className="mb-4 flex flex-col justify-between space-y-2 md:space-y-4">
+      <div className="mb-4 flex flex-col space-y-2">
         <h2 className="text-2xl md:text-3xl font-medium text-gray-700">
-          Cycling
+          {ticket.eventType}
         </h2>
-        <div className=" space-y-4">
-          <p className="text-gray-600">8-10 Aug, 2025</p>
-          <div className="flex justify-between">
-            <p className="text-orange-500">Participant 01</p>
-            <p className="text-gray-600 font-semibold">$100.00 USD</p>
-          </div>
+        <p className="text-gray-600">{ticket.date}</p>
+        <div className="flex justify-between">
+          <p className="text-orange-500">Participant {ticket.quantity}</p>
+          <p className="text-gray-600 font-semibold">
+            ${ticket.price?.toFixed(2)} USD
+          </p>
         </div>
       </div>
-      <div className="my-16">
-        <h3 className="mb-4 text-xl text-gray-800 font-medium">
-          Personal Information
-        </h3>
 
-        {/* personal Infos  */}
-        <div className="border px-5 py-8 rounded-lg">
-          <div className="mb-4 ">
-            <RadioGroup
-              value={formData.gender}
-              onValueChange={(value) => handleSelectChange("gender", value)}
-            >
-              <div className="flex items-center space-x-4">
-                <RadioGroupItem value="male" id="male" />
-                <Label htmlFor="male" className="text-base text-gray-600">
-                  Male
-                </Label>
-              </div>
-              <div className="flex items-center space-x-4">
-                <RadioGroupItem value="female" id="female" />
-                <Label htmlFor="female" className="text-base text-gray-600">
-                  Female
-                </Label>
-              </div>
-            </RadioGroup>
-            {errors.gender && (
-              <p className="mt-1 text-xs text-red-500">{errors.gender}</p>
-            )}
-          </div>
-          <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <Input
-                id="firstName"
-                name="firstName"
-                placeholder="First Name"
-                value={formData.firstName}
-                onChange={handleChange}
-                className="mt-1"
+      <MyFormWrapper
+        onSubmit={handleSubmit}
+        resolver={zodResolver(personalDetailsSchema)}
+        className="space-y-6"
+      >
+        {/* Personal Information */}
+        <div className="my-6">
+          <h3 className="mb-4 text-xl text-gray-800 font-medium">
+            Personal Information
+          </h3>
+          <div className="border px-5 py-8 rounded-lg">
+            <div className="mb-4 ">
+              <MyFormRadio
+                name="gender"
+                options={[
+                  { value: "male", label: "Male" },
+                  { value: "female", label: "Female" },
+                ]}
               />
-              {errors.firstName && (
-                <p className="mt-1 text-xs text-red-500">{errors.firstName}</p>
-              )}
             </div>
-            <div>
-              <Input
-                id="lastName"
-                name="lastName"
-                placeholder="Last Name"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="mt-1"
-              />
-              {errors.lastName && (
-                <p className="mt-1 text-xs text-red-500">{errors.lastName}</p>
-              )}
+            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <MyFormInput name="firstName" placeHolder="First Name" />
+              <MyFormInput name="lastName" placeHolder="Last Name" />
             </div>
-          </div>
 
-          <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <Input
-                id="dateOfBirth"
-                name="dateOfBirth"
-                placeholder="Date of Birth"
-                type="date"
-                value={formData.dateOfBirth}
-                onChange={handleChange}
-                className="mt-1"
-              />
-              {errors.dateOfBirth && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.dateOfBirth}
-                </p>
-              )}
+            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <MyFormDatePicker name="dateOfBirth" />
+              <MyFormInput name="nationality" placeHolder="Nationality" />
             </div>
-            <div>
-              <Input
-                id="nationality"
-                name="nationality"
-                placeholder="Nationality"
-                value={formData.nationality}
-                onChange={handleChange}
-                className="mt-1"
-              />
-              {errors.nationality && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.nationality}
-                </p>
-              )}
-            </div>
-          </div>
 
-          <div className="mb-4">
-            <Input
-              id="email"
-              name="email"
-              placeholder="Email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="mt-1"
-            />
-            {errors.email && (
-              <p className="mt-1 text-xs text-red-500">{errors.email}</p>
-            )}
+            <div className="mb-4">
+              <MyFormInput name="email" placeHolder="Email" />
+            </div>
           </div>
         </div>
-      </div>
-      {/* Address & Contact */}
-      <div className="mb-6">
-        <h3 className="mb-4 text-xl text-gray-800 font-medium">
-          Address & Contact
-        </h3>
-        <div className="border px-5 py-8 rounded-lg">
-          {/* address */}
-          <div className="mb-4">
-            <Input
-              id="address"
-              name="address"
-              placeholder="Address"
-              value={formData.address}
-              onChange={handleChange}
-              className="mt-1"
-            />
-            {errors.address && (
-              <p className="mt-1 text-xs text-red-500">{errors.address}</p>
-            )}
-          </div>
-          <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {/* Continent */}
-            <div>
-              <Input
-                id="continent"
-                name="continent"
-                placeholder="Continent"
-                value={formData.continent}
-                onChange={handleChange}
-                className="mt-1"
-              />
-              {errors.continent && (
-                <p className="mt-1 text-xs text-red-500">{errors.continent}</p>
-              )}
+
+        {/* Address & Contact */}
+        <div className="mb-6">
+          <h3 className="mb-4 text-xl text-gray-800 font-medium">
+            Address & Contact
+          </h3>
+          <div className="border px-5 py-8 rounded-lg">
+            {/* address */}
+            <div className="mb-4">
+              <MyFormInput name="address" placeHolder="Address" />
             </div>
-            <div>
-              <Input
-                id="country"
-                name="country"
-                placeholder="Country"
-                value={formData.country}
-                onChange={handleChange}
-                className="mt-1"
-              />
-              {errors.country && (
-                <p className="mt-1 text-xs text-red-500">{errors.country}</p>
-              )}
+            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <MyFormInput name="continent" placeHolder="Continent" />
+              <MyFormInput name="country" placeHolder="Country" />
             </div>
-          </div>
-          <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <Input
-                id="region"
-                name="region"
-                placeholder="Continent"
-                value={formData.region}
-                onChange={handleChange}
-                className="mt-1"
-              />
-              {errors.region && (
-                <p className="mt-1 text-xs text-red-500">{errors.region}</p>
-              )}
+            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <MyFormInput name="region" placeHolder="Region" />
+              <MyFormInput name="zipCode" placeHolder="Zip Code" />
             </div>
-            <div>
-              <Input
-                id="zipCode"
-                name="zipCode"
-                placeholder="Zip code"
-                value={formData.zipCode}
-                onChange={handleChange}
-                className="mt-1"
-              />
-              {errors.zipCode && (
-                <p className="mt-1 text-xs text-red-500">{errors.zipCode}</p>
-              )}
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <Input
-                id="phoneNumber"
-                name="phoneNumber"
-                placeholder="Phone number"
-                value={formData.phoneNumber}
-                onChange={handleChange}
-                className="mt-1"
-              />
-              {errors.phoneNumber && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.phoneNumber}
-                </p>
-              )}
-            </div>
-            <div>
-              <Input
-                id="emergencyContact"
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <MyFormInput name="phoneNumber" placeHolder="Phone Number" />
+              <MyFormInput
                 name="emergencyContact"
-                placeholder="Emergency contact"
-                value={formData.emergencyContact}
-                onChange={handleChange}
-                className="mt-1"
+                placeHolder="Emergency Contact"
               />
-              {errors.emergencyContact && (
-                <p className="mt-1 text-xs text-red-500">
-                  {errors.emergencyContact}
-                </p>
-              )}
             </div>
           </div>
         </div>
-      </div>
-      {/* Button  */}
-      <div className="mt-8 flex justify-between">
-        <button onClick={handleBack} className="border px-10 py-2 rounded">
-          Back
-        </button>
-        <button
-          className="bg-primary hover:bg-primary/90 text-white px-10 py-2 rounded"
-          onClick={handleContinue}
-        >
-          Next
-        </button>
-      </div>
+
+        <div className="mt-8 flex justify-between">
+          <button
+            onClick={handleBack}
+            className="border px-10 py-2 rounded cursor-pointer"
+          >
+            Back
+          </button>
+          <button
+            type="submit"
+            className="bg-primary hover:bg-primary/90 text-white px-10 py-2 rounded cursor-pointer"
+          >
+            Next
+          </button>
+        </div>
+      </MyFormWrapper>
     </div>
   );
 }

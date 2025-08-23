@@ -109,15 +109,17 @@ const GearCreate = () => {
             <div className="w-full">
               <h2 className="text-xl font-medium mb-3">Sizes</h2>
               <MyFormMultiSelect
-                name="sizes"
-                placeHolder="Type and press Enter to add gear sizes"
+                name="mixedValues"
+                type="mixed"
+                placeHolder="Type text, number, or hex color"
               />
             </div>
             <div className="w-full">
               <h2 className="text-xl font-medium mb-3">Colors</h2>
               <MyFormMultiSelect
                 name="colors"
-                placeHolder="Type and press Enter to add gear colors"
+                type="color"
+                placeHolder="Pick and add gear colors"
               />
             </div>
           </div>

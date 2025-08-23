@@ -104,8 +104,26 @@ export interface AddOnItem {
   quantity: number;
 }
 
+export interface AddOnItem {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  image: string;
+  quantity: number;
+}
+
+export interface AddedGearInfo {
+  gearId: string;
+  quantity: number;
+  size: number;
+  color: string;
+  message: string;
+}
+
 export interface AddOnsState {
   selectedItems?: AddOnItem[];
+  addedGearInfo?: AddedGearInfo[];
 }
 
 export interface PaymentState {
