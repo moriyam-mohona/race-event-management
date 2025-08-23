@@ -118,6 +118,7 @@ export interface AddedGearInfo {
   size: number;
   color: string;
   message: string;
+  price: number;
 }
 
 export interface AddOnsState {
