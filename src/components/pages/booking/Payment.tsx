@@ -11,7 +11,7 @@ import {
   setPayment,
 } from "@/redux/features/booking/bookingSlice";
 import SuccessModal from "@/components/shared/SuccessModal";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { useCreateBookingMutation } from "@/redux/features/booking/bookingApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
@@ -24,7 +24,7 @@ const Payment = () => {
   const id = params.id;
   const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
   const dispatch = useDispatch();
-  //   const router = useRouter();
+  const router = useRouter();
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const { ticket, personalDetails, addOns } = useSelector(
     (state: RootState) => state.booking
@@ -51,7 +51,7 @@ const Payment = () => {
       // Log all booking data to console
       dispatch(resetBooking());
       setShowSuccessModal(true);
-      //       router.push("/");
+      router.push("/dashboard/user/all-events");
     }
 
     const body = {

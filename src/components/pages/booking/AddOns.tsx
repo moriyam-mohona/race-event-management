@@ -276,11 +276,10 @@ export default function AddOns() {
           Back
         </button>
         <button
-          className="bg-primary hover:bg-primary/90 text-white px-10 py-2 rounded cursor-pointer"
+          className="bg-primary hover:bg-primary/90 text-white px-10 py-2 rounded cursor-pointer transition"
           onClick={handleContinue}
-          disabled={addedGearInfo.length === 0}
         >
-          Next
+          {addedGearInfo.length > 0 ? "Next" : "Skip & Continue"}
         </button>
       </div>
     </div>

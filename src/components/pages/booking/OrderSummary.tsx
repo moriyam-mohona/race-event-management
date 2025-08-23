@@ -2,11 +2,17 @@
 
 import { useSelector } from "react-redux";
 import Image from "next/image";
-import { ExternalLink } from "lucide-react";
 import { RootState } from "@/redux/store";
 import img from "@/assets/event.png";
+import { useParams } from "next/navigation";
+import { useGetSingleEventQuery } from "@/redux/features/event/eventApi";
+import { format } from "date-fns";
+
 export default function OrderSummary() {
   const { ticket, addOns } = useSelector((state: RootState) => state.booking);
+  const params = useParams();
+  const id = params.id;
+  const { data: detailEventData } = useGetSingleEventQuery(id);
 
   const calculateTotal = () => {
     let total = ticket.price || 0;
@@ -24,7 +30,7 @@ export default function OrderSummary() {
     <div className="rounded-lg border border-gray-200 bg-white">
       <div>
         <Image
-          src={img}
+          src={detailEventData?.data?.eventImages || img}
           alt="Marathon Runner"
           width={1000}
           height={1000}
@@ -37,14 +43,26 @@ export default function OrderSummary() {
           <h3 className="text-lg font-medium text-gray-800 mb-4">
             Your Order For:
           </h3>
-          <div className="flex items-center underline">
-            <p className="text-gray-700">Generali Malaga Marathon</p>
-            <ExternalLink className="ml-1 h-4 w-4 text-gray-700" />
+          <div className="flex items-center">
+            <p className="text-gray-700">{detailEventData?.data?.title}</p>
+            {/* <ExternalLink className="ml-1 h-4 w-4 text-gray-700" /> */}
           </div>
-          <p className="text-gray-800">8-10 Aug, 2025</p>
+          <p className="text-gray-800">
+            {detailEventData?.data?.startDate &&
+              detailEventData?.data?.endDate && (
+                <>
+                  {format(new Date(detailEventData.data.startDate), "d")}-
+                  {format(
+                    new Date(detailEventData.data.endDate),
+                    "d MMM, yyyy"
+                  )}
+                </>
+              )}
+          </p>
         </div>
 
-        {/* {ticket.eventType && (
+        {/* 
+        {ticket.eventType && (
           <>
             <div className="mb-4 mt-6">
               <h3 className="font-medium">Needed Gear For this Race</h3>
