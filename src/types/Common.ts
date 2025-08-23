@@ -74,8 +74,8 @@ export interface TicketState {
   eventType?: string;
   distance?: string;
   date?: string;
-  time?: string;
-  price?: number;
+  time: string;
+  price: number;
   quantity?: number;
 }
 
@@ -119,6 +119,7 @@ export interface AddedGearInfo {
   color: string;
   message: string;
   price: number;
+  title: string;
 }
 
 export interface AddOnsState {

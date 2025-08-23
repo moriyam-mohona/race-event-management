@@ -15,15 +15,18 @@ export default function OrderSummary() {
   const { data: detailEventData } = useGetSingleEventQuery(id);
 
   const calculateTotal = () => {
-    let total = ticket.price || 0;
+    // Ticket total = ticket price * quantity
+    const ticketTotal = (ticket.price || 0) * (ticket.quantity || 1);
 
-    if (addOns.selectedItems) {
-      addOns.selectedItems.forEach((item) => {
-        total += item.price;
+    // Add-ons total
+    let addOnsTotal = 0;
+    if (addOns.addedGearInfo && addOns.addedGearInfo.length > 0) {
+      addOns.addedGearInfo.forEach((item) => {
+        addOnsTotal += (item.price || 0) * (item.quantity || 1);
       });
     }
 
-    return total;
+    return ticketTotal + addOnsTotal;
   };
 
   return (
@@ -61,55 +64,33 @@ export default function OrderSummary() {
           </p>
         </div>
 
-        {/* 
         {ticket.eventType && (
-          <>
-            <div className="mb-4 mt-6">
-              <h3 className="font-medium">Needed Gear For this Race</h3>
-              <div className="mt-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">Running Shoes</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">Sports Watch</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">Running Shorts</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">Water Bottle</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm">Hydration Pack</span>
-                </div>
-              </div>
+          <div className="mb-4 border-t border-gray-100 pt-4">
+            <h3 className="font-medium">{ticket.eventType}</h3>
+            <div className="mt-1 flex justify-between">
+              <span className="text-sm text-orange-500">
+                Participant x {ticket.quantity}
+              </span>
+              <span className="font-medium">
+                ${(ticket.price * (ticket.quantity || 1)).toFixed(2)} USD
+              </span>
             </div>
+          </div>
+        )}
 
-            <div className="mb-4 border-t border-gray-100 pt-4">
-              <h3 className="font-medium">{ticket.eventType}</h3>
-              <div className="mt-1 flex justify-between">
-                <span className="text-sm text-orange-500">Participant 01</span>
-                <span className="font-medium">
-                  ${ticket.price?.toFixed(2)} USD
-                </span>
-              </div>
-            </div>
-          </>
-        )} */}
-
-        {addOns.selectedItems && addOns.selectedItems.length > 0 && (
+        {addOns.addedGearInfo && addOns.addedGearInfo.length > 0 && (
           <div className="mb-4 border-t border-gray-100 pt-4">
             <h3 className="text-lg font-medium text-gray-800 mb-4">
               Added Gear
             </h3>
-            {addOns.selectedItems.map((item, index) => (
-              <div key={index} className="mt-2 font- flex justify-between">
+            {addOns.addedGearInfo.map((item, index) => (
+              <div key={index} className="mt-2 flex justify-between">
                 <span className="text-secondary">
-                  {index + 1}. {item.name}
+                  {index + 1}. {item.title}
                 </span>
                 <div className="flex items-center">
                   <span className="font-medium">
-                    ${item.price.toFixed(2)} USD
+                    ${(item.price * (item.quantity || 1)).toFixed(2)} USD
                   </span>
                   {item.quantity > 1 && (
                     <span className="ml-1 rounded-full bg-gray-100 px-2 text-xs text-gray-600">

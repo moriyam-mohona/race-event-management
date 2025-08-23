@@ -83,7 +83,8 @@ export default function AddOns() {
       size: formData.size,
       color: formData.color,
       message: formData.message || "",
-      price: currentGear.price,
+      price: currentGear?.price,
+      title: currentGear?.name,
     };
 
     setAddedGearInfo([...addedGearInfo, newGear]);
