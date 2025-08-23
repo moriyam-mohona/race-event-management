@@ -8,11 +8,13 @@ import { NeededGears } from "./NeededGears";
 import { EventFAQs } from "./EventFAQs";
 import { useGetSingleEventQuery } from "@/redux/features/event/eventApi";
 import { useParams } from "next/navigation";
+import Loading from "@/components/shared/Loading/Loading";
 
 const EventDetailsPage = () => {
   const id = useParams().id;
-  const { data: detailEventData } = useGetSingleEventQuery(id);
+  const { data: detailEventData, isLoading } = useGetSingleEventQuery(id);
   const eventData = detailEventData?.data;
+  if (isLoading) return <Loading />;
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl space-y-10">
       <EventHeader data={eventData} />

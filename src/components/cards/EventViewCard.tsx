@@ -31,11 +31,11 @@ const EventViewCard: React.FC<any> = ({ event }) => {
     <div className="flex flex-col md:flex-row gap-4 lg:gap-6 rounded-lg overflow-hidden mb-6 bg-white border border-gray-100 shadow hover:shadow-md transition-shadow duration-300 p-3 sm:p-4 relative">
       <div className="w-full md:w-1/3 overflow-hidden">
         <Image
-          src={event?.eventImages?.[0] || image}
+          src={event?.eventImages || image}
           alt={event?.title}
           width={1000}
           height={1000}
-          className="bg-gray-100 w-full h-[200px] md:h-[300px] object-cover object-center rounded-lg"
+          className="bg-gray-100 w-full h-[200px] md:h-[300px] object-cover rounded-lg"
         />
       </div>
 
