@@ -9,8 +9,35 @@ import { nextStep, setTicket } from "@/redux/features/booking/bookingSlice";
 import { GiCycling } from "react-icons/gi";
 import { SlCalender } from "react-icons/sl";
 import { MdOutlineWatchLater } from "react-icons/md";
+import { useGetSingleEventQuery } from "@/redux/features/event/eventApi";
+import { useParams } from "next/navigation";
+import { format } from "date-fns";
 
 export default function SelectTicket() {
+  const params = useParams();
+  const id = params.id;
+  const { data: detailEventData } = useGetSingleEventQuery(id);
+
+  function formatEventDate(startDate: string, endDate: string) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (
+      start.getMonth() === end.getMonth() &&
+      start.getFullYear() === end.getFullYear()
+    ) {
+      // Same month & year → "8-10 Aug, 2025"
+      return `${format(start, "d")}-${format(end, "d MMM, yyyy")}`;
+    }
+
+    // Different month/year → "28 Aug, 2025 - 2 Sep, 2025"
+    return `${format(start, "d MMM, yyyy")} - ${format(end, "d MMM, yyyy")}`;
+  }
+  function formatEventTime(timeString: string) {
+    const date = new Date(timeString);
+    return format(date, "HH:mm"); // 08:30, 18:45 etc.
+  }
+
   const dispatch = useDispatch();
   const { ticket } = useSelector((state: RootState) => state.booking);
   const [quantity, setQuantity] = useState(ticket.quantity || 1);
@@ -22,57 +49,62 @@ export default function SelectTicket() {
   };
 
   const handleContinue = () => {
+    if (!detailEventData?.data) return;
+
+    const { category, distance, startDate, endDate, time, price } =
+      detailEventData.data;
+
     dispatch(
       setTicket({
-        eventType: "Cycling",
-        distance: "5 km",
-        date: "8-10 Aug, 2025",
-        time: "08:30",
-        price: 100.0,
+        eventType: category,
+        distance: `${distance} km`,
+        date:
+          startDate && endDate ? formatEventDate(startDate, endDate) : "TBA",
+        time: time ? formatEventTime(time) : "TBA",
+        price: price || 0,
         quantity: quantity,
       })
     );
-    dispatch(nextStep());
 
-    // Log data to console
-    console.log("Ticket Selection Data:", {
-      eventType: "Cycling",
-      distance: "5 km",
-      date: "8-10 Aug, 2025",
-      time: "08:30",
-      price: 100.0,
-      quantity: quantity,
-    });
+    dispatch(nextStep());
   };
 
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-4 lg:p-6">
       <div className="mb-6">
         <h2 className="text-2xl md:text-3xl font-medium text-gray-700">
-          Cycling
+          {detailEventData?.data?.category}
         </h2>
         <div className="mt-4 flex flex-col gap-4">
           {/* km  */}
           <div className="flex items-center gap-2">
             <GiCycling className="text-secondary text-2xl" />
             <span className="text-gray-600 font-medium text-sm lg:text-base">
-              5 km
+              {detailEventData?.data?.distance} km
             </span>
           </div>
           {/* date  */}
           <div className="flex items-center gap-2">
             <SlCalender className="text-secondary text-lg" />
-
             <span className="text-gray-600 font-medium text-sm lg:text-base">
-              8-10 Aug, 2025
+              {detailEventData?.data?.startDate &&
+              detailEventData?.data?.endDate
+                ? formatEventDate(
+                    detailEventData.data.startDate,
+                    detailEventData.data.endDate
+                  )
+                : "TBA"}
             </span>
           </div>
+
           {/* time  */}
           <div className="flex items-center gap-2">
             <MdOutlineWatchLater className="text-secondary text-xl" />
 
             <span className="text-gray-600 font-medium text-sm lg:text-base">
-              08:30
+              {detailEventData?.data?.time
+                ? formatEventTime(detailEventData.data.time)
+                : "TBA"}
             </span>
           </div>
         </div>
@@ -80,14 +112,14 @@ export default function SelectTicket() {
         <div className="my-5 md:my-10">
           <p className="text-sm lg:text-lg text-gray-600">
             <span className="font-medium text-sm lg:text-base">Age Limit:</span>{" "}
-            From 18 years old
+            From {detailEventData?.data?.ageLimit} years old
           </p>
         </div>
       </div>
 
       <div className="mb-6 flex items-center justify-between">
         <div className="text-xl lg:text-2xl text-gray-600 font-medium">
-          $100.00 USD
+          ${detailEventData?.data?.price} USD
         </div>
         <div className="flex items-center">
           <span className="mr-2 font-medium hidden md:block"> Person:</span>
@@ -117,7 +149,7 @@ export default function SelectTicket() {
 
       <div className="mt-8">
         <button
-          className="w-full text-white font-semibold py-2 rounded-lg bg-primary hover:bg-primary/80"
+          className="cursor-pointer w-full text-white font-semibold py-2 rounded-lg bg-primary hover:bg-primary/80"
           onClick={handleContinue}
         >
           Next
