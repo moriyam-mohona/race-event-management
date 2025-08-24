@@ -6,30 +6,48 @@ import Loading from "@/components/shared/Loading/Loading";
 import { useState } from "react";
 import { useGetAllEventsForVendorQuery } from "@/redux/features/vendor/vendorApi";
 import VendorEventCard from "./VendorEventCard";
+import { Pagination } from "antd";
 
 const AllEventsByVendor = () => {
   const [activeTab, setActiveTab] = useState("pending");
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+  });
 
-  // Query for my registered events with dynamic status
+  // Build queryObj dynamically with pagination + status
+  const queryObj = [
+    { name: "page", value: pagination.current },
+    { name: "limit", value: pagination.pageSize },
+    {
+      name: "eventStatus",
+      value:
+        activeTab === "active"
+          ? "ACTIVE"
+          : activeTab === "completed"
+          ? "COMPLETED"
+          : activeTab === "pending"
+          ? "PENDING"
+          : "APPROVED",
+    },
+  ];
+
+  // API Query
   const {
     data: registeredEvents,
     isLoading: isRegisteredLoading,
+    isFetching: isRegisteredFetching,
     isError: isRegisteredError,
-  } = useGetAllEventsForVendorQuery({
-    queryObj: [
-      {
-        name: "eventStatus",
-        value:
-          activeTab === "active"
-            ? "ACTIVE"
-            : activeTab === "completed"
-            ? "COMPLETED"
-            : activeTab === "pending"
-            ? "PENDING"
-            : "APPROVED",
-      },
-    ],
-  });
+  } = useGetAllEventsForVendorQuery({ queryObj });
+
+  const totalCount = registeredEvents?.data?.meta?.total || 0;
+
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({
+      current: page,
+      pageSize,
+    });
+  };
 
   const renderEvents = (
     events: any[] = [],
@@ -56,7 +74,6 @@ const AllEventsByVendor = () => {
       );
     }
 
-    // TODO: replace with your event card component
     return (
       <ul className="space-y-4">
         {events.map((event) => (
@@ -79,7 +96,10 @@ const AllEventsByVendor = () => {
       <Tabs
         defaultValue="pending"
         className="w-full"
-        onValueChange={(value) => setActiveTab(value)}
+        onValueChange={(value) => {
+          setActiveTab(value);
+          setPagination({ current: 1, pageSize: pagination.pageSize }); // reset to page 1 when switching tab
+        }}
       >
         <TabsList className="mb-6 w-full justify-start gap-2 md:gap-6">
           {["pending", "upcoming", "active", "completed"].map((status) => (
@@ -103,6 +123,16 @@ const AllEventsByVendor = () => {
           </TabsContent>
         ))}
       </Tabs>
+
+      <div className="p-4 w-full flex flex-wrap justify-center">
+        <Pagination
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          total={totalCount}
+          onChange={handlePaginationChange}
+          disabled={isRegisteredFetching}
+        />
+      </div>
     </div>
   );
 };
