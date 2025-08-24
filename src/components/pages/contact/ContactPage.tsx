@@ -1,150 +1,97 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState } from "react";
 import { Mail, MapPin, Phone } from "lucide-react";
+import MyFormWrapper from "@/components/ui/MyForm/MyFormWrapper/MyFormWrapper";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import MyFormInput from "@/components/ui/MyForm/MyFormInput/MyFormInput";
+import MyFormTextArea from "@/components/ui/MyForm/MyFormTextArea/MyFormTextArea";
+import { useCreateContactMutation } from "@/redux/features/contact/contactApi";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import { useRouter } from "next/navigation";
+
+const validationSchema = z.object({
+  name: z
+    .string({ required_error: "Name is required" })
+    .min(2, "Name must be at least 2 characters"),
+  email: z
+    .string({ required_error: "Email is required" })
+    .email("Invalid email address"),
+  address: z
+    .string({ required_error: "Address is required" })
+    .min(5, "Address must be at least 5 characters"),
+  subject: z
+    .string({ required_error: "Subject is required" })
+    .min(3, "Subject must be at least 3 characters"),
+  message: z
+    .string({ required_error: "Message is required" })
+    .min(10, "Message must be at least 10 characters"),
+});
 
 const ContactPage: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    address: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
+  const router = useRouter();
+  const [createContact] = useCreateContactMutation();
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  const handleSubmit = async (formData: any, reset: any) => {
+    const response = await handleAsyncWithToast(async () => {
+      return createContact(formData);
     });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission logic here
-    console.log("Form submitted:", formData);
+    if (response?.data?.success) {
+      router.push("/");
+      reset();
+    }
   };
 
   return (
     <div className="container mx-auto max-w-[1320px] px-4 py-12">
-      <div className="overflow-hidden">
-        <div className="grid md:grid-cols-2 gap-20">
-          {/* Contact Information */}
-          <div>
-            <h2 className="text-2xl md:text-3xl font-montserrat font-semibold mb-6">
-              Contact Us
-            </h2>
-            <p className="mb-8 text-gray-700">
-              Feel free to reach out via the form below, or contact us directly
-              through email or phone. We look forward to connecting with you and
-              ensuring your next race experience is nothing short of delightful!
-            </p>
+      <div className="grid md:grid-cols-2 gap-16 lg:gap-24">
+        {/* Contact Information */}
+        <div className="space-y-6">
+          <h2 className="text-3xl md:text-4xl font-semibold font-montserrat">
+            Contact Us
+          </h2>
+          <p className="text-gray-600 leading-relaxed">
+            Reach out via the form below, or contact us directly via email or
+            phone. We look forward to connecting with you and ensuring your next
+            race experience is amazing!
+          </p>
 
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <Mail className="w-5 h-5 mr-3 text-secondary" />
-                <span className="text-gray-700">example@teamwebflow.com</span>
-              </div>
-              <div className="flex items-center">
-                <MapPin className="w-5 h-5 mr-3 text-secondary" />
-                <span className="text-gray-700">
-                  The Race Shop · New York, NY 10001
-                </span>
-              </div>
-              <div className="flex items-center">
-                <Phone className="w-5 h-5 mr-3 text-secondary" />
-                <span className="text-gray-700">124 214 4521</span>
-              </div>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Mail className="w-5 h-5 text-primary" />
+              <span className="text-gray-700">example@teamwebflow.com</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <MapPin className="w-5 h-5 text-primary" />
+              <span className="text-gray-700">
+                The Race Shop · New York, NY 10001
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Phone className="w-5 h-5 text-primary" />
+              <span className="text-gray-700">124 214 4521</span>
             </div>
           </div>
+        </div>
 
-          {/* Contact Form */}
-          <div>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="name" className="block font-medium  mb-1">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-100 text-gray-600 text-[15px] rounded-md focus:ring-primary focus:border-primary"
-                  required
-                />
-              </div>
+        {/* Contact Form */}
+        <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12 border border-gray-100">
+          <MyFormWrapper
+            onSubmit={handleSubmit}
+            resolver={zodResolver(validationSchema)}
+            className="space-y-6"
+          >
+            <MyFormInput name="name" label="Name" />
+            <MyFormInput name="email" label="E-mail" type="email" />
+            <MyFormInput name="address" label="Address" />
+            <MyFormInput name="subject" label="Subject" />
+            <MyFormTextArea name="message" label="Message" />
 
-              <div>
-                <label htmlFor="address" className="block font-medium  mb-1">
-                  Address
-                </label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-100 text-gray-600 text-[15px] rounded-md focus:ring-primary focus:border-primary"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block font-medium  mb-1">
-                  E-mail
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-100 text-gray-600 text-[15px] rounded-md focus:ring-primary focus:border-primary"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="subject" className="block font-medium  mb-1">
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-100 text-gray-600 text-[15px] rounded-md focus:ring-primary focus:border-primary"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block font-medium  mb-1">
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows={4}
-                  className="w-full px-4 py-2 border border-gray-100 text-gray-600 text-[15px] rounded-md focus:ring-primary focus:border-primary"
-                  required
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="w-fit bg-primary text-white py-2.5 px-20 rounded-md hover:bg-primary/80 transition-colors duration-200"
-              >
-                Submit
-              </button>
-            </form>
-          </div>
+            <button className="w-full bg-primary text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:scale-105 hover:shadow-xl transform transition duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50">
+              Send Message
+            </button>
+          </MyFormWrapper>
         </div>
       </div>
     </div>
