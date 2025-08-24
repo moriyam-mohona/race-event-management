@@ -1,11 +1,12 @@
 import UserProfile from "@/components/dashboard/UserDashboard/UserProfile";
+import WithRole from "@/role-wrapper/WithRole";
 import React from "react";
 
 const AdminProfile = () => {
   return (
-    <div>
+    <WithRole allowedRoles={["ADMIN"]}>
       <UserProfile />
-    </div>
+    </WithRole>
   );
 };
 

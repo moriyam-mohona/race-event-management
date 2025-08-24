@@ -1,11 +1,12 @@
-import CommunityListPage from "@/components/dashboard/AdminDashbosrd/ComunityList/CommunityListPage";
+import CommunityListPage from "@/components/dashboard/AdminDashboard/ComunityList/CommunityListPage";
+import WithRole from "@/role-wrapper/WithRole";
 import React from "react";
 
 const CommunityList = () => {
   return (
-    <div>
+    <WithRole allowedRoles={["ADMIN"]}>
       <CommunityListPage />
-    </div>
+    </WithRole>
   );
 };
 

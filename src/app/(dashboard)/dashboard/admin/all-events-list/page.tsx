@@ -1,11 +1,11 @@
-import AllEventsByAdmin from "@/components/dashboard/AdminDashbosrd/AllEvents/AllEventsByAdmin";
+import AllEventsByAdmin from "@/components/dashboard/AdminDashboard/AllEvents/AllEventsByAdmin";
+import WithRole from "@/role-wrapper/WithRole";
 
 const AllEvents = () => {
   return (
-    <div>
-      {" "}
+    <WithRole allowedRoles={["ADMIN"]}>
       <AllEventsByAdmin />
-    </div>
+    </WithRole>
   );
 };
 

@@ -1,13 +1,14 @@
 import Graphs from "@/components/dashboard/DashboardRoot/Graphs";
 import States from "@/components/dashboard/DashboardRoot/States";
+import WithRole from "@/role-wrapper/WithRole";
 import React from "react";
 
 const Dashboard = () => {
   return (
-    <div>
+    <WithRole allowedRoles={["ADMIN"]}>
       <States />
       <Graphs />
-    </div>
+    </WithRole>
   );
 };
 

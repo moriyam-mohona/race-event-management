@@ -1,11 +1,12 @@
-import VendorsListPage from "@/components/dashboard/AdminDashbosrd/VendorListPage";
+import VendorsListPage from "@/components/dashboard/AdminDashboard/VendorListPage";
+import WithRole from "@/role-wrapper/WithRole";
 import React from "react";
 
 const VendorList = () => {
   return (
-    <div>
+    <WithRole allowedRoles={["ADMIN"]}>
       <VendorsListPage />
-    </div>
+    </WithRole>
   );
 };
 

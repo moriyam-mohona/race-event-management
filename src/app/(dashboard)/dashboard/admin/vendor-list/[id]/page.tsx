@@ -1,11 +1,12 @@
-import EventsOfVendor from "@/components/dashboard/AdminDashbosrd/EventsOfVendor";
+import EventsOfVendor from "@/components/dashboard/AdminDashboard/EventsOfVendor";
+import WithRole from "@/role-wrapper/WithRole";
 import React from "react";
 
 const EventOfVendor = () => {
   return (
-    <div>
+    <WithRole allowedRoles={["ADMIN"]}>
       <EventsOfVendor />
-    </div>
+    </WithRole>
   );
 };
 
