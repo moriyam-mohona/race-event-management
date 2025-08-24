@@ -1,10 +1,11 @@
 import UpdateUserProfile from "@/components/dashboard/UserDashboard/UpdateUserProfile";
+import WithRole from "@/role-wrapper/WithRole";
 
 const ProfileEdit = () => {
   return (
-    <div>
+    <WithRole allowedRoles={["USER"]}>
       <UpdateUserProfile />
-    </div>
+    </WithRole>
   );
 };
 
