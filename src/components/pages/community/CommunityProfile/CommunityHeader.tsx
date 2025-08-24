@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import banner from "@/assets/community-banner.png";
 import profile from "@/assets/event.png";
 import Image from "next/image";
@@ -29,7 +30,7 @@ const CommunityHeader = () => {
 
       <div className="flex items-end gap-2 mx-2 lg:mx-4 -mt-4 sm:-mt-10 lg:-mt-12">
         <Image
-          src={communityData?.data?.user?.profileImage || profile}
+          src={communityData?.data?.user?.eventImages || profile}
           alt="Community Profile"
           width={1000}
           height={1000}
@@ -52,12 +53,14 @@ const CommunityHeader = () => {
           <div>
             {" "}
             <button
-              onClick={() => handleToggleFollow()}
-              className="bg-primary hover:bg-primary/80 text-white px-2 md:px-8 py-2   rounded-lg transition-colors duration-200 text-base cursor-pointer"
+              onClick={handleToggleFollow}
+              className={`px-4 md:px-6 py-2 rounded-xl font-medium transition-all duration-200 shadow-sm cursor-pointer ${
+                communityData?.data?.isFollowing
+                  ? "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                  : "bg-primary text-white hover:bg-primary/90"
+              }`}
             >
-              {communityData?.data?.isFollowing == true
-                ? "Following"
-                : "Follow"}
+              {communityData?.data?.isFollowing ? "Following" : "Follow"}
             </button>
           </div>
         </div>
