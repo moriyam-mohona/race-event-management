@@ -116,7 +116,7 @@ const CreateShareEvent = () => {
     const response = await handleAsyncWithToast(() => eventCreate(dataToSend));
     if (response?.data?.success) {
       reset();
-      router.push(`dashboard/vendor/all-events`);
+      router.push(`/dashboard/vendor/all-events`);
     }
     console.log(formData);
   };

@@ -13,13 +13,11 @@ import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 const VendorEventCard: React.FC<any> = ({ event }) => {
   const [stopEventRegistration] = useStopEventRegistrationMutation();
 
-  // Handlers for dropdown actions
-  // handler for toggling registration
+  // Toggle Registration Handler
   const toggleRegistration = async (id: string, currentStatus: boolean) => {
     const newStatus = !currentStatus;
-
-    console.log("Toggle Registration | Event ID:", id);
     const data = { isRegistrationOpen: newStatus };
+
     await handleAsyncWithToast(() =>
       stopEventRegistration({
         id,
@@ -28,22 +26,17 @@ const VendorEventCard: React.FC<any> = ({ event }) => {
     );
   };
 
+  // Dropdown Menu
   const menu = {
     items: [
-      {
-        key: "community",
-        label: "Community",
-      },
+      { key: "community", label: "Community" },
       {
         key: "toggle-registration",
         label: event?.isRegistrationOpen
           ? "Stop Registration"
           : "Open Registration",
       },
-      {
-        key: "remove",
-        label: "Remove",
-      },
+      { key: "remove", label: "Remove" },
     ],
     onClick: ({ key }: { key: string }) => {
       if (key === "community") {
@@ -57,54 +50,48 @@ const VendorEventCard: React.FC<any> = ({ event }) => {
   };
 
   return (
-    <div className="w-full flex flex-col md:flex-row gap-4 lg:gap-6 rounded-lg overflow-hidden mb-6 bg-white border border-gray-100 shadow hover:shadow-md transition-shadow duration-300 p-3 sm:p-4 relative">
+    <div className="w-full flex flex-col md:flex-row gap-6 rounded-2xl overflow-hidden mb-8 bg-white/90 backdrop-blur border border-gray-100 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 p-5 relative">
       {/* Event Image */}
-      <div className="w-full md:w-1/3 lg:w-2/5 overflow-hidden flex-shrink-0">
+      <div className="w-full md:w-1/3 lg:w-2/5 flex-shrink-0 overflow-hidden rounded-xl">
         <Image
           src={event?.eventImages || placeholderImage}
           alt={event?.title}
           width={1000}
           height={1000}
-          className="bg-gray-100 w-full h-[200px] md:h-[330px] object-cover object-center rounded-lg"
+          className="w-full h-[180px] md:h-[290px] object-cover object-center rounded-xl transform hover:scale-105 transition-transform duration-500 bg-gray-100"
         />
       </div>
 
       {/* Event Details */}
-      <div className="w-full flex flex-col justify-between mt-3 md:mt-0">
+      <div className="w-full flex flex-col justify-between mt-4 md:mt-0">
         <div>
           <div className="flex items-start justify-between gap-2">
-            <h3 className="font-semibold font-montserrat text-lg sm:text-xl text-gray-800 mb-2 sm:mb-4">
+            <h3 className="font-semibold font-montserrat text-xl md:text-2xl text-gray-900 tracking-tight">
               {event?.title}
             </h3>
-            {/* Three-dot action menu */}
-            {event?.eventStatus == "PENDING" && (
+
+            {/* Dropdown Action Menu */}
+            {event?.eventStatus === "PENDING" && (
               <Dropdown menu={menu} trigger={["click"]} placement="bottomRight">
-                <button className="p-2 rounded hover:bg-gray-100 transition">
-                  <MoreVertical className="text-gray-700" />
+                <button className="p-2 rounded-full hover:bg-gray-100 transition">
+                  <MoreVertical className="text-gray-600" />
                 </button>
               </Dropdown>
             )}
           </div>
 
-          <div className="space-y-2 mb-3">
+          {/* Event Info */}
+          <div className="space-y-3 mt-4">
             {/* Address */}
-            <div className="flex items-center">
-              <MapPin
-                size={18}
-                className="text-secondary mr-2 sm:mr-3 flex-shrink-0"
-              />
-              <span className="text-gray-700 text-sm sm:text-base line-clamp-1">
-                {event?.address}
-              </span>
+            <div className="flex items-center gap-2 text-gray-700 text-sm sm:text-base">
+              <MapPin size={18} className="text-primary flex-shrink-0" />
+              <span className="truncate">{event?.address}</span>
             </div>
 
             {/* Dates */}
-            <div className="flex items-center">
-              <Calendar
-                size={18}
-                className="text-secondary mr-2 sm:mr-3 flex-shrink-0"
-              />
-              <span className="text-gray-700 text-sm sm:text-base">
+            <div className="flex items-center gap-2 text-gray-700 text-sm sm:text-base">
+              <Calendar size={18} className="text-primary flex-shrink-0" />
+              <span>
                 {event?.startDate && event?.endDate
                   ? `${format(new Date(event.startDate), "d")} - ${format(
                       new Date(event.endDate),
@@ -115,40 +102,38 @@ const VendorEventCard: React.FC<any> = ({ event }) => {
             </div>
 
             {/* Category + Distance */}
-            <div className="flex items-center">
-              <Activity
-                size={18}
-                className="text-secondary mr-2 sm:mr-3 flex-shrink-0"
-              />
-              <span className="text-gray-700 text-sm sm:text-base">
-                {event?.category} ({event?.distance} Km)
+            <div className="flex items-center gap-2 text-gray-700 text-sm sm:text-base">
+              <Activity size={18} className="text-primary flex-shrink-0" />
+              <span className="bg-gray-100 px-3 py-1 rounded-full text-xs sm:text-sm text-gray-800">
+                {event?.category} • {event?.distance} Km
               </span>
             </div>
 
             {/* Price */}
-            <p className="mt-3 sm:mt-4 text-gray-700 text-lg sm:text-xl font-medium">
-              ${event?.price} USD
+            <p className="mt-4 text-xl sm:text-2xl font-bold text-primary">
+              ${event?.price}{" "}
+              <span className="text-gray-500 text-base">USD</span>
             </p>
 
             {/* Short Description */}
-            <p className="text-gray-700 text-sm sm:text-base line-clamp-3">
+            <p className="text-gray-600 text-sm sm:text-base line-clamp-3 mt-2">
               {event?.description}
             </p>
           </div>
         </div>
 
-        {/* Details Button */}
-        <div className="flex items-center justify-end mt-3">
+        {/* Action Buttons */}
+        <div className="flex items-center justify-end gap-4 mt-2">
           <Link
             href={`/dashboard/vendor/all-events/${event?.id}`}
-            className="bg-transparent hover:bg-primary text-primary hover:text-white border border-primary px-4 sm:px-6 py-2 sm:py-3 rounded text-sm sm:text-base transition-colors duration-200"
+            className="flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/90 px-5 py-2.5 rounded-full text-sm sm:text-base shadow transition"
           >
-            View Booking list
+            View Booking
           </Link>
 
           <Link
             href={`/race-categories/${event?.id}`}
-            className="bg-transparent hover:bg-primary text-primary hover:text-white border border-primary px-4 sm:px-6 py-2 sm:py-3 rounded text-sm sm:text-base transition-colors duration-200"
+            className="flex items-center justify-center gap-2 border border-primary text-primary hover:bg-primary hover:text-white px-5 py-2.5 rounded-full text-sm sm:text-base transition"
           >
             Details
           </Link>

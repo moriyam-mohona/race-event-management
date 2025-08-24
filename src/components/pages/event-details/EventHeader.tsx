@@ -124,21 +124,41 @@ export function EventHeader({ data }: { data: any }) {
               ${data?.price} USD
             </p>
           </div>
-
-          <div className="flex gap-3 mt-4">
-            <Link
-              href="/community"
-              className="border border-primary text-primary hover:bg-primary hover:text-white px-8 py-2 rounded-lg text-lg"
-            >
-              Community
-            </Link>
-            <Link
-              href={`/race-categories/${id}/booking`}
-              className="hover:border hover:border-primary hover:bg-primary/20 hover:text-primary bg-primary text-white px-8 py-2 rounded-lg text-lg"
-            >
-              Register Now
-            </Link>
-          </div>
+          {data?.type === "SHARED" ? (
+            <>
+              <div className="flex gap-3 mt-4">
+                <Link
+                  href="/community"
+                  className="border border-primary text-primary hover:bg-primary hover:text-white px-8 py-2 rounded-lg text-lg"
+                >
+                  Visit Event
+                </Link>
+                <Link
+                  href={`/race-categories/${id}/booking`}
+                  className="hover:border hover:border-primary hover:bg-primary/20 hover:text-primary bg-primary text-white px-8 py-2 rounded-lg text-lg"
+                >
+                  Verify Event
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex gap-3 mt-4">
+                <Link
+                  href="/community"
+                  className="border border-primary text-primary hover:bg-primary hover:text-white px-8 py-2 rounded-lg text-lg"
+                >
+                  Community
+                </Link>
+                <Link
+                  href={`/race-categories/${id}/booking`}
+                  className="hover:border hover:border-primary hover:bg-primary/20 hover:text-primary bg-primary text-white px-8 py-2 rounded-lg text-lg"
+                >
+                  Register Now
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
