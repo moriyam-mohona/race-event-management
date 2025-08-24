@@ -13,9 +13,7 @@ import { useState } from "react";
 
 const CommunityPosts: React.FC = () => {
   const id = useParams().id;
-  // get single community detail for use for the create post button
   const { data: singleCommunityDetail } = useGetSingleCommunityQuery(id);
-  // Display all community posts
   const { data: allCommunityPosts } = useGetAllCommunityPostsQuery({ id });
 
   const [isModalOpen, setIsModalOpen] = useState(false);

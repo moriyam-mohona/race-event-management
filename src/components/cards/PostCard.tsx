@@ -5,19 +5,27 @@ import Image from "next/image";
 import { FiThumbsUp } from "react-icons/fi";
 import { BiSolidCommentDetail } from "react-icons/bi";
 import human from "@/assets/images/Human.png";
-import { useCreateLikeOnPostMutation } from "@/redux/features/community/communityApi";
+import {
+  useCreateLikeOnPostMutation,
+  useDeletePostMutation,
+} from "@/redux/features/community/communityApi";
 import AllComments from "./AllComments";
 import { useState } from "react";
+import { MdOutlineDelete } from "react-icons/md";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 
 const PostCard: React.FC<any> = ({ post }) => {
   const [createLikeOnPost] = useCreateLikeOnPostMutation();
+  const [deletePost] = useDeletePostMutation();
   const handleToggleLike = async () => {
     await createLikeOnPost(post?.id);
   };
 
-  // const [comments, setComments] = useState<string[]>(allComments?.data?.data);
   const [showComments, setShowComments] = useState(false);
-  // const [commentInput, setCommentInput] = useState("");
+
+  const handleDeletePost = async (id: string) => {
+    await handleAsyncWithToast(() => deletePost(id));
+  };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -38,6 +46,7 @@ const PostCard: React.FC<any> = ({ post }) => {
   return (
     <div className="bg-white rounded-2xl border shadow-sm hover:shadow-md transition-all duration-200 mb-6">
       <div className="p-5">
+        <h2>{post?.isMyPost}</h2>
         {/* Author Info */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
@@ -62,9 +71,21 @@ const PostCard: React.FC<any> = ({ post }) => {
               </div>
             </div>
           </div>
-          <span className="text-xs md:text-sm text-gray-400 font-medium">
-            {formatDate(post?.createdAt)}
-          </span>
+
+          <div className="flex items-center gap-2">
+            <span className="text-xs md:text-sm text-gray-400 font-medium">
+              {formatDate(post?.createdAt)}
+            </span>
+            {post?.isMyPost && (
+              <button
+                onClick={() => handleDeletePost(post?.id)}
+                className="flex items-center justify-center p-1 rounded-full hover:bg-red-100 transition-colors cursor-pointer"
+                title="Delete Post"
+              >
+                <MdOutlineDelete className="text-red-500 text-lg md:text-xl" />
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Post Image */}
@@ -89,22 +110,35 @@ const PostCard: React.FC<any> = ({ post }) => {
         <div className="flex items-center gap-6 border-t pt-3">
           <button
             onClick={handleToggleLike}
-            className="flex items-center gap-2 text-gray-600 hover:text-primary transition-colors duration-200"
+            className={`flex items-center gap-1 transition-colors duration-200 cursor-pointer ${
+              post?.isLiked
+                ? "text-primary"
+                : "text-gray-600 hover:text-primary"
+            }`}
           >
-            <FiThumbsUp
-              size={18}
-              className={post?.isLiked ? "text-primary" : ""}
-            />
+            <FiThumbsUp size={18} />
             <span className="text-sm font-medium">{post?._count?.Like}</span>
-            <span className="text-sm">Likes</span>
+            <span className="text-sm">
+              {post?._count?.Like === 1 || post?._count?.Like === 0
+                ? "Like"
+                : "Likes"}
+            </span>
           </button>
+
           <button
             onClick={() => setShowComments(!showComments)}
-            className="flex items-center gap-2 text-gray-600 hover:text-green-600 transition-colors duration-200"
+            className={`flex items-center gap-2 transition-colors duration-200 cursor-pointer ${
+              post?._count?.Comment > 0
+                ? "text-green-600"
+                : "text-gray-600 hover:text-green-600"
+            }`}
           >
             <BiSolidCommentDetail size={18} />
             <span className="text-sm font-medium">
-              {post?._count?.Comment} Comments
+              {post?._count?.Comment}{" "}
+              {post?._count?.Comment === 1 || post?._count?.Comment === 0
+                ? "Comment"
+                : "Comments"}
             </span>
           </button>
         </div>

@@ -96,6 +96,14 @@ const communityApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["community"],
     }),
+    // Delete any post
+    deletePost: builder.mutation({
+      query: (id) => ({
+        url: `community/delete-post/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["community"],
+    }),
   }),
 });
 
@@ -108,4 +116,5 @@ export const {
   useCreateLikeOnPostMutation,
   useGetAllCommentsQuery,
   useCreateCommentOnPostMutation,
+  useDeletePostMutation,
 } = communityApi;

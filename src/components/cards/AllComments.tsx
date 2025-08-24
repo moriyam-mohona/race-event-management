@@ -11,7 +11,6 @@ import { Input } from "../ui/input";
 import { FaPaperPlane } from "react-icons/fa";
 
 const AllComments = ({ postId }: any) => {
-  console.log(postId);
   const id = postId;
 
   const [createCommentOnPost] = useCreateCommentOnPostMutation();
@@ -84,7 +83,7 @@ const AllComments = ({ postId }: any) => {
           />
           <button
             type="submit"
-            className="text-gray-500 hover:text-primary transition-colors"
+            className="text-gray-500 hover:text-primary transition-colors cursor-pointer"
           >
             <FaPaperPlane />
           </button>
