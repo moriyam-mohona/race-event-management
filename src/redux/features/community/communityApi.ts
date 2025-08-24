@@ -20,7 +20,27 @@ const communityApi = baseApi.injectEndpoints({
       },
       providesTags: ["community"],
     }),
+    // Get Single Community Details
+    getSingleCommunity: builder.query({
+      query: (id) => ({
+        url: `/community/get-community/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["community"],
+    }),
+    //  Follow Or Unfollow A Community
+    followOrUnfollowACommunity: builder.mutation({
+      query: (id) => ({
+        url: `community/follow-or-unfollow-community/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["community"],
+    }),
   }),
 });
 
-export const { useGetAllMyCommunityQuery } = communityApi;
+export const {
+  useGetAllMyCommunityQuery,
+  useGetSingleCommunityQuery,
+  useFollowOrUnfollowACommunityMutation,
+} = communityApi;
