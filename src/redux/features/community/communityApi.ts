@@ -36,6 +36,15 @@ const communityApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["community"],
     }),
+    // Create Post On Community
+    createPostOnCommunity: builder.mutation({
+      query: (data) => ({
+        url: `community/create-post`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["community"],
+    }),
   }),
 });
 
@@ -43,4 +52,5 @@ export const {
   useGetAllMyCommunityQuery,
   useGetSingleCommunityQuery,
   useFollowOrUnfollowACommunityMutation,
+  useCreatePostOnCommunityMutation,
 } = communityApi;

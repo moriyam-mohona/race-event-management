@@ -1,6 +1,13 @@
+"use client";
+
 import React, { useState } from "react";
 import { X, ChevronDown, ImagePlus } from "lucide-react";
 import Image from "next/image";
+import { useGetMeQuery } from "@/redux/features/auth/authApi";
+import human from "@/assets/images/Human.png";
+import { useCreatePostOnCommunityMutation } from "@/redux/features/community/communityApi";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import { useParams } from "next/navigation";
 
 interface CreatePostModalProps {
   isOpen: boolean;
@@ -17,6 +24,10 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
   isOpen,
   onClose,
 }) => {
+  const id = useParams().id;
+  const { data: currentUser } = useGetMeQuery({});
+  const [createPostOnCommunity] = useCreatePostOnCommunityMutation({});
+
   const [formData, setFormData] = useState<PostFormData>({
     content: "",
     category: "General post",
@@ -27,18 +38,11 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const postCategories = [
-    "Rideshare",
-    "Couch Share",
-    "Room Share",
-    "General post",
+    { label: "Rideshare", value: "RIDE_SHARE" },
+    { label: "Couch Share", value: "COUCH_SHARE" },
+    { label: "Room Share", value: "ROOM_SHARE" },
+    { label: "General post", value: "GENERAL_POST" },
   ];
-
-  // Mock user data
-  const currentUser = {
-    username: "Watson Pitter",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face",
-  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -59,9 +63,10 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     setImagePreview(null);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const dataToSubmit = new FormData();
     const postData = {
-      author: currentUser.username,
+      author: currentUser?.username,
       content: formData.content,
       category: formData.category,
       image: formData.image ? formData.image.name : null,
@@ -70,10 +75,28 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
     console.log("Post Data:", postData);
 
-    // Reset form
-    setFormData({ content: "", category: "General post", image: null });
-    setImagePreview(null);
-    onClose();
+    const body = {
+      communityId: id,
+      description: formData.content,
+      category: formData.category,
+    };
+
+    dataToSubmit.append("data", JSON.stringify(body));
+
+    if (formData.image) {
+      dataToSubmit.append("image", formData.image);
+    }
+
+    const response = await handleAsyncWithToast(() =>
+      createPostOnCommunity(dataToSubmit)
+    );
+
+    if (response?.data?.success) {
+      // Reset form
+      setFormData({ content: "", category: "General post", image: null });
+      setImagePreview(null);
+      onClose();
+    }
   };
 
   const handleCancel = () => {
@@ -99,18 +122,18 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
             {/* User Info & Category Dropdown */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full overflow-hidden">
+                <div className="w-12 h-12 rounded-full overflow-hidden">
                   <Image
-                    src={currentUser.avatar}
-                    alt={currentUser.username}
+                    src={currentUser?.data?.profileImage || human}
+                    alt={currentUser?.data?.fullName}
                     width={40}
                     height={40}
-                    className="w-full h-full object-cover"
+                    className="bg-gray-100 w-full h-full object-cover"
                   />
                 </div>
                 <div>
                   <span className="ml-3 font-medium text-gray-900">
-                    {currentUser.username}
+                    {currentUser?.data?.fullName}
                   </span>
                   {/* Category Dropdown */}
                   <div className="relative">
@@ -131,14 +154,17 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
                         <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
                           {postCategories.map((category) => (
                             <button
-                              key={category}
+                              key={category.value}
                               onClick={() => {
-                                setFormData((prev) => ({ ...prev, category }));
+                                setFormData((prev) => ({
+                                  ...prev,
+                                  category: category.value,
+                                }));
                                 setIsDropdownOpen(false);
                               }}
                               className="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:text-black hover:font-semibold hover:bg-green-50 first:rounded-t-lg last:rounded-b-lg"
                             >
-                              {category}
+                              {category.label}
                             </button>
                           ))}
                         </div>
