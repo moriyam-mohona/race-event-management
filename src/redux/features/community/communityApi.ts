@@ -70,6 +70,32 @@ const communityApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["community"],
     }),
+    // Get All Comments on any post
+    getAllComments: builder.query({
+      query: ({ data, id }) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `community/get-all-comments/${id}`,
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["community"],
+    }),
+    // Create Comment on any post
+    createCommentOnPost: builder.mutation({
+      query: ({ data, id }) => ({
+        url: `community/make-comment/${id}`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["community"],
+    }),
   }),
 });
 
@@ -80,4 +106,6 @@ export const {
   useCreatePostOnCommunityMutation,
   useGetAllCommunityPostsQuery,
   useCreateLikeOnPostMutation,
+  useGetAllCommentsQuery,
+  useCreateCommentOnPostMutation,
 } = communityApi;

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -6,36 +7,47 @@ import { FiThumbsUp } from "react-icons/fi";
 import { BiSolidCommentDetail } from "react-icons/bi";
 import { Input } from "@/components/ui/input";
 import { FaPaperPlane } from "react-icons/fa";
-import profile from "@/assets/profile.png";
 import human from "@/assets/images/Human.png";
-import { useCreateLikeOnPostMutation } from "@/redux/features/community/communityApi";
+import {
+  useCreateCommentOnPostMutation,
+  useCreateLikeOnPostMutation,
+  useGetAllCommentsQuery,
+} from "@/redux/features/community/communityApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const PostCard: React.FC<any> = ({ post }) => {
   const [createLikeOnPost] = useCreateLikeOnPostMutation();
+  // get all comments of a post
+  const id = post?.id;
+  const { data: allComments } = useGetAllCommentsQuery({ id });
+  // Create Comment On any post
+  const [createCommentOnPost] = useCreateCommentOnPostMutation();
 
   const handleToggleLike = async () => {
-    await handleAsyncWithToast(() => createLikeOnPost(post?.id));
+    await createLikeOnPost(post?.id);
   };
 
-  const initialComments = [
-    "Have you ever wondered about the innovative tech company, QuantumLeap Solutions?",
-    "QuantumLeap’s new AI model is groundbreaking!",
-    "I'm curious how they’re handling data privacy in their latest product.",
-  ];
-
-  const [comments, setComments] = useState<string[]>(initialComments);
+  const [comments, setComments] = useState<string[]>(allComments?.data?.data);
   const [showComments, setShowComments] = useState(false);
   const [commentInput, setCommentInput] = useState("");
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
+  // Create a new comment
+  const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (commentInput.trim() === "") return;
     const newComments = [...comments, commentInput];
     setComments(newComments);
-    console.log("Posted comment:", commentInput);
-    setCommentInput("");
+
+    const data = {
+      commentContent: commentInput,
+    };
+
+    const response = await handleAsyncWithToast(() =>
+      createCommentOnPost({ data, id })
+    );
+    if (response?.data?.success) {
+      setCommentInput("");
+    }
   };
 
   const formatDate = (dateString: string) => {
@@ -121,15 +133,6 @@ const PostCard: React.FC<any> = ({ post }) => {
             <span className="text-sm">{post?._count?.Like}</span>
             <span className="ml-1 text-sm">Like</span>
           </button>
-
-          {/* <button
-            className="flex items-center mr-6 text-gray-600 hover:font-semibold transition-colors duration-200"
-            onClick={() => setShowCommentBox((prev) => !prev)}
-          >
-            <BiSolidCommentDetail size={18} className="mr-1" />
-            <span className="text-sm">{post.comments}</span>
-            <span className="ml-1 text-sm">Comments</span>
-          </button> */}
           <button
             className="flex items-center mr-6 text-green-500 hover:font-semibold transition-colors duration-200 "
             onClick={() => setShowComments(!showComments)}
@@ -144,23 +147,23 @@ const PostCard: React.FC<any> = ({ post }) => {
         {/* Comment Box */}
         {showComments && (
           <div className="space-y-4 mt-5">
-            {comments.map((text, index) => (
-              <div key={index} className="flex items-start gap-3">
+            {allComments?.data?.data?.map((comment: any) => (
+              <div key={comment?.id} className="flex items-start gap-3 ml-2">
                 {/* Avatar */}
                 <Image
-                  src={profile}
+                  src={comment?.user?.profileImage || human}
                   alt="avatar"
                   width={32}
                   height={32}
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-8 h-8 bg-gray-100 rounded-full object-cover"
                 />
                 {/* Comment Content */}
                 <div>
                   <div className="text-sm font-medium text-gray-800">
-                    Devid Pattel
+                    {comment?.user?.fullName}
                   </div>
                   <div className="text-xs text-green-500">Registered</div>
-                  <p className="text-sm text-gray-700">{text}</p>
+                  <p className="text-sm text-gray-700">{comment?.text}</p>
                 </div>
               </div>
             ))}
@@ -171,7 +174,7 @@ const PostCard: React.FC<any> = ({ post }) => {
               className="flex items-center gap-3 border rounded-xl px-3 py-2 mt-2"
             >
               <Image
-                src={profile}
+                src={human}
                 alt="avatar"
                 width={32}
                 height={32}
