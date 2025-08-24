@@ -4,7 +4,7 @@ import React from "react";
 
 const AdminProfile = () => {
   return (
-    <WithRole allowedRoles={["ADMIN"]}>
+    <WithRole allowedRoles={["SUPER_ADMIN"]}>
       <UserProfile />
     </WithRole>
   );

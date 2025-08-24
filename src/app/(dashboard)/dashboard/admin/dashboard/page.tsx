@@ -5,7 +5,7 @@ import React from "react";
 
 const Dashboard = () => {
   return (
-    <WithRole allowedRoles={["ADMIN"]}>
+    <WithRole allowedRoles={["SUPER_ADMIN"]}>
       <States />
       <Graphs />
     </WithRole>

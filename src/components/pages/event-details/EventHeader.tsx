@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Image from "next/image";
 import { SlCalender } from "react-icons/sl";
 import { GiCycling } from "react-icons/gi";
@@ -5,17 +6,38 @@ import { PiMountainsLight } from "react-icons/pi";
 import { SiStreamrunners } from "react-icons/si";
 import { TiWeatherWindy } from "react-icons/ti";
 import { IoLocationOutline } from "react-icons/io5";
-// import { T_Event } from "@/types/Events";
 import Link from "next/link";
 import { format, isSameMonth, isSameYear } from "date-fns";
 import { FaRegBookmark } from "react-icons/fa";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
-import { useAddEventToSavedMutation } from "@/redux/features/event/eventApi";
+import {
+  useAddEventToSavedMutation,
+  useVerifyForSharedEventMutation,
+} from "@/redux/features/event/eventApi";
 import { useParams } from "next/navigation";
+import { Modal } from "antd";
+import { useState } from "react";
+import MyFormWrapper from "@/components/ui/MyForm/MyFormWrapper/MyFormWrapper";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import MyFormInput from "@/components/ui/MyForm/MyFormInput/MyFormInput";
+import MyFormImageUpload from "@/components/ui/MyForm/MyFormImageUpload/MyFormImageUpload";
 
-// export function EventHeader({ title, eventImage, registration }: T_Event) {
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const validationSchema = z.object({
+  eventId: z
+    .string({ required_error: "Event ID is required" })
+    .min(3, "Event ID must be at least 3 characters"),
+  eventName: z
+    .string({ required_error: "Name is required" })
+    .min(2, "Name must be at least 2 characters"),
+  eventDescription: z
+    .string({ required_error: "Description is required" })
+    .min(5, "Description must be at least 5 characters"),
+  eventScreenshot: z.any({ required_error: "Screenshot is required" }),
+});
+
 export function EventHeader({ data }: { data: any }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const start = data?.startDate ? new Date(data.startDate) : null;
   const end = data?.endDate ? new Date(data.endDate) : null;
 
@@ -23,17 +45,45 @@ export function EventHeader({ data }: { data: any }) {
   if (start && end) {
     displayDate = isSameYear(start, end)
       ? isSameMonth(start, end)
-        ? `${format(start, "d")}-${format(end, "d MMM, yyyy")}` // 8-10 Aug, 2025
-        : `${format(start, "d MMM")} - ${format(end, "d MMM, yyyy")}` // 28 Aug - 2 Sep, 2025
+        ? `${format(start, "d")}-${format(end, "d MMM, yyyy")}`
+        : `${format(start, "d MMM")} - ${format(end, "d MMM, yyyy")}`
       : `${format(start, "d MMM, yyyy")} - ${format(end, "d MMM, yyyy")}`;
   }
   const id = useParams().id;
   const [addEventToSaved] = useAddEventToSavedMutation();
+  const [verifyForSharedEvent] = useVerifyForSharedEventMutation();
 
   const handleAddToBookmark = async () => {
     await handleAsyncWithToast(() => {
       return addEventToSaved(id);
     });
+  };
+
+  const showModal = () => setIsModalOpen(true);
+  const handleCancel = () => setIsModalOpen(false);
+
+  const handleSubmit = async (formData: any) => {
+    const dataToSubmit = new FormData();
+
+    // Build the body object
+    const body = {
+      eventId: formData.eventId,
+      name: formData.eventName,
+      description: formData.eventDescription,
+    };
+
+    // Append JSON body to FormData
+    dataToSubmit.append("data", JSON.stringify(body));
+
+    // Append screenshot file
+    dataToSubmit.append("verify", formData.eventScreenshot);
+
+    // Call API
+    await handleAsyncWithToast(() =>
+      verifyForSharedEvent({ data: dataToSubmit, id })
+    );
+
+    setIsModalOpen(false);
   };
 
   return (
@@ -127,18 +177,21 @@ export function EventHeader({ data }: { data: any }) {
           {data?.type === "SHARED" ? (
             <>
               <div className="flex gap-3 mt-4">
-                <Link
-                  href="/community"
+                <a
+                  href={data?.eventUrl || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="border border-primary text-primary hover:bg-primary hover:text-white px-8 py-2 rounded-lg text-lg"
                 >
                   Visit Event
-                </Link>
-                <Link
-                  href={`/race-categories/${id}/booking`}
+                </a>
+
+                <button
+                  onClick={showModal}
                   className="hover:border hover:border-primary hover:bg-primary/20 hover:text-primary bg-primary text-white px-8 py-2 rounded-lg text-lg"
                 >
                   Verify Event
-                </Link>
+                </button>
               </div>
             </>
           ) : (
@@ -161,6 +214,33 @@ export function EventHeader({ data }: { data: any }) {
           )}
         </div>
       </div>
+      <Modal
+        title="Verify your Event"
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <MyFormWrapper
+          onSubmit={handleSubmit}
+          resolver={zodResolver(validationSchema)}
+          className="space-y-6 mt-10"
+        >
+          <MyFormInput name="eventId" label="Write Event ID" />
+          <MyFormInput name="eventName" label="Name" />
+          <MyFormInput name="eventDescription" label="Description" />
+          <MyFormImageUpload
+            name="eventScreenshot"
+            label="Upload Event Conformation Screenshot"
+            inputClassName="flex items-center gap-2"
+          />
+          <button
+            type="submit"
+            className="bg-primary text-white px-5 py-2 rounded-lg"
+          >
+            Confirm
+          </button>
+        </MyFormWrapper>
+      </Modal>
     </div>
   );
 }

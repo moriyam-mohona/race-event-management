@@ -3,7 +3,7 @@ import WithRole from "@/role-wrapper/WithRole";
 
 const AllEvents = () => {
   return (
-    <WithRole allowedRoles={["ADMIN"]}>
+    <WithRole allowedRoles={["SUPER_ADMIN"]}>
       <AllEventsByAdmin />
     </WithRole>
   );

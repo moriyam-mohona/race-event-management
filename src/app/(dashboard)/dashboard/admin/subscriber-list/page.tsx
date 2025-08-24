@@ -4,7 +4,7 @@ import React from "react";
 
 const SubscriberList = () => {
   return (
-    <WithRole allowedRoles={["ADMIN"]}>
+    <WithRole allowedRoles={["SUPER_ADMIN"]}>
       <SubscriberListPage />
     </WithRole>
   );

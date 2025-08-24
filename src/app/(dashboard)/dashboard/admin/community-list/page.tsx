@@ -4,7 +4,7 @@ import React from "react";
 
 const CommunityList = () => {
   return (
-    <WithRole allowedRoles={["ADMIN"]}>
+    <WithRole allowedRoles={["SUPER_ADMIN"]}>
       <CommunityListPage />
     </WithRole>
   );

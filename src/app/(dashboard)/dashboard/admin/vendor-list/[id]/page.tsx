@@ -4,7 +4,7 @@ import React from "react";
 
 const EventOfVendor = () => {
   return (
-    <WithRole allowedRoles={["ADMIN"]}>
+    <WithRole allowedRoles={["SUPER_ADMIN"]}>
       <EventsOfVendor />
     </WithRole>
   );

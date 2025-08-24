@@ -103,6 +103,14 @@ const eventApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["event"],
     }),
+    verifyForSharedEvent: builder.mutation({
+      query: ({ data, id }) => ({
+        url: `event/verify-event/${id}`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["event"],
+    }),
   }),
 });
 
@@ -115,4 +123,5 @@ export const {
   useGetAllMyRegisteredEventsQuery,
   useCreateEventByVendorMutation,
   useCreateGearMutation,
+  useVerifyForSharedEventMutation,
 } = eventApi;

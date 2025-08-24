@@ -72,7 +72,8 @@ export default function OrderSummary() {
                 Participant x {ticket.quantity}
               </span>
               <span className="font-medium">
-                ${(ticket.price * (ticket.quantity || 1)).toFixed(2)} USD
+                $ {((ticket.price ?? 0) * (ticket.quantity ?? 1)).toFixed(2)}{" "}
+                USD
               </span>
             </div>
           </div>

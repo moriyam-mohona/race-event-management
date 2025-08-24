@@ -74,8 +74,8 @@ export interface TicketState {
   eventType?: string;
   distance?: string;
   date?: string;
-  time: string;
-  price: number;
+  time?: string;
+  price?: number;
   quantity?: number;
 }
 
@@ -92,15 +92,6 @@ export interface PersonalDetailsState {
   zipCode?: string;
   phoneNumber?: string;
   emergencyContact?: string;
-}
-
-export interface AddOnItem {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  image: string;
-  quantity: number;
 }
 
 export interface AddOnItem {
