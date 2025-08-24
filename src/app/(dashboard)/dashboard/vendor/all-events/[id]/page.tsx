@@ -1,11 +1,12 @@
 import BookingListPage from "@/components/dashboard/VendorDashboard/bookinglist/BookingListPage";
+import WithRole from "@/role-wrapper/WithRole";
 import React from "react";
 
 const BookingList = () => {
   return (
-    <div>
+    <WithRole allowedRoles={["VENDOR"]}>
       <BookingListPage />
-    </div>
+    </WithRole>
   );
 };
 

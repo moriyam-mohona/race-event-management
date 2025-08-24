@@ -1,11 +1,12 @@
 import AllEventsByVendor from "@/components/dashboard/VendorDashboard/allEventsByVendor/AllEventsByVendor";
+import WithRole from "@/role-wrapper/WithRole";
 import Link from "next/link";
 import { FiPlus } from "react-icons/fi";
 import { IoShareSocialOutline } from "react-icons/io5";
 
 const AllEvents = () => {
   return (
-    <div>
+    <WithRole allowedRoles={["VENDOR"]}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-end gap-4">
           <Link
@@ -32,7 +33,7 @@ const AllEvents = () => {
         </div>
       </div>
       <AllEventsByVendor />
-    </div>
+    </WithRole>
   );
 };
 

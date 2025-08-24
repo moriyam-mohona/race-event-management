@@ -1,10 +1,11 @@
 import CreateEventPage from "@/components/dashboard/VendorDashboard/createEvent/CreateEventPage";
+import WithRole from "@/role-wrapper/WithRole";
 
 const CreateEvent = () => {
   return (
-    <div>
+    <WithRole allowedRoles={["VENDOR"]}>
       <CreateEventPage />
-    </div>
+    </WithRole>
   );
 };
 

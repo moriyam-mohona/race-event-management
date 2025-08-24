@@ -2,10 +2,11 @@ import VendorActivitiesReports from "@/components/dashboard/VendorDashboard/Vend
 import VendorCardInfo from "@/components/dashboard/VendorDashboard/VendorDashboardRoot/VendorDashboardCard";
 import VendorPieChart from "@/components/dashboard/VendorDashboard/VendorDashboardRoot/VendorPieChart";
 import VendorRevenuePerMonth from "@/components/dashboard/VendorDashboard/VendorDashboardRoot/VendorRevenuePerMonth";
+import WithRole from "@/role-wrapper/WithRole";
 
 const Dashboard = () => {
   return (
-    <div>
+    <WithRole allowedRoles={["VENDOR"]}>
       <VendorCardInfo />
       <div className="">
         <div className="mb-6 flex flex-col gap-2">
@@ -18,7 +19,7 @@ const Dashboard = () => {
         </div>
         <VendorRevenuePerMonth />
       </div>
-    </div>
+    </WithRole>
   );
 };
 
