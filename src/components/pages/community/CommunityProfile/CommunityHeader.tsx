@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import banner from "@/assets/community-banner.png";
 import profile from "@/assets/event.png";
 import Image from "next/image";
@@ -30,7 +29,7 @@ const CommunityHeader = () => {
 
       <div className="flex items-end gap-2 mx-2 lg:mx-4 -mt-4 sm:-mt-10 lg:-mt-12">
         <Image
-          src={communityData?.data?.event?.eventImages || profile}
+          src={communityData?.data?.user?.profileImage || profile}
           alt="Community Profile"
           width={1000}
           height={1000}

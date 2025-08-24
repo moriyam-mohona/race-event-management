@@ -45,6 +45,31 @@ const communityApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["community"],
     }),
+    // Get all Community Posts
+    getAllCommunityPosts: builder.query({
+      query: ({ data, id }) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `community/get-all-post/${id}`,
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["community"],
+    }),
+    // Like or Unlike any post
+    createLikeOnPost: builder.mutation({
+      query: (id) => ({
+        url: `community/give-or-remove-like/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["community"],
+    }),
   }),
 });
 
@@ -53,4 +78,6 @@ export const {
   useGetSingleCommunityQuery,
   useFollowOrUnfollowACommunityMutation,
   useCreatePostOnCommunityMutation,
+  useGetAllCommunityPostsQuery,
+  useCreateLikeOnPostMutation,
 } = communityApi;

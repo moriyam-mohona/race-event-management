@@ -1,19 +1,21 @@
+import { StaticImageData } from "next/image";
+
 export interface User {
-  id: string;
-  username: string;
-  avatar?: string;
-  isRegistered: boolean;
-  role: "Admin" | "General" | "Moderator";
+  id?: string; // not returned in the snippet, so optional
+  fullName: string;
+  profileImage?: string;
 }
 
 export interface Post {
   id: string;
-  content: string;
-  imageUrl?: string;
-  createdAt: string;
-  likes: number;
-  comments: number;
-  author: User;
+  description: string;
+  images: string[] | StaticImageData; // backend gives an array
+  _count: {
+    Like: number;
+    Comment: number;
+  };
+  isLiked: boolean;
+  user: User;
 }
 
 export interface Member {

@@ -38,7 +38,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const postCategories = [
-    { label: "Rideshare", value: "RIDE_SHARE" },
+    { label: "Ride Share", value: "RIDE_SHARE" },
     { label: "Couch Share", value: "COUCH_SHARE" },
     { label: "Room Share", value: "ROOM_SHARE" },
     { label: "General post", value: "GENERAL_POST" },
@@ -65,16 +65,6 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
   const handleSubmit = async () => {
     const dataToSubmit = new FormData();
-    const postData = {
-      author: currentUser?.username,
-      content: formData.content,
-      category: formData.category,
-      image: formData.image ? formData.image.name : null,
-      timestamp: new Date().toISOString(),
-    };
-
-    console.log("Post Data:", postData);
-
     const body = {
       communityId: id,
       description: formData.content,
@@ -146,12 +136,12 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
                     </button>
 
                     {isDropdownOpen && (
-                      <>
+                      <div className="cursor-pointer">
                         <div
-                          className="fixed inset-0 z-10"
+                          className="fixed inset-0 z-10 cursor-pointer"
                           onClick={() => setIsDropdownOpen(false)}
                         />
-                        <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                        <div className="absolute right-0 top-full mt-1 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20 cursor-pointer">
                           {postCategories.map((category) => (
                             <button
                               key={category.value}
@@ -162,13 +152,13 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
                                 }));
                                 setIsDropdownOpen(false);
                               }}
-                              className="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:text-black hover:font-semibold hover:bg-green-50 first:rounded-t-lg last:rounded-b-lg"
+                              className="block w-full text-left px-3 py-2 text-sm text-gray-700 hover:text-black hover:font-semibold hover:bg-green-50 first:rounded-t-lg last:rounded-b-lg cursor-pointer"
                             >
                               {category.label}
                             </button>
                           ))}
                         </div>
-                      </>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -226,14 +216,14 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
           <div className="flex items-center justify-end space-x-3 p-4 border-t border-gray-200">
             <button
               onClick={handleCancel}
-              className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-red-400 hover:text-white rounded transition-colors"
+              className="px-4 py-2 text-sm font-medium text-gray-700 border border-gray-200 hover:bg-red-400 hover:text-white rounded transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
               disabled={!formData.content.trim()}
-              className="px-8 py-2 text-sm font-medium text-white bg-primary hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed rounded transition-colors"
+              className="px-8 py-2 text-sm font-medium text-white bg-primary hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed rounded transition-colors cursor-pointer"
             >
               Post
             </button>

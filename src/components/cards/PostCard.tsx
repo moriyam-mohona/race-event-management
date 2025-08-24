@@ -1,18 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import { Post } from "@/types/Post";
 import Image from "next/image";
 import { FiThumbsUp } from "react-icons/fi";
 import { BiSolidCommentDetail } from "react-icons/bi";
 import { Input } from "@/components/ui/input";
 import { FaPaperPlane } from "react-icons/fa";
 import profile from "@/assets/profile.png";
-interface PostCardProps {
-  post: Post;
-}
+import human from "@/assets/images/Human.png";
+import { useCreateLikeOnPostMutation } from "@/redux/features/community/communityApi";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 
-const PostCard: React.FC<PostCardProps> = ({ post }) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const PostCard: React.FC<any> = ({ post }) => {
+  const [createLikeOnPost] = useCreateLikeOnPostMutation();
+
+  const handleToggleLike = async () => {
+    await handleAsyncWithToast(() => createLikeOnPost(post?.id));
+  };
+
   const initialComments = [
     "Have you ever wondered about the innovative tech company, QuantumLeap Solutions?",
     "QuantumLeap’s new AI model is groundbreaking!",
@@ -42,110 +48,77 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
     return date.toLocaleDateString("en-US", options);
   };
 
-  const sizeClasses = {
-    sm: "w-8 h-8 text-xs",
-    md: "w-10 h-10 text-sm",
-    lg: "w-12 h-12 text-base",
-  };
-
-  const getInitial = (username: string) => username.charAt(0).toUpperCase();
-
-  const getBgColor = (username: string) => {
-    const colors = [
-      "bg-blue-200",
-      "bg-green-200",
-      "bg-yellow-200",
-      "bg-purple-200",
-      "bg-pink-200",
-      "bg-indigo-200",
-    ];
-    const hash = username
-      .split("")
-      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return colors[hash % colors.length];
-  };
-
-  const renderAvatar = (size: "sm" | "md" | "lg" = "md") => {
-    const user = post.author;
-    return (
-      <div
-        className={`${
-          sizeClasses[size]
-        } rounded-full flex items-center justify-center ${getBgColor(
-          user.username
-        )} text-gray-700 font-medium overflow-hidden`}
-      >
-        {user.avatar ? (
-          <Image
-            src={user.avatar}
-            alt={user.username}
-            width={1000}
-            height={1000}
-            className="w-12 h-12 object-cover"
-          />
-        ) : (
-          <span>{getInitial(user.username)}</span>
-        )}
-      </div>
-    );
-  };
-
   return (
     <div className="bg-white rounded-lg shadow-sm border overflow-hidden transition-all duration-200 hover:shadow-md mb-4">
       <div className="p-4">
         {/* Author info */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center">
-            {renderAvatar("md")}
+            <Image
+              src={post?.user?.profileImage || human}
+              alt="Author"
+              width={800}
+              height={800}
+              className="w-12 h-12 rounded-full object-cover bg-gray-100"
+            />
             <div className="ml-3">
               <h3 className="font-medium text-gray-800">
-                {post.author.username}
+                {post?.user?.fullName}
               </h3>
               <div className="flex items-center text-xs">
                 <span
                   className={`${
-                    post.author.isRegistered
+                    post?.author?.isRegistered
                       ? "text-green-500"
                       : "text-gray-500"
                   }`}
                 >
-                  {post.author.isRegistered ? "Registered" : "Unregistered"}
+                  {post?.author?.isRegistered ? "Registered" : "Unregistered"}
                 </span>
                 <span className="mx-1 text-gray-400">•</span>
-                <span className="text-gray-500">{post.author.role}</span>
+                <span className="text-gray-500">{post?.author?.role}</span>
               </div>
             </div>
           </div>
           <span className="text-sm text-gray-500">
-            {formatDate(post.createdAt)}
+            {formatDate(post?.createdAt)}
           </span>
         </div>
 
         {/* Post image */}
-        {post.imageUrl && (
+        {post?.images?.[0] && (
           <div className="mt-3 mb-4 rounded-2xl">
             <Image
-              src={post.imageUrl}
+              src={post.images[0]}
               alt="Post attachment"
               width={1000}
               height={1000}
-              className="w-full h-[300px] object-cover max-h-96 rounded-2xl"
+              className="bg-gray-100 w-full h-[300px] object-cover max-h-96 rounded-2xl"
             />
           </div>
         )}
 
         {/* Post content */}
         <div className="mb-3">
-          <p className="text-gray-700 whitespace-pre-line font-normal">
-            {post.content}
+          <p className="text-sm text-gray-700 whitespace-pre-line font-normal">
+            {post?.description}
           </p>
         </div>
 
         {/* Interaction buttons */}
         <div className="flex items-center pt-4 border-t border-gray-100 mt-2">
-          <button className="flex items-center mr-6 text-gray-600 hover:font-semibold transition-colors duration-200">
-            <FiThumbsUp size={18} className="mr-1 font-bold" />
-            <span className="text-sm">{post.likes}</span>
+          <button
+            onClick={() => handleToggleLike()}
+            className="flex items-center mr-6 text-gray-600 hover:font-semibold transition-colors duration-200 cursor-pointer"
+          >
+            <FiThumbsUp
+              size={18}
+              className={`mr-1 font-bold ${
+                post?.isLiked ? "text-primary" : "text-gray-600"
+              }`}
+            />
+
+            <span className="text-sm">{post?._count?.Like}</span>
             <span className="ml-1 text-sm">Like</span>
           </button>
 
@@ -162,7 +135,9 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
             onClick={() => setShowComments(!showComments)}
           >
             <BiSolidCommentDetail size={18} />
-            <span className="ml-1 text-sm">{comments.length} Comments</span>
+            <span className="ml-1 text-sm">
+              {post?._count?.Comment} Comments
+            </span>
           </button>
         </div>
 
