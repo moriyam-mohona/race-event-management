@@ -1,23 +1,13 @@
-import CommunityChats from "@/components/pages/community/CommunityChats";
-import CommunityHeader from "@/components/pages/community/CommunityHeader";
-import CommunityPosts from "@/components/pages/community/CommunityPosts";
+import CommunityList from "@/components/pages/community/CommunityList/CommunityList";
+import WithRole from "@/role-wrapper/WithRole";
 
 const Community = () => {
   return (
-    <div className="mt-36 container mx-auto px-3">
-      <CommunityHeader />
-      <div className="my-10">
-        <hr className="h-2 border-t border-gray-200" />
+    <WithRole allowedRoles={["USER"]}>
+      <div className="mt-24 lg:mt-40 container mx-auto max-w-[1320px] px-4">
+        <CommunityList />
       </div>
-      <div className="flex flex-col-reverse lg:flex-row gap-4 lg:px-4">
-        <div className="w-full lg:w-2/3">
-          <CommunityPosts />
-        </div>
-        <div className="w-full lg:w-1/3">
-          <CommunityChats />
-        </div>
-      </div>
-    </div>
+    </WithRole>
   );
 };
 
