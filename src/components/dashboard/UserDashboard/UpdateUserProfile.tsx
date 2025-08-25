@@ -57,7 +57,7 @@ const UpdateUserProfile = () => {
         dateOfBirth: getme?.data?.dateOfBirth
           ? parseISO(getme?.data?.dateOfBirth)
           : undefined,
-        gender: getme?.data?.gender || "",
+        gender: getme?.data?.gender?.toLowerCase() || "",
         continent: getme?.data?.continent || "",
         country: getme?.data?.country || "",
         region: getme?.data?.region || "",
@@ -98,7 +98,7 @@ const UpdateUserProfile = () => {
       dateOfBirth: formData.dateOfBirth
         ? formData.dateOfBirth.toISOString()
         : null,
-      gender: formData.gender.toUpperCase(),
+      gender: formData.gender ? formData.gender.toUpperCase() : null,
       continent: formData.continent,
       country: formData.country,
       region: formData.region,
@@ -209,7 +209,7 @@ const UpdateUserProfile = () => {
           <div>
             <Label className="text-base md:text-lg mb-2">Gender</Label>
             <Select
-              value={formData.gender.toLowerCase()}
+              value={formData.gender}
               onValueChange={(value) => handleInputChange("gender", value)}
             >
               <SelectTrigger className="bg-gray-50">
