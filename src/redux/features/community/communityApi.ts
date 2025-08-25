@@ -46,22 +46,6 @@ const communityApi = baseApi.injectEndpoints({
       invalidatesTags: ["community"],
     }),
     // Get all Community Posts
-    // getAllCommunityPosts: builder.query({
-    //   query: ({ data, id }) => {
-    //     const params = new URLSearchParams();
-    //     if (data?.queryObj) {
-    //       data?.queryObj.forEach((item: any) => {
-    //         params.append(item.name, item.value as string);
-    //       });
-    //     }
-    //     return {
-    //       url: `community/get-all-post/${id}`,
-    //       method: "GET",
-    //       params: params,
-    //     };
-    //   },
-    //   providesTags: ["community"],
-    // }),
     getAllCommunityPosts: builder.query({
       query: ({ queryObj, id }) => {
         const params = new URLSearchParams();
@@ -77,7 +61,6 @@ const communityApi = baseApi.injectEndpoints({
       },
       providesTags: ["community"],
     }),
-
     // Like or Unlike any post
     createLikeOnPost: builder.mutation({
       query: (id) => ({

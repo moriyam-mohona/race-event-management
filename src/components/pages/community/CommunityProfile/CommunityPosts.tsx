@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Filter, Plus } from "lucide-react";
+import { Search, Plus, ChevronDown } from "lucide-react";
 import PostCard from "@/components/cards/PostCard";
 import CreatePostModal from "./CreatePostModal";
 import {
@@ -9,56 +9,95 @@ import {
 } from "@/redux/features/community/communityApi";
 import { useParams } from "next/navigation";
 import { Post } from "@/types/Post";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Pagination } from "antd";
 import Loading from "@/components/shared/Loading/Loading";
 
-const CommunityPosts: React.FC = () => {
-  const [pagination, setPagination] = useState({
-    current: 1,
-    pageSize: 5,
-  });
+const postCategories = [
+  { label: "Ride Share", value: "RIDE_SHARE" },
+  { label: "Couch Share", value: "COUCH_SHARE" },
+  { label: "Room Share", value: "ROOM_SHARE" },
+  { label: "General post", value: "GENERAL_POST" },
+];
 
-  // Format the query object according to your API requirements
+const CommunityPosts: React.FC = () => {
+  const id = useParams().id;
+
+  const [pagination, setPagination] = useState({ current: 1, pageSize: 5 });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(""); // Debounced value
+  const [filterValue, setFilterValue] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showFilterDropdown, setShowFilterDropdown] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Debounce search input
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 300);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setShowFilterDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // Build query object dynamically
   const queryObj = [
     { name: "page", value: pagination.current },
     { name: "limit", value: pagination.pageSize },
+    ...(debouncedSearch
+      ? [{ name: "searchField", value: debouncedSearch }]
+      : []),
+    ...(filterValue ? [{ name: "category", value: filterValue }] : []),
   ];
 
-  const id = useParams().id;
   const { data: singleCommunityDetail } = useGetSingleCommunityQuery(id);
+
   const {
     data: allCommunityPosts,
     isFetching,
     isLoading,
-  } = useGetAllCommunityPostsQuery({
-    id,
-    queryObj,
-  });
+  } = useGetAllCommunityPostsQuery({ id, queryObj });
 
   const handlePaginationChange = (page: number, pageSize: number) => {
-    setPagination({
-      current: page,
-      pageSize,
-    });
+    setPagination({ current: page, pageSize });
   };
 
+  // Reset pagination when search or filter changes
+  useEffect(() => {
+    setPagination((prev) => ({ ...prev, current: 1 }));
+  }, [debouncedSearch, filterValue]);
+
   const totalCount = allCommunityPosts?.data?.meta?.total || 0;
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   if (isLoading || isFetching) {
     return <Loading />;
   }
+
   return (
     <div className="max-w-4xl py-8">
       <div className="mb-6">
+        {/* Search and Create Post */}
         <div className="flex gap-3 mb-4">
           <div className="relative flex-1">
             <input
               type="text"
               placeholder="Search here"
-              // value={searchTerm}
-              // onChange={(e) => setSearchTerm(e.target.value)}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-4 pr-10 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
             />
             <Search
@@ -66,32 +105,64 @@ const CommunityPosts: React.FC = () => {
               className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
             />
           </div>
-          {singleCommunityDetail?.data?.isPaidFollower === true ? (
-            <>
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="bg-primary hover:bg-primary/80 text-white px-2 md:px-4 py-2 rounded-lg transition-colors duration-200 flex items-center cursor-pointer"
-              >
-                <Plus size={18} className="mr-1" />
-                <span className="hidden md:inline">Create a post</span>
-              </button>
-            </>
-          ) : (
-            <></>
+
+          {singleCommunityDetail?.data?.isPaidFollower && (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-primary hover:bg-primary/80 text-white px-2 md:px-4 py-2 rounded-lg transition-colors duration-200 flex items-center cursor-pointer"
+            >
+              <Plus size={18} className="mr-1" />
+              <span className="hidden md:inline">Create a post</span>
+            </button>
           )}
         </div>
 
-        <div className="flex justify-end mt-10 ">
-          <button className="flex items-center text-gray-600 hover:text-primary transition-colors duration-200 border border-gray-200 px-4 py-2 rounded-lg">
-            <span className="mr-1">Filter</span>
-            <Filter size={16} />
+        {/* Filter Dropdown */}
+        <div className="relative flex justify-end mt-4" ref={dropdownRef}>
+          <button
+            onClick={() => setShowFilterDropdown((prev) => !prev)}
+            className="flex items-center text-gray-700 hover:text-primary transition-colors duration-200 bg-white border border-gray-200 shadow-sm hover:shadow-md px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 text-sm"
+          >
+            <span className="mr-2 font-medium !text-sm">
+              {filterValue
+                ? postCategories.find((c) => c.value === filterValue)?.label
+                : "Filter"}
+            </span>
+            <ChevronDown size={18} className="text-gray-500" />
           </button>
+
+          {showFilterDropdown && (
+            <div className="absolute right-0 w-52 bg-white border border-gray-200 shadow-lg z-20 overflow-hidden animate-fade-in">
+              {postCategories.map((category) => (
+                <div
+                  key={category.value}
+                  className="px-4 py-2 hover:bg-primary/10 hover:text-primary cursor-pointer transition-colors duration-200 text-gray-700  !text-sm"
+                  onClick={() => {
+                    setFilterValue(category.value);
+                    setShowFilterDropdown(false);
+                  }}
+                >
+                  {category.label}
+                </div>
+              ))}
+              <div
+                className="px-4 py-2 hover:bg-red-100 hover:text-red-500 cursor-pointer transition-colors duration-200 text-red-500 font-medium !text-sm"
+                onClick={() => {
+                  setFilterValue("");
+                  setShowFilterDropdown(false);
+                }}
+              >
+                Clear Filter
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {allCommunityPosts?.data?.data?.length > 0 ? (
-        allCommunityPosts?.data?.data?.map((post: Post) => (
-          <PostCard key={post?.id} post={post} />
+      {/* Posts List */}
+      {allCommunityPosts?.data?.data?.length ? (
+        allCommunityPosts.data.data.map((post: Post) => (
+          <PostCard key={post.id} post={post} />
         ))
       ) : (
         <div className="text-center py-8 text-gray-500">
@@ -99,10 +170,13 @@ const CommunityPosts: React.FC = () => {
         </div>
       )}
 
+      {/* Create Post Modal */}
       <CreatePostModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+
+      {/* Pagination */}
       <div className="p-4 w-full flex flex-wrap justify-center">
         <Pagination
           current={pagination.current}

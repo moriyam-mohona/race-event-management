@@ -30,7 +30,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
   const [formData, setFormData] = useState<PostFormData>({
     content: "",
-    category: "General post",
+    category: "GENERAL_POST",
     image: null,
   });
 
@@ -68,7 +68,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
     const body = {
       communityId: id,
       description: formData.content,
-      category: formData.category,
+      category: formData.category || "GENERAL_POST",
     };
 
     dataToSubmit.append("data", JSON.stringify(body));
@@ -83,7 +83,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
     if (response?.data?.success) {
       // Reset form
-      setFormData({ content: "", category: "General post", image: null });
+      setFormData({ content: "", category: "GENERAL_POST", image: null });
       setImagePreview(null);
       onClose();
     }
@@ -91,7 +91,7 @@ const CreatePostModal: React.FC<CreatePostModalProps> = ({
 
   const handleCancel = () => {
     // Reset form
-    setFormData({ content: "", category: "General post", image: null });
+    setFormData({ content: "", category: "GENERAL_POST", image: null });
     setImagePreview(null);
     setIsDropdownOpen(false);
     onClose();
