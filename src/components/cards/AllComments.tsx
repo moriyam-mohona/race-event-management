@@ -13,6 +13,7 @@ import human from "@/assets/images/Human.png";
 import { Input } from "../ui/input";
 import { FaPaperPlane } from "react-icons/fa";
 import { RiDeleteBinLine } from "react-icons/ri";
+import CommentSkeleton from "../skeletons/CommentSkeleton";
 
 const AllComments = ({ postId }: any) => {
   const [pagination, setPagination] = useState({
@@ -27,7 +28,11 @@ const AllComments = ({ postId }: any) => {
     { name: "limit", value: pagination.pageSize },
   ];
 
-  const { data: allComments, isFetching } = useGetAllCommentsQuery({
+  const {
+    data: allComments,
+    isFetching,
+    isLoading,
+  } = useGetAllCommentsQuery({
     id,
     queryObj,
   });
@@ -84,38 +89,46 @@ const AllComments = ({ postId }: any) => {
   return (
     <div>
       <div className="mt-5 space-y-4">
-        {/* Comments list */}
-        {comments?.map((comment: any) => (
-          <div key={comment?.id} className="flex items-start gap-3">
-            <Image
-              src={comment?.user?.profileImage || human}
-              alt="avatar"
-              width={32}
-              height={32}
-              className="w-8 h-8 rounded-full bg-gray-100 object-cover shadow-sm"
-            />
-            <div className="flex-1 bg-gray-50 rounded-xl px-3 py-2=">
-              <div className="flex justify-between">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-sm font-semibold text-gray-800">
-                    {comment?.user?.fullName}
-                  </span>
-                  <span className="text-xs text-green-600">Registered</span>
+        {/* Comments list or Skeleton */}
+        {isLoading || isFetching ? (
+          Array.from({ length: 3 }).map((_, idx) => (
+            <CommentSkeleton key={idx} />
+          ))
+        ) : comments.length > 0 ? (
+          comments.map((comment: any) => (
+            <div key={comment?.id} className="flex items-start gap-3">
+              <Image
+                src={comment?.user?.profileImage || human}
+                alt="avatar"
+                width={32}
+                height={32}
+                className="w-8 h-8 rounded-full bg-gray-100 object-cover shadow-sm"
+              />
+              <div className="flex-1 bg-gray-50 rounded-xl px-3 py-2">
+                <div className="flex justify-between">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm font-semibold text-gray-800">
+                      {comment?.user?.fullName}
+                    </span>
+                    <span className="text-xs text-green-600">Registered</span>
+                  </div>
+                  <button
+                    onClick={() => handleDeleteComment(comment?.id)}
+                    className="text-red-500 cursor-pointer"
+                  >
+                    <RiDeleteBinLine size={18} />
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleDeleteComment(comment?.id)}
-                  className="text-red-500 cursor-pointer"
-                >
-                  <RiDeleteBinLine size={18} />
-                </button>
+                <p className="mt-2 text-sm text-gray-700">{comment?.content}</p>
               </div>
-              <p className="mt-2 text-sm text-gray-700">{comment?.content}</p>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <p className="text-center text-gray-500 py-4">No comments yet.</p>
+        )}
 
         {/* Show More Button */}
-        {hasMore && (
+        {hasMore && !isLoading && !isFetching && (
           <div className="flex justify-center">
             <button
               onClick={() =>
