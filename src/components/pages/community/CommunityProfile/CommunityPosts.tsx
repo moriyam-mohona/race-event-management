@@ -10,14 +10,45 @@ import {
 import { useParams } from "next/navigation";
 import { Post } from "@/types/Post";
 import { useState } from "react";
+import { Pagination } from "antd";
+import Loading from "@/components/shared/Loading/Loading";
 
 const CommunityPosts: React.FC = () => {
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+  });
+
+  // Format the query object according to your API requirements
+  const queryObj = [
+    { name: "page", value: pagination.current },
+    { name: "limit", value: pagination.pageSize },
+  ];
+
   const id = useParams().id;
   const { data: singleCommunityDetail } = useGetSingleCommunityQuery(id);
-  const { data: allCommunityPosts } = useGetAllCommunityPostsQuery({ id });
+  const {
+    data: allCommunityPosts,
+    isFetching,
+    isLoading,
+  } = useGetAllCommunityPostsQuery({
+    id,
+    queryObj,
+  });
 
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination({
+      current: page,
+      pageSize,
+    });
+  };
+
+  const totalCount = allCommunityPosts?.data?.meta?.total || 0;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  if (isLoading || isFetching) {
+    return <Loading />;
+  }
   return (
     <div className="max-w-4xl py-8">
       <div className="mb-6">
@@ -72,6 +103,15 @@ const CommunityPosts: React.FC = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
+      <div className="p-4 w-full flex flex-wrap justify-center">
+        <Pagination
+          current={pagination.current}
+          pageSize={pagination.pageSize}
+          total={totalCount}
+          onChange={handlePaginationChange}
+          disabled={isFetching}
+        />
+      </div>
     </div>
   );
 };
