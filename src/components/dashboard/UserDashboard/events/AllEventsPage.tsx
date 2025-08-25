@@ -18,7 +18,6 @@ const AllEventsPage = () => {
     data: registeredEvents,
     isLoading: isRegisteredLoading,
     isError: isRegisteredError,
-    error: registeredError,
   } = useGetAllMyRegisteredEventsQuery(
     {
       queryObj: [
@@ -41,7 +40,6 @@ const AllEventsPage = () => {
     data: sharedEvents,
     isLoading: isSharedLoading,
     isError: isSharedError,
-    error: sharedError,
   } = useGetAllSharedEventsQuery({}, { skip: activeTab !== "shared" });
 
   const normalizeEvents = (raw: any[] = []) =>
@@ -50,8 +48,7 @@ const AllEventsPage = () => {
   const renderEvents = (
     events: any[],
     isLoading: boolean,
-    isError: boolean,
-    error: any
+    isError: boolean
   ) => {
     if (isLoading) {
       return <Loading />;
@@ -61,9 +58,6 @@ const AllEventsPage = () => {
       return (
         <div className="flex h-40 flex-col items-center justify-center rounded-lg border border-dashed text-red-500">
           <p className="font-medium">Failed to load events</p>
-          <pre className="mt-2 max-w-full overflow-auto text-xs text-gray-400">
-            {JSON.stringify(error, null, 2)}
-          </pre>
         </div>
       );
     }
@@ -131,12 +125,7 @@ const AllEventsPage = () => {
                 ? isSharedError
                 : tab === activeTab && activeTab !== "shared"
                 ? isRegisteredError
-                : false,
-              tab === activeTab && activeTab === "shared"
-                ? sharedError
-                : tab === activeTab && activeTab !== "shared"
-                ? registeredError
-                : null
+                : false
             )}
           </TabsContent>
         ))}
