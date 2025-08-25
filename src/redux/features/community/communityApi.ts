@@ -103,6 +103,14 @@ const communityApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["community"],
     }),
+    // Delete any comment
+    deleteComment: builder.mutation({
+      query: (id) => ({
+        url: `community/delete-comment/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["community"],
+    }),
   }),
 });
 
@@ -116,4 +124,5 @@ export const {
   useGetAllCommentsQuery,
   useCreateCommentOnPostMutation,
   useDeletePostMutation,
+  useDeleteCommentMutation,
 } = communityApi;

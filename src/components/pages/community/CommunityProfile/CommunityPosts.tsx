@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Plus, ChevronDown } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import PostCard from "@/components/cards/PostCard";
 import CreatePostModal from "./CreatePostModal";
 import {
@@ -12,6 +12,7 @@ import { Post } from "@/types/Post";
 import { useState, useEffect, useRef } from "react";
 import { Pagination } from "antd";
 import Loading from "@/components/shared/Loading/Loading";
+import { CiFilter } from "react-icons/ci";
 
 const postCategories = [
   { label: "Ride Share", value: "RIDE_SHARE" },
@@ -123,12 +124,13 @@ const CommunityPosts: React.FC = () => {
             onClick={() => setShowFilterDropdown((prev) => !prev)}
             className="flex items-center text-gray-700 hover:text-primary transition-colors duration-200 bg-white border border-gray-200 shadow-sm hover:shadow-md px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-1 text-sm"
           >
-            <span className="mr-2 font-medium !text-sm">
+            <span className="mr-1 font-medium !text-sm">
               {filterValue
                 ? postCategories.find((c) => c.value === filterValue)?.label
                 : "Filter"}
             </span>
-            <ChevronDown size={18} className="text-gray-500" />
+            {/* <ChevronDown size={18} className="text-gray-500" /> */}
+            <CiFilter size={18} className="text-gray-500" />
           </button>
 
           {showFilterDropdown && (
