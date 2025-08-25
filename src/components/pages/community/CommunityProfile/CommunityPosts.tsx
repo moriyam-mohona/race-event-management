@@ -11,8 +11,8 @@ import { useParams } from "next/navigation";
 import { Post } from "@/types/Post";
 import { useState, useEffect, useRef } from "react";
 import { Pagination } from "antd";
-import Loading from "@/components/shared/Loading/Loading";
 import { CiFilter } from "react-icons/ci";
+import PostsSkeleton from "@/components/skeletons/PostsSkeleton";
 
 const postCategories = [
   { label: "Ride Share", value: "RIDE_SHARE" },
@@ -85,7 +85,7 @@ const CommunityPosts: React.FC = () => {
   const totalCount = allCommunityPosts?.data?.meta?.total || 0;
 
   if (isLoading || isFetching) {
-    return <Loading />;
+    return <PostsSkeleton />;
   }
 
   return (

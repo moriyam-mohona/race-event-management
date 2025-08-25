@@ -10,14 +10,21 @@ import {
 } from "@/redux/features/community/communityApi";
 import { useParams } from "next/navigation";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import CommunityHeaderSkeleton from "@/components/skeletons/CommunityHeaderSkeleton";
 const CommunityHeader = () => {
   const id = useParams().id;
-  const { data: communityData } = useGetSingleCommunityQuery(id);
+  const {
+    data: communityData,
+    isLoading,
+    isFetching,
+  } = useGetSingleCommunityQuery(id);
   const [followOrUnfollow] = useFollowOrUnfollowACommunityMutation();
 
   const handleToggleFollow = async () => {
     await handleAsyncWithToast(() => followOrUnfollow(id));
   };
+
+  if (isLoading || isFetching) return <CommunityHeaderSkeleton />;
   return (
     <div>
       <Image
