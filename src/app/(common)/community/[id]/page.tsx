@@ -5,7 +5,9 @@ import React from "react";
 const CommunityProfilePage = () => {
   return (
     <WithRole allowedRoles={["VENDOR", "SUPER_ADMIN", "USER"]}>
-      <CommunityProfile />
+      <div className="mb-20">
+        <CommunityProfile />
+      </div>{" "}
     </WithRole>
   );
 };
