@@ -198,7 +198,7 @@ export function EventHeader({ data }: { data: any }) {
             <>
               <div className="flex gap-3 mt-4">
                 <Link
-                  href="/community"
+                  href={`/community/${data?.Community?.id}`}
                   className="border border-primary text-primary hover:bg-primary hover:text-white px-8 py-2 rounded-lg text-lg"
                 >
                   Community

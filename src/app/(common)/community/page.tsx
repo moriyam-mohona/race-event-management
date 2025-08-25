@@ -3,7 +3,7 @@ import WithRole from "@/role-wrapper/WithRole";
 
 const Community = () => {
   return (
-    <WithRole allowedRoles={["USER"]}>
+    <WithRole allowedRoles={["VENDOR", "SUPER_ADMIN", "USER"]}>
       <div className="mt-24 lg:mt-40 container mx-auto max-w-[1320px] px-4">
         <CommunityList />
       </div>

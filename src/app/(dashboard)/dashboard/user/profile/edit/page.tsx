@@ -3,7 +3,7 @@ import WithRole from "@/role-wrapper/WithRole";
 
 const ProfileEdit = () => {
   return (
-    <WithRole allowedRoles={["USER"]}>
+    <WithRole allowedRoles={["VENDOR", "SUPER_ADMIN", "USER"]}>
       <UpdateUserProfile />
     </WithRole>
   );
