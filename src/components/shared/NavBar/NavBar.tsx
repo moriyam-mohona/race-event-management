@@ -168,12 +168,14 @@ const Navbar = () => {
                       </div>
                     </>
                   )}
-                  <Link
-                    href="/dashboard/vendor/create-event"
-                    className="bg-primary hover:bg-transparent hover:border hover:border-primary hover:text-primary hover:font-semibold text-white py-2 px-5 rounded-full text-center transition-colors"
-                  >
-                    Create Event
-                  </Link>
+                  {user?.role === "VENDOR" && (
+                    <Link
+                      href="/dashboard/vendor/create-event"
+                      className="bg-primary hover:bg-transparent hover:border hover:border-primary hover:text-primary hover:font-semibold text-white py-2 px-5 rounded-full text-center transition-colors"
+                    >
+                      Create Event
+                    </Link>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -214,12 +216,14 @@ const Navbar = () => {
                 </Link>
               </>
             )}
-            <Link
-              href="/dashboard/vendor/create-event"
-              className="text-base bg-primary hover:bg-primary/80 text-white py-3 px-5 ml-3 rounded-full text-center transition-colors"
-            >
-              Create Event
-            </Link>
+            {user?.role === "VENDOR" && (
+              <Link
+                href="/dashboard/vendor/create-event"
+                className="text-base bg-primary hover:bg-primary/80 text-white py-3 px-5 ml-3 rounded-full text-center transition-colors"
+              >
+                Create Event
+              </Link>
+            )}
           </div>
         </div>
       </nav>
