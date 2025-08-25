@@ -1,49 +1,58 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useState } from "react";
 import { MessageCircle } from "lucide-react";
-import { members as initialMembers } from "@/lib/Members";
-import { Member } from "@/types/Post";
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+import {
+  useGetAllUserListForChatQuery,
+  useSendConnectionRequestMutation,
+} from "@/redux/features/chat/chatApi";
+import MessageListForCommunitySkeleton from "@/components/skeletons/MessageListForCommunitySkeleton";
+import { TbUserPlus } from "react-icons/tb";
 
 const Message = () => {
-  const [activeTab, setActiveTab] = useState("my-chat");
-  const [showAllMembers, setShowAllMembers] = useState(false);
-  const [members, setMembers] = useState<Member[]>(initialMembers);
+  const [activeTab, setActiveTab] = useState<"local" | "global">("local");
+  const [page, setPage] = useState(1);
+  const limit = 5; // page size
 
-  const tabs = [
-    { id: "my-chat", label: "My Chat", type: "my" },
-    { id: "local-chat", label: "Local Chat", type: "local" },
-    { id: "global-chat", label: "Global Chat", type: "global" },
-  ];
+  const { id } = useParams();
 
-  const handleConnect = (memberId: string) => {
-    setMembers(
-      members.map((member) =>
-        member.id === memberId
-          ? {
-              ...member,
-              status:
-                member.status === "disconnected"
-                  ? "pending"
-                  : member.status === "pending"
-                  ? "connected"
-                  : "disconnected",
-            }
-          : member
-      )
-    );
+  // Query API with type + pagination
+  const { data, isLoading, isFetching } = useGetAllUserListForChatQuery({
+    id,
+    data: {
+      queryObj: [
+        { name: "type", value: activeTab }, // local or global
+        { name: "page", value: page.toString() },
+        { name: "limit", value: limit.toString() },
+      ],
+    },
+  });
+  const [sendConnectionRequest] = useSendConnectionRequestMutation();
+
+  const handleSendConnectionRequest = async (userId: string) => {
+    try {
+      await sendConnectionRequest(userId).unwrap();
+    } catch (error) {
+      console.error("Error sending connection request:", error);
+    }
   };
 
-  const filteredMembers = members.filter((member) => {
-    const currentTabType = tabs.find((tab) => tab.id === activeTab)?.type;
-    return member.chatType === currentTabType;
-  });
+  const chatUsers = data?.data?.data || [];
+  const total = data?.data?.meta?.total || 0;
+  const totalPages = Math.ceil(total / limit);
 
-  const displayedMembers = showAllMembers
-    ? filteredMembers
-    : filteredMembers.slice(0, 5);
+  const tabs = [
+    { id: "local", label: "Local Chat" },
+    { id: "global", label: "Global Chat" },
+  ];
+
+  if (isLoading || isFetching) {
+    return <MessageListForCommunitySkeleton />;
+  }
 
   return (
     <div>
@@ -54,7 +63,10 @@ const Message = () => {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                setActiveTab(tab.id as "local" | "global");
+                setPage(1); // reset to first page when tab changes
+              }}
               className={`flex-1 py-2 md:px-4 text-sm font-medium transition-colors duration-200 rounded-full
                 ${
                   activeTab === tab.id
@@ -70,74 +82,114 @@ const Message = () => {
         {/* Members Section */}
         <div className="p-4">
           <h2 className="text-gray-700 font-medium mb-3">Members</h2>
+
           <div className="space-y-3">
-            {displayedMembers.map((member) => (
+            {chatUsers.map((member: any) => (
               <div
-                key={member.id}
+                key={member?.id}
                 className="flex items-center justify-between"
               >
                 <div className="flex items-center space-x-3">
                   <div className="relative">
-                    <Image
-                      src={member.avatar}
-                      alt={member.name}
-                      width={1000}
-                      height={1000}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
+                    {member?.profileImage ? (
+                      <Image
+                        src={member?.profileImage}
+                        alt={member?.fullName}
+                        width={1000}
+                        height={1000}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold">
+                        {member?.fullName?.charAt(0)}
+                      </div>
+                    )}
+
                     <div
                       className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white
-                      ${
-                        member.status === "connected"
-                          ? "bg-green-500"
-                          : member.status === "pending"
-                          ? "bg-yellow-500"
-                          : "bg-gray-400"
-                      }`}
+                          ${
+                            member?.connectionStatus === "CONNECTED"
+                              ? "bg-green-500"
+                              : member?.connectionStatus === "PENDING"
+                              ? "bg-yellow-500"
+                              : "bg-gray-400"
+                          }`}
                     />
                   </div>
+
                   <div>
-                    <p className="text-gray-800 font-medium">{member.name}</p>
-                    {member.isRegistered && (
-                      <span className="text-xs text-green-500">Registered</span>
-                    )}
+                    <p className="text-gray-800 font-medium">
+                      {member?.fullName}
+                    </p>
+                    <span className="text-xs text-gray-500">
+                      {member?.country}
+                    </span>
                   </div>
                 </div>
+
                 <div className="flex items-center space-x-2">
-                  <button
-                    onClick={() => handleConnect(member.id)}
-                    className={`px-3 py-1 rounded-full text-sm font-medium flex items-center transition-colors duration-200
-                      ${
-                        member.status === "connected"
-                          ? "bg-green-50 text-green-600 hover:bg-green-100"
-                          : member.status === "pending"
-                          ? "bg-yellow-50 text-yellow-600 hover:bg-yellow-100"
-                          : "bg-gray-50 text-gray-600 hover:bg-gray-100"
+                  {(member?.connectionStatus === "PENDING" ||
+                    member?.connectionStatus === "CONNECTED") && (
+                    <span
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${
+                        member?.connectionStatus === "CONNECTED"
+                          ? "bg-green-50 text-green-600"
+                          : member?.connectionStatus === "PENDING"
+                          ? "bg-yellow-50 text-yellow-600"
+                          : "bg-gray-50 text-gray-600"
                       }`}
-                  >
-                    {member.status === "connected"
-                      ? "Connected"
-                      : member.status === "pending"
-                      ? "Pending"
-                      : "Connect"}
-                  </button>
-                  <Link
-                    href="/chat"
-                    className="p-1 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                  >
-                    <MessageCircle size={18} className="text-gray-500" />
-                  </Link>
+                    >
+                      {member?.connectionStatus}
+                    </span>
+                  )}
+                  {member?.connectionStatus === "NONE" && (
+                    <>
+                      <button
+                        onClick={() => handleSendConnectionRequest(member?.id)}
+                        className="p-1 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                      >
+                        <TbUserPlus />
+                        Connect
+                      </button>
+                    </>
+                  )}
+
+                  {member?.connectionStatus === "CONNECTED" && (
+                    <>
+                      <Link
+                        href="/chat"
+                        className="p-1 hover:bg-gray-100 rounded-full transition-colors duration-200"
+                      >
+                        <MessageCircle size={18} className="text-gray-500" />
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             ))}
           </div>
-          {filteredMembers.length > 5 && (
-            <button
-              onClick={() => setShowAllMembers(!showAllMembers)}
-              className="mt-4 text-sm font-semibold underline text-gray-600 hover:text-gray-800 transition-colors duration-200"
-            >
-              {showAllMembers ? "Show less" : "See more"}
-            </button>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center gap-2 mt-4">
+              <button
+                disabled={page === 1}
+                onClick={() => setPage((p) => p - 1)}
+                className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+              >
+                Prev
+              </button>
+              <span className="text-sm text-gray-600">
+                Page {page} of {totalPages}
+              </span>
+              <button
+                disabled={page === totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className="px-3 py-1 text-sm border rounded disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
           )}
         </div>
       </div>

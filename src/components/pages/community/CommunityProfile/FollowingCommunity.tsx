@@ -1,23 +1,27 @@
-import React from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-interface Community {
-  id: string;
-  name: string;
-  followers: number;
-}
+import FollowingCommunitiesOfCommunityPageSkeleton from "@/components/skeletons/FollowingCommunitiesOfCommunityPageSkeleton";
+import { useGetAllMyCommunityQuery } from "@/redux/features/community/communityApi";
 
 const FollowingCommunity = () => {
-  const communities: Community[] = [
-    { id: "1", name: "React Developers Hub", followers: 847 },
-    { id: "2", name: "Next.js Nation", followers: 1234 },
-    { id: "3", name: "Tailwind CSS Community", followers: 562 },
-    { id: "4", name: "Full Stack JavaScript", followers: 2019 },
-    { id: "5", name: "Tech Startup Founders", followers: 3456 },
-  ];
+  // Query for followed communities (isPaidFollower=true)
+  const {
+    data: followedData,
+    isLoading,
+    isFetching,
+  } = useGetAllMyCommunityQuery({
+    queryObj: [
+      {
+        name: "isPaidFollower",
+        value: "false",
+      },
+    ],
+  });
 
-  const formatFollowers = (count: number): string => {
-    return new Intl.NumberFormat("en-US").format(count);
-  };
+  if (isLoading || isFetching) {
+    return <FollowingCommunitiesOfCommunityPageSkeleton />;
+  }
 
   return (
     <div className="border rounded-lg bg-white p-4">
@@ -25,21 +29,21 @@ const FollowingCommunity = () => {
         Community you are following
       </h2>
       <div className="">
-        {communities.map((community) => (
+        {followedData?.data?.data.map((community: any) => (
           <div
-            key={community.id}
+            key={community?.id}
             className="flex items-center justify-between group hover:bg-gray-50 p-2 rounded-lg transition-colors duration-200"
           >
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-gray-700 font-medium">
-                {community.name.charAt(0)}
+                {community?.name?.charAt(0)}
               </div>
               <span className="text-gray-700 font-medium group-hover:text-gray-900 transition-colors duration-200">
-                {community.name}
+                {community?.title}
               </span>
             </div>
             <span className="text-gray-500 hidden md:block text-sm">
-              {formatFollowers(community.followers)} Followers
+              {community?._count?.followers} Followers
             </span>
           </div>
         ))}
