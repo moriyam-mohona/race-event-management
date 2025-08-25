@@ -40,15 +40,18 @@ const AllComments = ({ postId }: any) => {
   // Append new page data whenever `allComments` changes
   useEffect(() => {
     if (allComments?.data?.data) {
-      if (pagination.current === 1) {
-        // First page → reset
-        setComments(allComments.data.data);
-      } else {
-        // Append next page
-        setComments((prev) => [...prev, ...allComments.data.data]);
-      }
+      setComments((prev) => {
+        // If it's page 1, replace entirely
+        if (pagination.current === 1) return allComments.data.data;
+
+        // Append new comments, but avoid duplicates
+        const newComments = allComments.data.data.filter(
+          (c: any) => !prev.some((p) => p.id === c.id)
+        );
+        return [...prev, ...newComments];
+      });
     }
-  }, []);
+  }, [allComments?.data?.data, pagination.current]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,7 +85,7 @@ const AllComments = ({ postId }: any) => {
     <div>
       <div className="mt-5 space-y-4">
         {/* Comments list */}
-        {comments.map((comment: any) => (
+        {comments?.map((comment: any) => (
           <div key={comment?.id} className="flex items-start gap-3">
             <Image
               src={comment?.user?.profileImage || human}

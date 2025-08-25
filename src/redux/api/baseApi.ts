@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createApi,
   fetchBaseQuery,
@@ -30,7 +31,12 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
 
-  if (result.error?.status === 401) {
+  const isJwtExpired =
+    result.error?.status === 401 ||
+    (result.error?.status === 500 &&
+      (result.error?.data as any)?.message === "jwt expired");
+
+  if (isJwtExpired) {
     const state = api.getState() as RootState;
     const refreshToken = state.auth.refresh_token;
     const accessToken = state.auth.access_token;
@@ -46,7 +52,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh-token`,
         {
-          method: "GET",
+          method: "POST",
           credentials: "include",
           headers: {
             "Content-Type": "application/json",
@@ -59,7 +65,11 @@ const baseQueryWithRefreshToken: BaseQueryFn<
       if (data?.success) {
         const user = state.auth.user;
         api.dispatch(
-          setUser({ user, token: data.data.token, refresh_token: refreshToken })
+          setUser({
+            user,
+            access_token: data.data.accessToken,
+            refresh_token: refreshToken,
+          })
         );
 
         // Retry original query
