@@ -25,10 +25,17 @@ const PopularCategories = () => {
   const searchParams = useSearchParams();
 
   const handleCategoryClick = (category: string) => {
-    setSelectedCategory(category);
-
     const params = new URLSearchParams(searchParams.toString());
-    params.set("category", category);
+
+    if (selectedCategory === category) {
+      // Deselect: remove from query
+      setSelectedCategory(null);
+      params.delete("category");
+    } else {
+      // Select: set in query
+      setSelectedCategory(category);
+      params.set("category", category);
+    }
 
     router.push(`?${params.toString()}`);
   };
@@ -38,7 +45,7 @@ const PopularCategories = () => {
       {categories.map((category) => (
         <button
           key={category}
-          className={`w-48 py-2 rounded-md transition-colors duration-200 ${
+          className={`w-48 py-2 rounded-md transition-colors duration-200 cursor-pointer ${
             selectedCategory === category
               ? "bg-primary text-white"
               : "bg-white text-primary border border-primary/40 hover:bg-primary/20"
