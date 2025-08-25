@@ -8,9 +8,9 @@ import MapView from "./EventViews/MapView";
 import { useSearchParams } from "next/navigation";
 import { Pagination } from "antd";
 import { useGetAllApprovedEventsQuery } from "@/redux/features/event/eventApi";
-import Loading from "@/components/shared/Loading/Loading";
 import { useAppSelector } from "@/redux/hooks";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import EventListViewSkeleton from "@/components/skeletons/EventListViewSkeleton";
 
 const EventContent: React.FC<any> = () => {
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
@@ -82,7 +82,7 @@ const EventContent: React.FC<any> = () => {
   const toggleViewMode = () => {
     setViewMode(viewMode === "list" ? "map" : "list");
   };
-  if (isLoading || isFetching) return <Loading />;
+  if (isLoading || isFetching) return <EventListViewSkeleton />;
   if (isError) return <div className="text-center">Something went wrong</div>;
   if (!approvedEvent?.data?.data?.length)
     return (
