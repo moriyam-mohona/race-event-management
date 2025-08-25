@@ -1,48 +1,78 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
 import {
   useCreateCommentOnPostMutation,
   useGetAllCommentsQuery,
 } from "@/redux/features/community/communityApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import human from "@/assets/images/Human.png";
 import { Input } from "../ui/input";
 import { FaPaperPlane } from "react-icons/fa";
 
 const AllComments = ({ postId }: any) => {
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 3,
+  });
+
   const id = postId;
 
-  const [createCommentOnPost] = useCreateCommentOnPostMutation();
-  const { data: allComments } = useGetAllCommentsQuery({ id });
+  const queryObj = [
+    { name: "page", value: pagination.current },
+    { name: "limit", value: pagination.pageSize },
+  ];
 
-  const [comments, setComments] = useState<string[]>(
-    allComments?.data?.data || []
-  );
+  const { data: allComments, isFetching } = useGetAllCommentsQuery({
+    id,
+    queryObj,
+  });
+
+  const [createCommentOnPost] = useCreateCommentOnPostMutation();
+
   const [commentInput, setCommentInput] = useState("");
+  const [comments, setComments] = useState<any[]>([]);
+
+  // Append new page data whenever `allComments` changes
+  useEffect(() => {
+    if (allComments?.data?.data) {
+      if (pagination.current === 1) {
+        // First page → reset
+        setComments(allComments.data.data);
+      } else {
+        // Append next page
+        setComments((prev) => [...prev, ...allComments.data.data]);
+      }
+    }
+  }, [allComments]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (commentInput.trim() === "") return;
 
-    // Ensure comments is always an array
-    const newComments = [...(comments || []), commentInput];
-    setComments(newComments);
-
     const data = { commentContent: commentInput };
+
     const response = await handleAsyncWithToast(() =>
       createCommentOnPost({ data, id })
     );
 
     if (response?.data?.success) {
       setCommentInput("");
+      // Refresh comments from server (reload from page 1)
+      setPagination({ current: 1, pageSize: pagination.pageSize });
     }
   };
+
+  const meta = allComments?.data?.meta;
+  const hasMore = meta?.page < meta?.totalPages;
 
   return (
     <div>
       <div className="mt-5 space-y-4">
-        {allComments?.data?.data?.map((comment: any) => (
+        {/* Comments list */}
+        {comments.map((comment: any) => (
           <div key={comment?.id} className="flex items-start gap-3">
             <Image
               src={comment?.user?.profileImage || human}
@@ -62,6 +92,24 @@ const AllComments = ({ postId }: any) => {
             </div>
           </div>
         ))}
+
+        {/* Show More Button */}
+        {hasMore && (
+          <div className="flex justify-center">
+            <button
+              onClick={() =>
+                setPagination((prev) => ({
+                  ...prev,
+                  current: prev.current + 1,
+                }))
+              }
+              disabled={isFetching}
+              className="px-4 py-2 text-sm text-green-500 hover:underline transition disabled:opacity-50 cursor-pointer hover:font-semibold"
+            >
+              {isFetching ? "Loading..." : "Show More"}
+            </button>
+          </div>
+        )}
 
         {/* Comment Input */}
         <form

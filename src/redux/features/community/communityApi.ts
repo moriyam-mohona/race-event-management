@@ -88,21 +88,21 @@ const communityApi = baseApi.injectEndpoints({
     }),
     // Get All Comments on any post
     getAllComments: builder.query({
-      query: ({ data, id }) => {
+      query: ({ queryObj, id }) => {
         const params = new URLSearchParams();
-        if (data?.queryObj) {
-          data?.queryObj.forEach((item: any) => {
-            params.append(item.name, item.value as string);
+        if (queryObj) {
+          queryObj.forEach((item: any) => {
+            params.append(item.name, String(item.value));
           });
         }
         return {
-          url: `community/get-all-comments/${id}`,
+          url: `community/get-all-comments/${id}?${params.toString()}`,
           method: "GET",
-          params: params,
         };
       },
       providesTags: ["community"],
     }),
+
     // Create Comment on any post
     createCommentOnPost: builder.mutation({
       query: ({ data, id }) => ({
