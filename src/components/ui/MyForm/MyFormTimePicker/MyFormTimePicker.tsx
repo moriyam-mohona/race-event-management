@@ -65,7 +65,7 @@ const MyFormTimePicker = ({
               <TimePicker
                 size="large"
                 {...field}
-                format="HH:mm"
+                format="hh:mm A"
                 className={cn(
                   "w-full !h-12 dark:bg-gray-300",
                   timePickerClassName

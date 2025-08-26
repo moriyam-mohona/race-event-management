@@ -193,8 +193,19 @@ const Register = () => {
                   name="country"
                   placeHolder="Select your country"
                   options={countryList.map((c) => ({
-                    value: c.name,
-                    label: c.name,
+                    value: c.code,
+                    label: (
+                      <div className="flex items-center gap-2">
+                        <Image
+                          src={c.flagUrl}
+                          alt={c.name}
+                          width={20}
+                          height={20}
+                          className="w-5 h-3 object-cover"
+                        />
+                        <span>{c.name}</span>
+                      </div>
+                    ),
                   }))}
                 />
 

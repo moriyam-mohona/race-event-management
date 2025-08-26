@@ -142,9 +142,9 @@ const CreateShareEvent = () => {
         {/* Set Date & Time */}
         <div>
           <h2 className="text-xl font-semibold mb-4 text-gray-700">
-            Set Date & Time
+            Event Title & Description
           </h2>
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-4">
             <MyFormInput name="title" type="text" label="Title" />
             <MyFormTextArea name="description" label="Description" />
           </div>
@@ -153,7 +153,7 @@ const CreateShareEvent = () => {
         {/* Event or Expo Title */}
         <div>
           <h2 className="text-xl font-semibold mb-4 text-gray-700">
-            Event or Expo Title
+            Event Time and Date
           </h2>
           <div className="bg-white border border-gray-100 rounded-2xl p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
             <MyFormDatePicker
@@ -318,9 +318,20 @@ const CreateShareEvent = () => {
           <h2 className="text-xl font-semibold mb-4 text-gray-700">
             Race Start to Finish Address & Distance
           </h2>
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 space-y-4 shadow-sm hover:shadow-md transition-shadow duration-300">
-            <MyFormInput name="startAddress" label="Start Address" />
-            <MyFormInput name="endAddress" label="End Address" />
+          <div className="bg-white border border-gray-100 rounded-2xl p-6 space-y-6 shadow-sm hover:shadow-md transition-shadow duration-300 ">
+            {/* <MyFormInput name="startAddress" label="Start Address" /> */}
+            <MyFormAddress
+              name="startAddress"
+              label="Start Address"
+              placeHolder="Enter Start Address"
+              inputClassName="!w-full"
+            />
+            <MyFormAddress
+              name="endAddress"
+              label="End Address"
+              placeHolder="Enter End Address"
+              inputClassName="!w-full"
+            />
             <MyFormInput name="distance" type="number" label="Distance" />
           </div>
         </div>

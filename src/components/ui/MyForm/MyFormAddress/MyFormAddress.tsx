@@ -75,8 +75,13 @@ export default function MyFormAddress({
   const handleSelect = (_: string, option: any) => {
     const place = option.place;
 
+    // Consoling the selected place
+    // console.log("Selected place:", place);
+    // console.log("Full geometry:", place.geometry);
+    // console.log("Coordinates:", place.center);
+
     // Save into form
-    setValue(name, place.text);
+    setValue(name, place.place_name);
     setValue("latitude", place.center[1]);
     setValue("longitude", place.center[0]);
   };
