@@ -12,7 +12,17 @@ const bookingApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["booking"],
     }),
+    getMyPaymentInfo: builder.query({
+      query: (id) => {
+        return {
+          url: `payment/get-my-payment-info/${id}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["booking"],
+    }),
   }),
 });
 
-export const { useCreateBookingMutation } = bookingApi;
+export const { useCreateBookingMutation, useGetMyPaymentInfoQuery } =
+  bookingApi;

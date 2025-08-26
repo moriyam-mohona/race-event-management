@@ -7,7 +7,7 @@ import StripePaymentCard from "../payment/StripePaymentCard";
 import { RootState } from "@/redux/store";
 import {
   prevStep,
-  resetBooking,
+  // resetBooking,
   setPayment,
 } from "@/redux/features/booking/bookingSlice";
 import SuccessModal from "@/components/shared/SuccessModal";
@@ -43,15 +43,15 @@ const Payment = () => {
     const stripeId = {
       payment_method_id: paymentMethodId,
     };
-    console.log("Stripe ID:", stripeId);
+    // console.log("Stripe ID:", stripeId);
 
     if (stripeId) {
       dispatch(setPayment({ stripeId: paymentMethodId }));
 
       // Log all booking data to console
-      dispatch(resetBooking());
-      setShowSuccessModal(true);
-      router.push("/dashboard/user/all-events");
+      // dispatch(resetBooking());
+      // setShowSuccessModal(true);
+      // router.push("/dashboard/user/all-events");
     }
 
     const body = {
@@ -73,17 +73,19 @@ const Payment = () => {
       addedGearInfo: addOns.addedGearInfo,
     };
 
-    console.log(body);
+    // console.log(body);
 
     const response = await handleAsyncWithToast(async () => {
       return createBooking(body);
     });
 
-    console.log(response);
+    // console.log(response);
 
-    // if (response?.data?.success) {
-    //   router.push("/user/payment-history");
-    // }
+    if (response?.data?.success) {
+      router.push(
+        `/race-categories/${id}/booking/${response?.data?.data?.id}/success`
+      );
+    }
   };
 
   return (
