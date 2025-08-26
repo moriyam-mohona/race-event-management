@@ -22,7 +22,7 @@ const SavedEventCard: React.FC<any> = ({ event }) => {
       {/* Event Image */}
       <div className="w-full md:w-1/3 lg:w-2/5 overflow-hidden flex-shrink-0">
         <Image
-          src={event?.eventImages?.[0] || placeholderImage}
+          src={event?.eventImages || placeholderImage}
           alt={event?.title}
           width={1000}
           height={1000}
@@ -41,7 +41,11 @@ const SavedEventCard: React.FC<any> = ({ event }) => {
               onClick={handleAddToBookmark}
               className="cursor-pointer flex-shrink-0"
             >
-              <FaRegBookmark className="text-xl font-semibold" />
+              <FaRegBookmark
+                className={`text-xl font-semibold ${
+                  event?.isSaved ? "text-secondary" : "text-gray-700"
+                }`}
+              />
             </button>
           </div>
 

@@ -8,21 +8,17 @@ import { FaRegBookmark } from "react-icons/fa";
 import { useAddEventToSavedMutation } from "@/redux/features/event/eventApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 import { useRouter } from "next/navigation";
+import { useAppSelector } from "@/redux/hooks";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 const EventViewCard: React.FC<any> = ({ event }) => {
+  const user = useAppSelector(selectCurrentUser);
   const [addEventToSaved] = useAddEventToSavedMutation();
   const router = useRouter();
 
   const handleAddToBookmark = async () => {
-    const response = await handleAsyncWithToast(() =>
-      addEventToSaved(event?._id?.$oid)
-    );
-
-    // Check carefully if response has the right shape
-    const message = response?.data?.message || response?.message; // fallback if wrapped
-    const success = response?.data?.success ?? response?.success;
-
-    if (success === false && message?.includes("not authorized")) {
+    await handleAsyncWithToast(() => addEventToSaved(event?._id?.$oid));
+    if (!user) {
       router.push("/auth/login");
     }
   };
@@ -48,7 +44,11 @@ const EventViewCard: React.FC<any> = ({ event }) => {
             <button onClick={handleAddToBookmark} className="cursor-pointer">
               <FaRegBookmark
                 className={`text-xl font-semibold ${
-                  event?.isSaved ? "text-secondary" : "text-gray-700"
+                  !user
+                    ? "text-gray-700"
+                    : event?.isSaved
+                    ? "text-secondary"
+                    : "text-gray-700"
                 }`}
               />
             </button>
