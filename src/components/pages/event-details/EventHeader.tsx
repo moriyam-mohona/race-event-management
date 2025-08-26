@@ -22,6 +22,8 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import MyFormInput from "@/components/ui/MyForm/MyFormInput/MyFormInput";
 import MyFormImageUpload from "@/components/ui/MyForm/MyFormImageUpload/MyFormImageUpload";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useAppSelector } from "@/redux/hooks";
 
 const validationSchema = z.object({
   eventId: z
@@ -40,6 +42,7 @@ export function EventHeader({ data }: { data: any }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const start = data?.startDate ? new Date(data.startDate) : null;
   const end = data?.endDate ? new Date(data.endDate) : null;
+  const user = useAppSelector(selectCurrentUser);
 
   let displayDate = "";
   if (start && end) {
@@ -127,7 +130,15 @@ export function EventHeader({ data }: { data: any }) {
         <div className="flex justify-between items-center ">
           <h1 className="text-3xl font-semibold">{data?.title}</h1>
           <button onClick={handleAddToBookmark} className="cursor-pointer">
-            <FaRegBookmark className="text-xl font-semibold" />
+            <FaRegBookmark
+              className={`text-xl font-semibold ${
+                !user
+                  ? "text-gray-700"
+                  : data?.isSaved
+                  ? "text-secondary"
+                  : "text-gray-700"
+              }`}
+            />
           </button>
         </div>
 
@@ -203,12 +214,18 @@ export function EventHeader({ data }: { data: any }) {
                 >
                   Community
                 </Link>
-                <Link
-                  href={`/race-categories/${id}/booking`}
-                  className="hover:border hover:border-primary hover:bg-primary/20 hover:text-primary bg-primary text-white px-8 py-2 rounded-lg text-lg"
-                >
-                  Register Now
-                </Link>
+                {data?.isAlreadyRegistered ? (
+                  <></>
+                ) : (
+                  <>
+                    <Link
+                      href={`/race-categories/${id}/booking`}
+                      className="hover:border hover:border-primary hover:bg-primary/20 hover:text-primary bg-primary text-white px-8 py-2 rounded-lg text-lg"
+                    >
+                      Register Now
+                    </Link>
+                  </>
+                )}
               </div>
             </>
           )}
