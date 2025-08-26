@@ -92,7 +92,10 @@ const CommunityList = () => {
                   <div className="flex items-center gap-4">
                     <div className="relative w-10 h-10">
                       <Image
-                        src={community?.image || "/default-community.png"}
+                        src={
+                          community?.event?.eventImages ||
+                          "/default-community.png"
+                        }
                         alt={community?.title || "Community"}
                         fill
                         className="rounded-full object-cover bg-gray-50"
@@ -129,7 +132,10 @@ const CommunityList = () => {
                   <div className="flex items-center gap-4">
                     <div className="relative w-10 h-10">
                       <Image
-                        src={community?.image || "/default-community.png"}
+                        src={
+                          community?.event?.eventImages ||
+                          "/default-community.png"
+                        }
                         alt={community?.title || "Community"}
                         fill
                         className="rounded-full object-cover bg-gray-50"
