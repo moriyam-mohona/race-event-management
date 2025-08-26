@@ -1,25 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import logo from "@/assets/logo.png";
 import Image from "next/image";
@@ -28,38 +11,52 @@ import countries from "world-countries";
 import { useRegisterMutation } from "@/redux/features/auth/authApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 import { ButtonLoading } from "@/components/shared/Loading/ButtonLoading";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import MyFormInput from "@/components/ui/MyForm/MyFormInput/MyFormInput";
+import MyFormWrapper from "@/components/ui/MyForm/MyFormWrapper/MyFormWrapper";
+import MyFormSelect from "@/components/ui/MyForm/MyFormSelect/MyFormSelect";
+import MyFormDatePicker from "@/components/ui/MyForm/MyFormDatePicker/MyFormDatePicker";
 
-interface PersonalInfo {
-  fullName: string;
-  dateOfBirth: Date | undefined;
-  gender: string;
-  email: string;
-  password: string;
-}
+const validationSchema = z.object({
+  fullName: z
+    .string({ required_error: "Full name is required" })
+    .min(2, "Full name must be at least 2 characters"),
+  role: z.enum(["USER", "VENDOR"], { required_error: "Role is required" }),
+  dateOfBirth: z.string({ required_error: "Date of birth is required" }).refine(
+    (val) => {
+      const date = new Date(val);
+      const today = new Date();
+      return !isNaN(date.getTime()) && date < today; // valid date and not in the future
+    },
+    { message: "Date of birth cannot be in the future" }
+  ),
 
-interface LocationInfo {
-  continent: string;
-  country: string;
-  region: string;
-  zipCode: string;
-}
+  gender: z.enum(["MALE", "FEMALE", "OTHER"], {
+    required_error: "Gender is required",
+  }),
+  email: z
+    .string({ required_error: "Email is required" })
+    .email("Invalid email address"),
+  password: z
+    .string({ required_error: "Password is required" })
+    .min(8, "Password must be at least 8 characters"),
+  continent: z
+    .string({ required_error: "Continent is required" })
+    .nonempty("Continent is required"),
+  country: z
+    .string({ required_error: "Country is required" })
+    .nonempty("Country is required"),
+  region: z
+    .string({ required_error: "Region is required" })
+    .min(2, "Region must be at least 2 characters"),
+  zipCode: z
+    .string({ required_error: "Zip code is required" })
+    .regex(/^\d{4,10}$/, "Zip code must be 4-10 digits"),
+});
 
 const Register = () => {
   const [step, setStep] = useState(1);
-  const [showPassword, setShowPassword] = useState(false);
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
-    fullName: "",
-    dateOfBirth: undefined,
-    gender: "",
-    email: "",
-    password: "",
-  });
-  const [locationInfo, setLocationInfo] = useState<LocationInfo>({
-    continent: "",
-    country: "",
-    region: "",
-    zipCode: "",
-  });
 
   const router = useRouter();
   const [register, { isLoading }] = useRegisterMutation();
@@ -80,41 +77,16 @@ const Register = () => {
     { code: "AN", name: "Antarctica" },
   ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const updateState = step === 1 ? setPersonalInfo : setLocationInfo;
-    updateState((prev: any) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSelectChange = (name: string, value: string) => {
-    setPersonalInfo((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleDateChange = (date: Date | undefined) => {
-    setPersonalInfo((prev) => ({ ...prev, dateOfBirth: date }));
-  };
-
-  const handleNext = () => setStep(2);
-  const handlePrevious = () => setStep(1);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    // console.log("Data:", { ...personalInfo, ...locationInfo });
-
-    const dataToSUbmit = {
-      ...personalInfo,
-      ...locationInfo,
-    };
-    console.log(dataToSUbmit);
-
+  const handleSubmit = async (formData: any, reset: any) => {
     const response = await handleAsyncWithToast(async () => {
-      return register(dataToSUbmit);
+      return register(formData);
     });
     if (response?.data?.success && response?.data?.data?.isVerified === false) {
       const email = response?.data?.data?.email; // keep raw email here
       router.push(
         `/auth/verify-email?email=${encodeURIComponent(email)}&page=register`
       );
+      reset();
     }
   };
 
@@ -134,240 +106,137 @@ const Register = () => {
           <h1 className="text-2xl lg:text-[28px] font-semibold mb-8">
             {step === 1 ? "Create Your Account" : "Location Details"}
           </h1>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {step === 1 ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="block font-medium text-sm md:text-base">
-                      Full Name
-                    </label>
-                    <Input
-                      name="fullName"
-                      value={personalInfo.fullName}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block font-medium text-sm md:text-base">
-                      Role
-                    </label>
-                    <Select
-                      onValueChange={(val) => handleSelectChange("role", val)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="USER">User</SelectItem>
-                        <SelectItem value="VENDOR">Vendor</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+          <MyFormWrapper
+            onSubmit={handleSubmit}
+            resolver={zodResolver(validationSchema)}
+            className="space-y-6"
+          >
+            <div
+              style={{ display: step === 1 ? "block" : "none" }}
+              className="space-y-4"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <MyFormInput
+                  label="Full Name"
+                  placeHolder="Enter your name"
+                  name="fullName"
+                />
+                <MyFormSelect
+                  label="Role"
+                  name="role"
+                  placeHolder="Select your role"
+                  options={[
+                    { value: "USER", label: "User" },
+                    { value: "VENDOR", label: "Vendor" },
+                  ]}
+                />
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="block font-medium text-sm md:text-base">
-                      Date of Birth
-                    </label>
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="w-full justify-start text-left font-normal h-12"
-                        >
-                          {personalInfo.dateOfBirth
-                            ? format(personalInfo.dateOfBirth, "PPP")
-                            : "Pick a date"}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent
-                        align="start"
-                        className="w-auto p-0 bg-white"
-                      >
-                        <Calendar
-                          mode="single"
-                          selected={personalInfo.dateOfBirth}
-                          onSelect={handleDateChange}
-                          initialFocus
-                          className="bg-white"
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block font-medium text-sm md:text-base">
-                      Gender
-                    </label>
-                    <Select
-                      onValueChange={(val) => handleSelectChange("gender", val)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="MALE">Male</SelectItem>
-                        <SelectItem value="FEMALE">Female</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <MyFormDatePicker label="Date of Birth" name="dateOfBirth" />
+                <MyFormSelect
+                  label="Gender"
+                  name="gender"
+                  placeHolder="Select your gender"
+                  options={[
+                    { value: "MALE", label: "Male" },
+                    { value: "FEMALE", label: "Female" },
+                    { value: "OTHER", label: "Other" },
+                  ]}
+                />
+              </div>
 
-                <div className="space-y-2">
-                  <label className="block font-medium text-sm md:text-base">
-                    Email
-                  </label>
-                  <Input
-                    name="email"
-                    type="email"
-                    value={personalInfo.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block font-medium text-sm md:text-base">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <Input
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      value={personalInfo.password}
-                      onChange={handleChange}
-                      required
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((prev) => !prev)}
-                      className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-600"
-                      tabIndex={-1}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="w-5 h-5" />
-                      ) : (
-                        <Eye className="w-5 h-5" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-
-                <Button
-                  className="w-full h-12 text-sm md:text-lg bg-primary text-white cursor-pointer"
-                  onClick={handleNext}
+              <MyFormInput
+                label="Email"
+                name="email"
+                placeHolder="Enter your email"
+              />
+              <MyFormInput
+                label="Password"
+                name="password"
+                placeHolder="Enter your password"
+              />
+              <Button
+                type="button"
+                onClick={() => setStep(2)}
+                className="mt-10 w-full h-12 text-sm md:text-lg bg-primary text-white cursor-pointer"
+              >
+                Next
+              </Button>
+              <div className="text-center text-sm">
+                Already have an account?{" "}
+                <Link
+                  href="/auth/login"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
                 >
-                  Next
+                  Login
+                </Link>
+              </div>
+            </div>
+
+            {/* Step 2 Content */}
+            <div style={{ display: step === 2 ? "block" : "none" }}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Continent Select */}
+                <MyFormSelect
+                  label="Continent"
+                  name="continent"
+                  placeHolder="Select your continent"
+                  options={continents.map((c) => ({
+                    value: c.name,
+                    label: c.name,
+                  }))}
+                />
+                {/* Country Select */}
+                <MyFormSelect
+                  label="Country"
+                  name="country"
+                  placeHolder="Select your country"
+                  options={countryList.map((c) => ({
+                    value: c.name,
+                    label: c.name,
+                  }))}
+                />
+
+                {/* Region & Zip Code Inputs */}
+                <MyFormInput
+                  label="Region"
+                  name="region"
+                  placeHolder="Enter your region"
+                />
+                <MyFormInput
+                  label="Zip Code"
+                  name="zipCode"
+                  placeHolder="Enter your zip code"
+                />
+              </div>
+
+              <div className="flex flex-col gap-4 mt-10">
+                <Button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="w-full h-12 text-sm md:text-base hover:bg-primary hover:text-white bg-transparent border border-primary text-primary cursor-pointer"
+                >
+                  Previous
                 </Button>
-              </>
-            ) : (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Continent Select */}
-                  <div className="space-y-2">
-                    <label className="block text-sm md:text-base font-medium">
-                      Continent
-                    </label>
-                    <Select
-                      onValueChange={(val) =>
-                        setLocationInfo((prev) => ({ ...prev, continent: val }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select continent" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {continents.map((c) => (
-                          <SelectItem key={c.name} value={c.name}>
-                            {c.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Country Select */}
-                  <div className="space-y-2">
-                    <label className="block text-sm md:text-base font-medium">
-                      Country
-                    </label>
-                    <Select
-                      onValueChange={(val) =>
-                        setLocationInfo((prev) => ({ ...prev, country: val }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select country" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-60 overflow-y-auto">
-                        {countryList.map((c) => (
-                          <SelectItem key={c.code} value={c.name}>
-                            <div className="flex items-center gap-2">
-                              <Image
-                                src={c.flagUrl}
-                                alt={`${c.name} flag`}
-                                width={20}
-                                height={20}
-                                className="w-5 h-4 object-cover"
-                              />
-                              {c.name}
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  {/* Region & Zip Code Inputs */}
-                  <div className="space-y-2">
-                    <label className="block text-sm md:text-base font-medium">
-                      Region
-                    </label>
-                    <Input
-                      name="region"
-                      value={locationInfo.region}
-                      onChange={handleChange}
-                      placeholder="Enter your region"
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="block text-sm md:text-base font-medium">
-                      Zip Code
-                    </label>
-                    <Input
-                      name="zipCode"
-                      value={locationInfo.zipCode}
-                      onChange={handleChange}
-                      placeholder="Enter your zip code"
-                      required
-                    />
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handlePrevious}
-                    className="w-full h-12 text-sm md:text-base hover:bg-primary hover:text-white bg-transparent border border-primary text-primary cursor-pointer"
-                  >
-                    Previous
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="w-full h-12 text-sm md:text-lg bg-primary text-white cursor-pointer"
-                  >
-                    {isLoading ? <ButtonLoading /> : "Sign Up"}
-                  </Button>
-                </div>
-              </>
-            )}
-          </form>
+                <Button
+                  type="submit"
+                  className="w-full h-12 text-sm md:text-lg bg-primary text-white cursor-pointer"
+                >
+                  {isLoading ? <ButtonLoading /> : "Sign Up"}
+                </Button>
+              </div>
+              <div className="text-center text-sm mt-5">
+                Already have an account?{" "}
+                <Link
+                  href="/auth/login"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  Login
+                </Link>
+              </div>
+            </div>
+          </MyFormWrapper>
         </div>
       </div>
     </div>

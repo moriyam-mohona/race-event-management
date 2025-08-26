@@ -13,6 +13,7 @@ import { setUser } from "@/redux/features/auth/authSlice";
 import { verifyToken } from "@/utils/verifyToken";
 import { useAppDispatch } from "@/redux/hooks";
 import { JwtPayload } from "jwt-decode";
+import { ButtonLoading } from "@/components/shared/Loading/ButtonLoading";
 
 interface DecodedUser extends JwtPayload {
   role: string;
@@ -25,9 +26,7 @@ const VerifyEmailPage = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
-  console.log(email);
-
-  const [verifyOtp] = useOtpMutation();
+  const [verifyOtp, { isLoading }] = useOtpMutation();
 
   const [code, setCode] = useState(["", "", "", "", "", ""]);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -116,10 +115,10 @@ const VerifyEmailPage = () => {
     }
   };
 
-  const handleResendCode = () => {
-    console.log("Resend code clicked");
-    // Trigger resend logic here
-  };
+  // const handleResendCode = () => {
+  //   console.log("Resend code clicked");
+  //   // Trigger resend logic here
+  // };
 
   return (
     <div className="flex flex-col justify-center items-center gap-4 min-h-screen p-4">
@@ -147,13 +146,13 @@ const VerifyEmailPage = () => {
                 <label htmlFor="code" className="block font-medium">
                   Verification Code
                 </label>
-                <button
-                  type="button"
-                  onClick={handleResendCode}
-                  className="text-sm font-medium text-red-700 hover:underline"
-                >
-                  Resend Code
-                </button>
+                {/* <button
+                    type="button"
+                    onClick={handleResendCode}
+                    className="text-sm font-medium text-red-700 hover:underline"
+                  >
+                    Resend Code
+                  </button> */}
               </div>
               <div className="flex justify-center space-x-3">
                 {code.map((digit, index) => (
@@ -181,7 +180,7 @@ const VerifyEmailPage = () => {
               type="submit"
               className="w-full bg-primary hover:bg-primary/80 h-12 text-sm md:text-base text-white cursor-pointer"
             >
-              Submit
+              {isLoading ? <ButtonLoading /> : "Submit"}
             </Button>
 
             <div className="relative mt-5 mb-10">

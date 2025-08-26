@@ -9,13 +9,14 @@ import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/assets/logo.png";
+import { ButtonLoading } from "@/components/shared/Loading/ButtonLoading";
 
 interface ForgotPasswordData {
   email: string;
 }
 
 const ForgotPasswordPage = () => {
-  const [forgotPassword] = useForgotPasswordMutation();
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const router = useRouter();
   const [emailData, setEmailData] = useState<ForgotPasswordData>({
     email: "",
@@ -80,7 +81,7 @@ const ForgotPasswordPage = () => {
             type="submit"
             className="w-full bg-primary hover:bg-primary/80 h-10 text-sm md:text-base text-white cursor-pointer"
           >
-            Submit
+            {isLoading ? <ButtonLoading /> : "Submit"}
           </Button>
         </form>
       </div>

@@ -84,15 +84,14 @@ const Login = () => {
           >
             <div className="rounded-lg space-y-6">
               <MyFormInput name="email" type="email" label="Email" />
-
-              <div>
-                <div className="relative">
-                  <MyFormInput
-                    name="password"
-                    type="password"
-                    label="Password"
-                  />
-                </div>
+              <MyFormInput name="password" type="password" label="Password" />
+              <div className="text-end text-sm">
+                <Link
+                  href="/auth/forgot-password"
+                  className="text-blue-600 hover:text-blue-700 font-medium"
+                >
+                  Forget Password
+                </Link>
               </div>
               <button
                 type="submit"
