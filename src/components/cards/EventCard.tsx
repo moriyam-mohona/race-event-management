@@ -15,8 +15,8 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
   const display = isSameYear(start, end)
     ? isSameMonth(start, end)
-      ? `${format(start, "d")}-${format(end, "d MMM, yyyy")}` // 8-10 Aug, 2025
-      : `${format(start, "d MMM")} - ${format(end, "d MMM, yyyy")}` // 28 Aug - 2 Sep, 2025
+      ? `${format(start, "d")}-${format(end, "d MMM, yyyy")}`
+      : `${format(start, "d MMM")} - ${format(end, "d MMM, yyyy")}`
     : `${format(start, "d MMM, yyyy")} - ${format(end, "d MMM, yyyy")}`;
 
   return (
@@ -33,7 +33,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
       </div>
 
       <div className="px-5 py-8">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2 h-14">
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">
           {event?.title}
         </h3>
 
@@ -56,11 +56,11 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
         <div className="mt-6 space-y-4 text-gray-600">
           <p className="text-xl font-medium text-gray-800">
-            $ {event?.price} {event?.currency}
+            $ {event?.price} USD
           </p>
-          <p className="h-16 *:lg:h-12">
-            {event?.description?.split(" ").slice(0, 16).join(" ") +
-              (event?.description?.split(" ").length > 16 ? "..." : "")}
+          <p className="h-16">
+            {event?.description?.split(" ").slice(0, 12).join(" ") +
+              (event?.description?.split(" ").length > 12 ? "..." : "")}
           </p>
         </div>
         <div className="mt-10">

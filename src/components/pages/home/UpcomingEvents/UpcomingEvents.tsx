@@ -3,7 +3,6 @@
 
 import React, { useEffect, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import SectionHeader from "@/components/shared/SectionHeader/SectionHeader";
 import EventCard from "@/components/cards/EventCard";
 import { Event } from "@/types/Common";
 import { useRef } from "react";
@@ -12,6 +11,8 @@ import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import { useGetAllApprovedEventsQuery } from "@/redux/features/event/eventApi";
+import Link from "next/link";
+import { GoArrowRight } from "react-icons/go";
 
 const UpcomingEvents: React.FC = () => {
   const prevRef = useRef<HTMLButtonElement | null>(null);
@@ -46,10 +47,24 @@ const UpcomingEvents: React.FC = () => {
   return (
     <section className="py-20 px-4 bg-green-50">
       <div className=" mx-auto max-w-[1320px]">
-        <SectionHeader
-          title="Upcoming Events"
-          description="Looking for something soon— open to where the journey takes you? Discover, plan, connect, lend a hand, and share the experience - the spirit of adventure like never before."
-        />
+        <div className="mx-auto mb-12 px-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 mb-6">
+            <h2 className="font-montserrat text-3xl lg:text-[40px] font-semibold text-gray-900  ">
+              Upcoming Events
+            </h2>
+            <Link
+              href="/race-categories"
+              className="inline-flex items-center gap-2 bg-primary text-white font-medium px-5 py-2 rounded-lg shadow-md hover:bg-primary/90 hover:shadow-lg transition-all duration-200"
+            >
+              See All <GoArrowRight className="w-5 h-5" />
+            </Link>
+          </div>
+          <p className="mx-auto text-gray-600 text-base md:text-lg leading-relaxed">
+            Looking for something soon—open to where the journey takes you?
+            Discover, plan, connect, lend a hand, and share the experience — the
+            spirit of adventure like never before.
+          </p>
+        </div>
 
         <div className="relative mt-12">
           <Swiper

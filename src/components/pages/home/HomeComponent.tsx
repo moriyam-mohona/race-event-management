@@ -6,7 +6,7 @@ import Banner from "./Banner/Banner";
 import HowItWorks from "./HowItWorks/HowItWorks";
 import UpcomingEvents from "./UpcomingEvents/UpcomingEvents";
 import FindDreamRace from "./FindDreamRace/FindDreamRace";
-import JoinRaceExpo from "./JoinRaceExpo/JoinRaceExpo";
+// import JoinRaceExpo from "./JoinRaceExpo/JoinRaceExpo";
 import CommunitySays from "./CommunitySays/CommunitySays";
 
 const HomeComponent = () => {
@@ -16,7 +16,7 @@ const HomeComponent = () => {
       <HowItWorks />
       <UpcomingEvents />
       <FindDreamRace />
-      <JoinRaceExpo />
+      {/* <JoinRaceExpo /> */}
       <CommunitySays />
     </>
   );
