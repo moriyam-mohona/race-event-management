@@ -29,6 +29,10 @@ import {
 } from "@/redux/features/auth/authApi";
 import UpdatePassword from "./UpdatePassword";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
+import { BsPersonFillGear } from "react-icons/bs";
+import { MdOutlineAddAPhoto, MdOutlineEditLocationAlt } from "react-icons/md";
+import { ButtonLoading } from "@/components/shared/Loading/ButtonLoading";
+import Loading from "@/components/shared/Loading/Loading";
 
 const UpdateUserProfile = () => {
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
@@ -46,8 +50,8 @@ const UpdateUserProfile = () => {
     zipCode: "",
   });
 
-  const { data: getme } = useGetMeQuery({});
-  const [updateUser] = useUpdateUserMutation();
+  const { data: getme, isLoading: isLoadingGetMe } = useGetMeQuery({});
+  const [updateUser, { isLoading }] = useUpdateUserMutation();
 
   // Populate default values when getme loads
   useEffect(() => {
@@ -115,16 +119,28 @@ const UpdateUserProfile = () => {
     });
   };
 
+  if (isLoadingGetMe) {
+    return <Loading />;
+  }
+
   return (
     <div className="w-full">
-      <h2 className="text-2xl lg:text-[32px] font-medium text-gray-800 mb-6">
+      {/* <h2 className="text-2xl lg:text-[32px] font-medium text-gray-800 mb-6">
         Edit Your Profile Information
-      </h2>
+      </h2> */}
 
       <form onSubmit={handleSubmit}>
         {/* Profile Photo */}
-        <div className="mb-8 flex flex-col md:flex-row justify-start items-start md:gap-10 max-w-2xl bg-white border border-gray-200 rounded-lg p-5">
-          <Label className="text-lg">Profile Photo</Label>
+        <div className="mb-8 flex flex-col justify-start items-start gap-5 max-w-5xl bg-white rounded-lg p-5  border border-gray-200 shadow-sm">
+          {/* Header */}
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-full bg-primary/10">
+              <MdOutlineAddAPhoto className="h-6 w-6 text-primary" />
+            </div>
+            <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
+              Update Your Picture
+            </h2>
+          </div>
           <div className="flex items-center gap-4">
             <div className="w-24 h-24 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
               {profileImagePreview ? (
@@ -167,119 +183,136 @@ const UpdateUserProfile = () => {
             </div>
           </div>
         </div>
+        {/* Personal Information */}{" "}
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 mt-10 max-w-5xl ">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-8">
+            <div className="p-2 rounded-full bg-primary/10">
+              <BsPersonFillGear className="h-6 w-6 text-primary" />
+            </div>
+            <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
+              Update Personal Information
+            </h2>
+          </div>
 
-        {/* Personal Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 bg-white border border-gray-200 rounded-lg p-5">
-          <div>
-            <Label className="text-base md:text-lg mb-2">Full Name</Label>
-            <Input
-              placeholder="Full Name"
-              value={formData.fullName}
-              onChange={(e) => handleInputChange("fullName", e.target.value)}
-              className="bg-gray-50"
-            />
-          </div>
-          <div>
-            <Label className="text-base md:text-lg mb-2">Date of Birth</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-left font-normal h-12 text-gray-500 bg-transparent"
-                >
-                  {formData.dateOfBirth ? (
-                    format(formData.dateOfBirth, "PPP")
-                  ) : (
-                    <span>Date of Birth</span>
-                  )}
-                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={formData.dateOfBirth}
-                  onSelect={(date) => handleInputChange("dateOfBirth", date)}
-                  initialFocus
-                  className="bg-white"
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-          <div>
-            <Label className="text-base md:text-lg mb-2">Gender</Label>
-            <Select
-              value={formData.gender}
-              onValueChange={(value) => handleInputChange("gender", value)}
-            >
-              <SelectTrigger className="bg-gray-50">
-                <SelectValue placeholder="Gender" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 bg-white rounded-lg">
+            <div>
+              <Label className="text-base md:text-lg mb-2">Full Name</Label>
+              <Input
+                placeholder="Full Name"
+                value={formData.fullName}
+                onChange={(e) => handleInputChange("fullName", e.target.value)}
+                className="bg-gray-50"
+              />
+            </div>
+            <div>
+              <Label className="text-base md:text-lg mb-2">Date of Birth</Label>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start text-left font-normal h-12 text-gray-500 bg-transparent"
+                  >
+                    {formData.dateOfBirth ? (
+                      format(formData.dateOfBirth, "PPP")
+                    ) : (
+                      <span>Date of Birth</span>
+                    )}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <Calendar
+                    mode="single"
+                    selected={formData.dateOfBirth}
+                    onSelect={(date) => handleInputChange("dateOfBirth", date)}
+                    initialFocus
+                    className="bg-white"
+                  />
+                </PopoverContent>
+              </Popover>
+            </div>
+            <div>
+              <Label className="text-base md:text-lg mb-2">Gender</Label>
+              <Select
+                value={formData.gender}
+                onValueChange={(value) => handleInputChange("gender", value)}
+              >
+                <SelectTrigger className="bg-gray-50">
+                  <SelectValue placeholder="Gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </div>
-
         {/* Location Details */}
-        <h3 className="text-xl md:text-2xl font-medium text-gray-800 mb-4">
-          Location Details
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 bg-white border border-gray-200 rounded-lg p-5">
-          <div>
-            <Label className="text-base md:text-lg mb-2">Continent</Label>
-            <Input
-              type="text"
-              placeholder="Continent"
-              value={formData.continent}
-              onChange={(e) => handleInputChange("continent", e.target.value)}
-              className="bg-gray-50"
-            />
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 mt-10 max-w-5xl ">
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-8">
+            <div className="p-2 rounded-full bg-primary/10">
+              <MdOutlineEditLocationAlt className="h-6 w-6 text-primary" />
+            </div>
+            <h2 className="text-xl md:text-2xl font-semibold text-gray-800">
+              Location Details
+            </h2>
           </div>
-          <div>
-            <Label className="text-base md:text-lg mb-2">Country</Label>
-            <Input
-              type="text"
-              placeholder="Country"
-              value={formData.country}
-              onChange={(e) => handleInputChange("country", e.target.value)}
-              className="bg-gray-50"
-            />
-          </div>
-          <div>
-            <Label className="text-base md:text-lg mb-2">Region</Label>
-            <Input
-              type="text"
-              placeholder="Region"
-              value={formData.region}
-              onChange={(e) => handleInputChange("region", e.target.value)}
-              className="bg-gray-50"
-            />
-          </div>
-          <div>
-            <Label className="text-base md:text-lg mb-2">
-              Zip code/ Postal code
-            </Label>
-            <Input
-              type="text"
-              placeholder="Zip code/ Postal code"
-              value={formData.zipCode}
-              onChange={(e) => handleInputChange("zipCode", e.target.value)}
-              className="bg-gray-50"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 bg-white border border-gray-200 rounded-lg p-5">
+            <div>
+              <Label className="text-base md:text-lg mb-2">Continent</Label>
+              <Input
+                type="text"
+                placeholder="Continent"
+                value={formData.continent}
+                onChange={(e) => handleInputChange("continent", e.target.value)}
+                className="bg-gray-50"
+              />
+            </div>
+            <div>
+              <Label className="text-base md:text-lg mb-2">Country</Label>
+              <Input
+                type="text"
+                placeholder="Country"
+                value={formData.country}
+                onChange={(e) => handleInputChange("country", e.target.value)}
+                className="bg-gray-50"
+              />
+            </div>
+            <div>
+              <Label className="text-base md:text-lg mb-2">Region</Label>
+              <Input
+                type="text"
+                placeholder="Region"
+                value={formData.region}
+                onChange={(e) => handleInputChange("region", e.target.value)}
+                className="bg-gray-50"
+              />
+            </div>
+            <div>
+              <Label className="text-base md:text-lg mb-2">
+                Zip code/ Postal code
+              </Label>
+              <Input
+                type="text"
+                placeholder="Zip code/ Postal code"
+                value={formData.zipCode}
+                onChange={(e) => handleInputChange("zipCode", e.target.value)}
+                className="bg-gray-50"
+              />
+            </div>
           </div>
         </div>
-
         {/* Action Buttons */}
-        <div className="flex justify-end gap-4 mt-8">
+        <div className="flex gap-4 mt-8">
           <button
             type="submit"
-            className="w-full text-sm md:text-base bg-primary hover:bg-primary/90 py-2 px-4 rounded-md text-white cursor-pointer"
+            className="w-full text-sm md:text-base bg-primary hover:bg-primary/90 py-2 px-4 rounded-md text-white cursor-pointer max-w-5xl"
           >
-            Save Changes
+            {isLoading ? <ButtonLoading /> : "Save Changes"}
           </button>
         </div>
       </form>

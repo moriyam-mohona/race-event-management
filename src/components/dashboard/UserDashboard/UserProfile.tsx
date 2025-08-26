@@ -5,6 +5,7 @@ import { useGetMeQuery } from "@/redux/features/auth/authApi";
 import Link from "next/link";
 import React from "react";
 import { FiEdit3 } from "react-icons/fi";
+import { Card, CardContent } from "@/components/ui/card";
 
 const UserProfile = () => {
   const { data: getme, isLoading } = useGetMeQuery({});
@@ -13,105 +14,73 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="h-screen">
-      {/* Profile header  */}
-      <div className="flex  items-center justify-between mb-10">
-        <h2 className="text-2xl lg:text-4xl font-medium ">
-          Your Profile Information
-        </h2>
+    <div className="min-h-screen space-y-8 max-w-5xl">
+      {/* Profile header */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl lg:text-4xl font-semibold">Your Profile</h2>
         <Link
           href="/dashboard/user/profile/edit"
-          className="flex items-center gap-2 bg-gray-200 px-5 py-1.5 rounded"
+          className="flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl hover:bg-primary hover:text-white transition-colors"
         >
           <FiEdit3 />
-          <span className="hidden lg:block">Edit</span>
+          <span className="hidden md:block">Edit Profile</span>
         </Link>
       </div>
 
-      {/* profile details  */}
-      <div className="border border-gray-200 rounded-lg p-5 space-y-6">
-        {/* Names  */}
-        <div className="flex items-center justify-between">
-          {/* Full Name  */}
-          <div className="w-full">
-            <h2 className="text-base md:text-lg font-medium">Full Name</h2>
-            <p className="text-gray-500 text-sm md:text-base">
-              {getme?.data?.fullName}
-            </p>
+      {/* Profile Details */}
+      <Card className="shadow-md">
+        <CardContent className="p-6">
+          <h3 className="text-lg font-semibold mb-4">Personal Information</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ProfileItem label="Full Name" value={getme?.data?.fullName} />
+            <ProfileItem label="E-mail" value={getme?.data?.email} />
+            <ProfileItem
+              label="Date of Birth"
+              value={
+                getme?.data?.dateOfBirth
+                  ? new Date(getme.data.dateOfBirth).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )
+                  : "-"
+              }
+            />
+            <ProfileItem label="Gender" value={getme?.data?.gender} />
           </div>
-          {/* Email  */}
-          <div className="w-full">
-            <h2 className="text-base md:text-lg font-medium">E-mail</h2>
-            <p className="text-gray-500 text-sm md:text-base">
-              {getme?.data?.email}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          {/* Date of Birth  */}
-          <div className="w-full">
-            <h2 className="text-base md:text-lg font-medium">Date of Birth</h2>
-            <p className="text-gray-500 text-sm md:text-base">
-              {getme?.data?.dateOfBirth
-                ? new Date(getme.data.dateOfBirth).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })
-                : "-"}
-            </p>
-          </div>
+        </CardContent>
+      </Card>
 
-          {/* Gender  */}
-          <div className="w-full">
-            <h2 className="text-base md:text-lg font-medium">Gender</h2>
-            <p className="text-gray-500 text-sm md:text-base">
-              {getme?.data?.gender}
-            </p>
+      {/* Location Details */}
+      <Card className="shadow-md">
+        <CardContent className="p-6">
+          <h3 className="text-lg font-semibold mb-4">Location Details</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <ProfileItem label="Continent" value={getme?.data?.continent} />
+            <ProfileItem label="Country" value={getme?.data?.country} />
+            <ProfileItem label="Region" value={getme?.data?.region} />
+            <ProfileItem label="Zip Code" value={getme?.data?.zipCode} />
           </div>
-        </div>
-      </div>
-
-      <h2 className="text-xl md:text-2xl font-medium mt-10 mb-5">
-        Location Details
-      </h2>
-      <div className="border border-gray-200 rounded-lg p-5 space-y-6">
-        {/* Names  */}
-        <div className="flex items-center justify-between">
-          {/* First Name  */}
-          <div className="w-full">
-            <h2 className="text-base md:text-lg font-medium">Continent</h2>
-            <p className="text-gray-500 text-sm md:text-base">
-              {getme?.data?.continent}
-            </p>
-          </div>
-          {/* Last Name  */}
-          <div className="w-full">
-            <h2 className="text-base md:text-lg font-medium">Country</h2>
-            <p className="text-gray-500 text-sm md:text-base">
-              {getme?.data?.country}
-            </p>
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          {/* Date of Birth  */}
-          <div className="w-full">
-            <h2 className="text-base md:text-lg font-medium">Region</h2>
-            <p className="text-gray-500 text-sm md:text-base">
-              {getme?.data?.region}
-            </p>
-          </div>
-          {/* Zip Code  */}
-          <div className="w-full">
-            <h2 className="text-base md:text-lg font-medium">Zip code</h2>
-            <p className="text-gray-500 text-sm md:text-base">
-              {getme?.data?.zipCode}
-            </p>
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
 
 export default UserProfile;
+
+const ProfileItem = ({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | undefined;
+}) => (
+  <div>
+    <p className="text-xs uppercase text-gray-400 tracking-wide">{label}</p>
+    <p className="text-base font-medium text-gray-800 mt-1">{value || "-"}</p>
+  </div>
+);
