@@ -29,10 +29,38 @@ const chatApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["chat"],
     }),
+
+    getAllConnectionRequest: builder.query({
+      query: (data) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `chat/get-all-connection-request`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["chat"],
+    }),
+    // accept/reject connection request
+    acceptOrRejectConnection: builder.mutation({
+      query: (data) => ({
+        url: `chat/respond-to-connection-request`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["chat"],
+    }),
   }),
 });
 
 export const {
   useGetAllUserListForChatQuery,
   useSendConnectionRequestMutation,
+  useGetAllConnectionRequestQuery,
+  useAcceptOrRejectConnectionMutation,
 } = chatApi;
