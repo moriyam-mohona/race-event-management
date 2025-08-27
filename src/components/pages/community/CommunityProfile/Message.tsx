@@ -100,7 +100,7 @@ const Message = () => {
                         className="w-10 h-10 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-semibold">
+                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 font-semibold">
                         {member?.fullName?.charAt(0)}
                       </div>
                     )}
@@ -110,7 +110,7 @@ const Message = () => {
                           ${
                             member?.connectionStatus === "CONNECTED"
                               ? "bg-green-500"
-                              : member?.connectionStatus === "PENDING"
+                              : member?.connectionStatus === "PENDING_SENT"
                               ? "bg-yellow-500"
                               : "bg-gray-400"
                           }`}
@@ -143,15 +143,26 @@ const Message = () => {
                     </span>
                   )}
                   {member?.connectionStatus === "NONE" && (
-                    <>
-                      <button
-                        onClick={() => handleSendConnectionRequest(member?.id)}
-                        className="p-1 hover:bg-gray-100 rounded-full transition-colors duration-200"
-                      >
-                        <TbUserPlus />
-                        Connect
-                      </button>
-                    </>
+                    <button
+                      onClick={() => handleSendConnectionRequest(member?.id)}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg 
+               border border-gray-300 bg-white text-gray-800 
+               hover:bg-gray-100 transition-colors duration-200"
+                    >
+                      <TbUserPlus className="text-lg" />
+                      Connect
+                    </button>
+                  )}
+
+                  {member?.connectionStatus === "PENDING_SENT" && (
+                    <button
+                      disabled
+                      className="flex items-center gap-2 px-3 py-1.5 rounded-full 
+               border border-yellow-400 bg-yellow-100 text-yellow-800 
+               cursor-not-allowed text-xs"
+                    >
+                      Request Sent
+                    </button>
                   )}
 
                   {member?.connectionStatus === "CONNECTED" && (
