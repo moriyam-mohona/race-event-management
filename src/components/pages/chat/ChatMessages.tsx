@@ -10,10 +10,11 @@ import Image from "next/image";
 import { useState } from "react";
 
 interface ChatMessagesProps {
+  setUser2Id: (user2Id: string) => void;
   setChatRoomId: (chatRoomId: string) => void;
 }
 
-const ChatMessages = ({ setChatRoomId }: ChatMessagesProps) => {
+const ChatMessages = ({ setUser2Id, setChatRoomId }: ChatMessagesProps) => {
   const [showAll, setShowAll] = useState(false);
   const [activeTab, setActiveTab] = useState("inbox");
 
@@ -78,6 +79,8 @@ const ChatMessages = ({ setChatRoomId }: ChatMessagesProps) => {
           user2Id: user2Id,
         })
       );
+
+      setUser2Id(user2Id);
 
       socket.onmessage = (event) => {
         const data = JSON.parse(event.data);

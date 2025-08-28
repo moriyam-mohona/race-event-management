@@ -9,6 +9,7 @@ import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 interface ChatInterfaceProps {
   chatRoomId: string | null;
+  user2Id: string | null;
 }
 
 type Message = {
@@ -18,7 +19,7 @@ type Message = {
   createdAt: string;
 };
 
-const ChatInterface = ({ chatRoomId }: ChatInterfaceProps) => {
+const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
   const user = useAppSelector(selectCurrentUser);
 
   const [inputValue, setInputValue] = useState("");
@@ -118,7 +119,7 @@ const ChatInterface = ({ chatRoomId }: ChatInterfaceProps) => {
         JSON.stringify({
           type: "sendPrivateMessage",
           // receiverId: chatRoomId,
-          receiverId: "689c0e1ce978ef7b4c5bdbbe",
+          receiverId: user2Id,
           content: content,
         })
       );
