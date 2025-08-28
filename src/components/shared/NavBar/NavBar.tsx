@@ -23,6 +23,7 @@ const Navbar = () => {
     { name: "Race Categories", href: "/race-categories" },
     { name: "Contact", href: "/contact-us" },
     { name: "Community", href: "/community" },
+    { name: "Chat", href: "/chat" },
   ];
 
   const profileHref =

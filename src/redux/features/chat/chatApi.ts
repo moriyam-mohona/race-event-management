@@ -29,7 +29,6 @@ const chatApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["chat"],
     }),
-
     getAllConnectionRequest: builder.query({
       query: (data) => {
         const params = new URLSearchParams();
@@ -55,6 +54,38 @@ const chatApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["chat"],
     }),
+    getAllConversationList: builder.query({
+      query: (data) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `chat/conversion-list`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["chat"],
+    }),
+    getAllCommunityList: builder.query({
+      query: (data) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `chat/get-all-community-for-message`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["community"],
+    }),
   }),
 });
 
@@ -63,4 +94,6 @@ export const {
   useSendConnectionRequestMutation,
   useGetAllConnectionRequestQuery,
   useAcceptOrRejectConnectionMutation,
+  useGetAllConversationListQuery,
+  useGetAllCommunityListQuery,
 } = chatApi;
