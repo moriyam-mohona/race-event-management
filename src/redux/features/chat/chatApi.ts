@@ -84,7 +84,23 @@ const chatApi = baseApi.injectEndpoints({
           params,
         };
       },
-      providesTags: ["community"],
+      providesTags: ["chat"],
+    }),
+    getSingleMessageByUser: builder.query({
+      query: ({ data, id }) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `chat/get-single-message/${id}`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["chat"],
     }),
   }),
 });
@@ -96,4 +112,5 @@ export const {
   useAcceptOrRejectConnectionMutation,
   useGetAllConversationListQuery,
   useGetAllCommunityListQuery,
+  useGetSingleMessageByUserQuery,
 } = chatApi;

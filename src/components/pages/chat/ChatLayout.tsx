@@ -1,10 +1,14 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import ChatTop from "./ChatTop";
 import ChatInterface from "./ChatInterface";
 import ChatMessages from "./ChatMessages";
 import ConnectionRequest from "./ConnectionRequest";
 
 const ChatLayout = () => {
+  const [chatRoomId, setChatRoomId] = useState<string | null>(null);
+
   return (
     <div>
       <ChatTop />
@@ -14,10 +18,10 @@ const ChatLayout = () => {
         </div>
         <div className="hidden lg:flex flex-col w-full lg:w-1/3 space-y-8">
           <ConnectionRequest />
-          <ChatMessages />
+          <ChatMessages setChatRoomId={setChatRoomId} />
         </div>
         <div className="w-full lg:w-2/3">
-          <ChatInterface />
+          <ChatInterface chatRoomId={chatRoomId} />
         </div>
       </div>
     </div>

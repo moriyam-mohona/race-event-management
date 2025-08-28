@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { socket } from "@/provider/SoketProvider";
 import {
   useGetAllCommunityListQuery,
   useGetAllConversationListQuery,
@@ -8,7 +9,11 @@ import {
 import Image from "next/image";
 import { useState } from "react";
 
-const ChatMessages = () => {
+interface ChatMessagesProps {
+  setChatRoomId: (chatRoomId: string) => void;
+}
+
+const ChatMessages = ({ setChatRoomId }: ChatMessagesProps) => {
   const [showAll, setShowAll] = useState(false);
   const [activeTab, setActiveTab] = useState("inbox");
 
@@ -19,6 +24,7 @@ const ChatMessages = () => {
     messageList?.data?.conversationList?.map((conv: any) => ({
       id: conv.conversationId,
       name: conv.participants.username || "Unknown User",
+      userId: conv.participants?.userId,
       location: "", // You can set location if you have it
       avatar: conv.participants.image || null,
       type: "user",
@@ -62,6 +68,27 @@ const ChatMessages = () => {
     }
   };
 
+  const handleSendMessage = (user2Id: string) => {
+    console.log("Send message to chat ID:", user2Id);
+
+    if (user2Id && socket) {
+      socket.send(
+        JSON.stringify({
+          type: "joinPrivateChat",
+          user2Id: user2Id,
+        })
+      );
+
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        const chatRoomId = data?.chatroomId;
+        if (chatRoomId) {
+          setChatRoomId(chatRoomId);
+        }
+      };
+    }
+  };
+
   return (
     <div>
       <h2 className="text-lg font-medium text-gray-800 mb-4">Message</h2>
@@ -101,13 +128,14 @@ const ChatMessages = () => {
         <div className="space-y-4">
           {displayedMembers.map((member: any) => (
             <div
-              key={member.id}
+              key={member?.userId}
               className="flex items-center space-x-3 hover:bg-green-500/10 rounded-lg p-1 transition-colors cursor-pointer"
+              onClick={() => handleSendMessage(member?.userId)}
             >
               {renderAvatar(member)}
               <div className="flex-1">
-                <h4 className="font-medium text-gray-800">{member.name}</h4>
-                <p className="text-sm text-gray-600">{member.location}</p>
+                <h4 className="font-medium text-gray-800">{member?.name}</h4>
+                <p className="text-sm text-gray-600">{member?.location}</p>
               </div>
             </div>
           ))}

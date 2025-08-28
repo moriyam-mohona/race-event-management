@@ -1,110 +1,104 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Send } from "lucide-react";
+import { useGetSingleMessageByUserQuery } from "@/redux/features/chat/chatApi";
+import { socket } from "@/provider/SoketProvider";
+import { useAppSelector } from "@/redux/hooks";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
-const ChatInterface = () => {
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      text: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
-      sender: "other",
-      time: "8:00 PM",
-      avatar: "👤",
-    },
-    {
-      id: 2,
-      text: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
-      sender: "me",
-      time: "8:00 PM",
-      avatar: "👨‍💼",
-    },
-    {
-      id: 3,
-      text: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
-      sender: "other",
-      time: "8:00 PM",
-      avatar: "👤",
-    },
-    {
-      id: 4,
-      text: "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,",
-      sender: "me",
-      time: "8:00 PM",
-      avatar: "👨‍💼",
-    },
-  ]);
+interface ChatInterfaceProps {
+  chatRoomId: string | null;
+}
 
+const ChatInterface = ({ chatRoomId }: ChatInterfaceProps) => {
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // Auto-scroll to bottom when new messages arrive
-  const scrollToBottom = () => {
+  const user = useAppSelector(selectCurrentUser);
+  console.log("user info from chat interface", user?.id);
+
+  const [messages, setMessages] = useState<any[]>([]);
+
+  const { data: message } = useGetSingleMessageByUserQuery({ id: chatRoomId });
+  // if (isFetching) {
+  //   setIsTyping(true);
+  // }
+
+  // ✅ sort messages by createdAt DESC (latest first)
+  const sortedChatList = useMemo(() => {
+    if (!message?.data?.messages) return [];
+    return [...message.data.messages].sort(
+      (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+  }, [message?.data?.messages]);
+
+  useEffect(() => {
+    if (sortedChatList?.length) {
+      setMessages(sortedChatList);
+    }
+  }, [sortedChatList]);
+
+  // Auto-scroll when messages change
+  useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
-  };
-
-  useEffect(() => {
-    scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = () => {
-    if (inputValue.trim()) {
-      const newMessage = {
-        id: messages.length + 1,
-        text: inputValue,
-        sender: "me",
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-        avatar: "👨‍💼",
-      };
+  // const handleSendMessage = () => {
+  //   if (inputValue.trim()) {
+  //     const newMessage = {
+  //       id: Date.now().toString(),
+  //       content: inputValue,
+  //       senderId: "me",
+  //       createdAt: new Date().toISOString(),
+  //     };
 
-      setMessages((prev) => [...prev, newMessage]);
-      setInputValue("");
+  //     // Here you would dispatch API call to actually send message
+  //     console.log("Send this to API:", newMessage);
+  //     setInputValue("");
+  //   }
+  // };
 
-      // Simulate typing indicator and response
-      setIsTyping(true);
-      setTimeout(() => {
-        setIsTyping(false);
-        const response = {
-          id: messages.length + 2,
-          text: "Thanks for your message! This is an automated response.",
-          sender: "other",
-          time: new Date().toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          avatar: "👤",
-        };
-        setMessages((prev) => [...prev, response]);
-      }, 2000);
+  const handleSendMessage = (inputValue: string) => {
+    if (socket && socket.readyState === WebSocket.OPEN && chatRoomId) {
+      socket.send(
+        JSON.stringify({
+          type: "sendPrivateMessage",
+          // receiverId: "689c0e1ce978ef7b4c5bdbbe",
+          receiverId: "chatRoomId",
+
+          content: inputValue,
+        })
+      );
+      console.log("Message sent:", inputValue);
+    } else {
+      console.error("WebSocket not connected");
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleKeyPress = (e: any) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSendMessage();
+      handleSendMessage(inputValue);
     }
   };
 
   type Message = {
-    id: number;
-    text: string;
-    sender: string;
-    time: string;
-    avatar: string;
+    id: string;
+    content: string;
+    senderId: string;
+    createdAt: string;
   };
 
   const MessageBubble = ({ message }: { message: Message }) => {
-    const isMe = message.sender === "me";
+    const isMe = message.senderId === user?.id; // replace with logged-in user id check
 
     return (
       <div
@@ -112,8 +106,8 @@ const ChatInterface = () => {
           isMe ? "flex-row-reverse" : "flex-row"
         }`}
       >
-        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center ">
-          {message.avatar}
+        <div className="flex-shrink-0 w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
+          {isMe ? "👨‍💼" : "👤"}
         </div>
 
         <div
@@ -129,37 +123,19 @@ const ChatInterface = () => {
             }`}
           >
             <p className="text-gray-600 leading-relaxed text-sm xl:text-base">
-              {message.text}
+              {message.content}
             </p>
           </div>
           <span className="text-xs text-gray-600 mt-1 px-1">
-            {message.time}
+            {new Date(message.createdAt).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
           </span>
         </div>
       </div>
     );
   };
-
-  const TypingIndicator = () => (
-    <div className="flex items-start gap-2 mb-4">
-      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm">
-        👤
-      </div>
-      <div className="bg-gray-100 px-4 py-3 rounded-2xl rounded-bl-md">
-        <div className="flex gap-1">
-          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-          <div
-            className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-            style={{ animationDelay: "0.1s" }}
-          ></div>
-          <div
-            className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
-            style={{ animationDelay: "0.2s" }}
-          ></div>
-        </div>
-      </div>
-    </div>
-  );
 
   return (
     <div className="border border-gray-200 h-[450px] lg:h-[600px] rounded-2xl flex flex-col bg-white overflow-hidden">
@@ -171,10 +147,10 @@ const ChatInterface = () => {
           maxHeight: "calc(100% - 90px)",
         }}
       >
-        {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} />
+        {messages.map((m) => (
+          <MessageBubble key={m.id} message={m} />
         ))}
-        {isTyping && <TypingIndicator />}
+        {isTyping && <div className="text-gray-500">Typing...</div>}
         <div ref={messagesEndRef} />
       </div>
 
@@ -190,21 +166,11 @@ const ChatInterface = () => {
               placeholder="Type message"
               className="w-full px-4 py-5 pr-12 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent bg-white"
             />
-            {/* <button
-              type="button"
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-            >
-              <Mic size={16} />
-            </button> */}
           </div>
 
           <button
             type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              handleSendMessage();
-            }}
+            onClick={() => handleSendMessage(inputValue)}
             disabled={!inputValue.trim()}
             className="w-10 h-10 bg-primary text-white rounded-md flex items-center justify-center hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
           >
