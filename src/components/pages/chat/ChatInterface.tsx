@@ -2,7 +2,10 @@
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Send } from "lucide-react";
-import { useGetSingleMessageByUserQuery } from "@/redux/features/chat/chatApi";
+import {
+  // useGetAllMessagesOfCommunityQuery,
+  useGetSingleMessageByUserQuery,
+} from "@/redux/features/chat/chatApi";
 import { socket } from "@/provider/SoketProvider";
 import { useAppSelector } from "@/redux/hooks";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
@@ -41,6 +44,16 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
       ],
     },
   });
+  // const { data: messageCommunityData, isCommunityFetching } =
+  //   useGetAllMessagesOfCommunityQuery({
+  //     id: chatRoomId,
+  //     data: {
+  //       queryObj: [
+  //         { name: "page", value: String(page) },
+  //         { name: "limit", value: String(limit) },
+  //       ],
+  //     },
+  //   });
 
   // Merge new messages with existing ones, avoiding duplicates
   useEffect(() => {
@@ -123,24 +136,7 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
           content: content,
         })
       );
-
-      // socket.onmessage = (event) => {
-      //   const data = JSON.parse(event.data);
-      //   console.log("Message from server:", data);
-      // };
-
       setInputValue("");
-
-      // Optimistically add message
-      // setMessages((prev) => [
-      //   ...prev,
-      //   {
-      //     id: Date.now().toString(),
-      //     content,
-      //     senderId: user?.id,
-      //     createdAt: new Date().toISOString(),
-      //   },
-      // ]);
     } else {
       console.error("WebSocket not connected");
     }

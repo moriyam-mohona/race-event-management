@@ -10,7 +10,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { CgMenuLeft } from "react-icons/cg";
-import ChatMessages from "./ChatMessages";
+// import ChatMessages from "./ChatMessages";
 import { useGetMeQuery } from "@/redux/features/auth/authApi";
 
 const ChatTop = () => {
@@ -29,7 +29,7 @@ const ChatTop = () => {
             <SheetHeader>
               <SheetDescription>
                 <div className="flex flex-col w-full lg:hidden">
-                  <ChatMessages />
+                  {/* <ChatMessages /> */}
                 </div>
               </SheetDescription>
             </SheetHeader>

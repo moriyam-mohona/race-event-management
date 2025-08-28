@@ -133,7 +133,7 @@ const ChatMessages = ({ setUser2Id, setChatRoomId }: ChatMessagesProps) => {
             <div
               key={member?.userId}
               className="flex items-center space-x-3 hover:bg-green-500/10 rounded-lg p-1 transition-colors cursor-pointer"
-              onClick={() => handleSendMessage(member?.userId)}
+              onClick={() => handleSendMessage(member?.userId || member?.id)}
             >
               {renderAvatar(member)}
               <div className="flex-1">

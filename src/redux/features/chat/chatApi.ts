@@ -102,6 +102,22 @@ const chatApi = baseApi.injectEndpoints({
       },
       providesTags: ["chat"],
     }),
+    getAllMessagesOfCommunity: builder.query({
+      query: ({ data, id }) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `chat/get-all-message-of-a-community/${id}`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["chat"],
+    }),
   }),
 });
 
@@ -113,4 +129,5 @@ export const {
   useGetAllConversationListQuery,
   useGetAllCommunityListQuery,
   useGetSingleMessageByUserQuery,
+  useGetAllMessagesOfCommunityQuery,
 } = chatApi;
