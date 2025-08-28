@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Send } from "lucide-react";
 import { useGetSingleMessageByUserQuery } from "@/redux/features/chat/chatApi";
 import { socket } from "@/provider/SoketProvider";
@@ -12,93 +11,150 @@ interface ChatInterfaceProps {
   chatRoomId: string | null;
 }
 
+type Message = {
+  id: string;
+  content: string;
+  senderId: string;
+  createdAt: string;
+};
+
 const ChatInterface = ({ chatRoomId }: ChatInterfaceProps) => {
-  const [inputValue, setInputValue] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const chatContainerRef = useRef<HTMLDivElement | null>(null);
-
   const user = useAppSelector(selectCurrentUser);
-  console.log("user info from chat interface", user?.id);
 
-  const [messages, setMessages] = useState<any[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const limit = 10;
 
-  const { data: message } = useGetSingleMessageByUserQuery({ id: chatRoomId });
-  // if (isFetching) {
-  //   setIsTyping(true);
-  // }
+  const chatContainerRef = useRef<HTMLDivElement | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
-  // ✅ sort messages by createdAt DESC (latest first)
-  const sortedChatList = useMemo(() => {
-    if (!message?.data?.messages) return [];
-    return [...message.data.messages].sort(
+  // Fetch messages with pagination
+  const { data: messageData, isFetching } = useGetSingleMessageByUserQuery({
+    id: chatRoomId,
+    data: {
+      queryObj: [
+        { name: "page", value: String(page) },
+        { name: "limit", value: String(limit) },
+      ],
+    },
+  });
+
+  // Merge new messages with existing ones, avoiding duplicates
+  useEffect(() => {
+    if (messageData?.data?.messages) {
+      setMessages((prev) => {
+        const newMessages = messageData.data.messages.filter(
+          (msg: Message) => !prev.some((m) => m.id === msg.id)
+        );
+
+        if (newMessages.length < limit) setHasMore(false);
+
+        return [...newMessages, ...prev]; // prepend older messages
+      });
+    }
+  }, [messageData]);
+
+  // Sort messages by creation time
+  const sortedMessages = useMemo(() => {
+    return [...messages].sort(
       (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     );
-  }, [message?.data?.messages]);
+  }, [messages]);
 
-  useEffect(() => {
-    if (sortedChatList?.length) {
-      setMessages(sortedChatList);
-    }
-  }, [sortedChatList]);
-
-  // Auto-scroll when messages change
+  // Scroll to bottom on new messages
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
     }
-  }, [messages]);
+  }, [sortedMessages]);
 
-  // const handleSendMessage = () => {
-  //   if (inputValue.trim()) {
-  //     const newMessage = {
-  //       id: Date.now().toString(),
-  //       content: inputValue,
-  //       senderId: "me",
-  //       createdAt: new Date().toISOString(),
-  //     };
+  // Handle scroll to fetch older messages
+  const handleScroll = useCallback(() => {
+    if (
+      chatContainerRef.current &&
+      chatContainerRef.current.scrollTop === 0 &&
+      !isFetching &&
+      hasMore
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  }, [isFetching, hasMore]);
 
-  //     // Here you would dispatch API call to actually send message
-  //     console.log("Send this to API:", newMessage);
-  //     setInputValue("");
-  //   }
-  // };
+  useEffect(() => {
+    const container = chatContainerRef.current;
+    container?.addEventListener("scroll", handleScroll);
+    return () => container?.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
-  const handleSendMessage = (inputValue: string) => {
+  useEffect(() => {
+    if (socket) {
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+
+        console.log("Message from server:", data);
+        if (data?.type === "receivePrivateMessage") {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: data?.id,
+              content: data?.content,
+              senderId: data?.senderId,
+              createdAt: data?.createdAt,
+            },
+          ]);
+        }
+      };
+    }
+  });
+
+  // Send message via WebSocket
+  const handleSendMessage = (content: string) => {
     if (socket && socket.readyState === WebSocket.OPEN && chatRoomId) {
       socket.send(
         JSON.stringify({
           type: "sendPrivateMessage",
-          // receiverId: "689c0e1ce978ef7b4c5bdbbe",
-          receiverId: "chatRoomId",
-
-          content: inputValue,
+          // receiverId: chatRoomId,
+          receiverId: "689c0e1ce978ef7b4c5bdbbe",
+          content: content,
         })
       );
-      console.log("Message sent:", inputValue);
+
+      // socket.onmessage = (event) => {
+      //   const data = JSON.parse(event.data);
+      //   console.log("Message from server:", data);
+      // };
+
+      setInputValue("");
+
+      // Optimistically add message
+      // setMessages((prev) => [
+      //   ...prev,
+      //   {
+      //     id: Date.now().toString(),
+      //     content,
+      //     senderId: user?.id,
+      //     createdAt: new Date().toISOString(),
+      //   },
+      // ]);
     } else {
       console.error("WebSocket not connected");
     }
   };
 
-  const handleKeyPress = (e: any) => {
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage(inputValue);
     }
   };
 
-  type Message = {
-    id: string;
-    content: string;
-    senderId: string;
-    createdAt: string;
-  };
-
+  // Message bubble component
   const MessageBubble = ({ message }: { message: Message }) => {
-    const isMe = message.senderId === user?.id; // replace with logged-in user id check
+    const isMe = message.senderId === user?.id;
 
     return (
       <div
@@ -142,15 +198,11 @@ const ChatInterface = ({ chatRoomId }: ChatInterfaceProps) => {
       <div
         ref={chatContainerRef}
         className="flex-1 overflow-y-auto px-4 py-4 space-y-1"
-        style={{
-          scrollBehavior: "smooth",
-          maxHeight: "calc(100% - 90px)",
-        }}
+        style={{ scrollBehavior: "smooth", maxHeight: "calc(100% - 90px)" }}
       >
-        {messages.map((m) => (
-          <MessageBubble key={m.id} message={m} />
+        {sortedMessages.map((m) => (
+          <MessageBubble key={m?.id} message={m} />
         ))}
-        {isTyping && <div className="text-gray-500">Typing...</div>}
         <div ref={messagesEndRef} />
       </div>
 
