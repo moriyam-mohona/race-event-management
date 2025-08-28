@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { socket } from "@/provider/SoketProvider";
+import { socket } from "@/provider/SocketProvider";
 import {
   useGetAllCommunityListQuery,
   useGetAllConversationListQuery,

@@ -5,7 +5,7 @@ import MyContextProvider from "@/lib/MyContextProvider";
 import SessionProviderForNextAuth from "@/nextAuth/SessionProviderForNextAuth";
 import ReduxStoreProvider from "@/redux/ReduxStoreProvider";
 import { Toaster } from "sonner";
-import SoketProvider from "@/provider/SoketProvider";
+import SocketProvider from "@/provider/SocketProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,10 +39,10 @@ export default function RootLayout({
         <MyContextProvider>
           <SessionProviderForNextAuth>
             <ReduxStoreProvider>
-              <SoketProvider>
+              <SocketProvider>
                 <Toaster />
                 {children}
-              </SoketProvider>
+              </SocketProvider>
             </ReduxStoreProvider>
           </SessionProviderForNextAuth>
         </MyContextProvider>

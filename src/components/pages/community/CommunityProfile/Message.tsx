@@ -12,7 +12,7 @@ import {
 } from "@/redux/features/chat/chatApi";
 import MessageListForCommunitySkeleton from "@/components/skeletons/MessageListForCommunitySkeleton";
 import { TbUserPlus } from "react-icons/tb";
-import { socket } from "@/provider/SoketProvider";
+import { socket } from "@/provider/SocketProvider";
 
 const Message = () => {
   const [activeTab, setActiveTab] = useState<"local" | "global">("local");

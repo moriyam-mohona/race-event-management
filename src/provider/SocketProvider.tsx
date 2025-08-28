@@ -6,7 +6,7 @@ import { useEffect } from "react";
 
 export let socket: WebSocket | null = null;
 
-export default function SoketProvider({
+export default function SocketProvider({
   children,
 }: Readonly<{
   children: React.ReactNode;

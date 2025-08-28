@@ -1,22 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { socket } from "@/provider/SoketProvider";
+import { socket } from "@/provider/SocketProvider";
 import {
   useGetAllCommunityListQuery,
   useGetAllConversationListQuery,
 } from "@/redux/features/chat/chatApi";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ChatMessagesProps {
   setUser2Id: (user2Id: string) => void;
   setChatRoomId: (chatRoomId: string) => void;
+  setCommunityId: (communityId: string) => void;
 }
 
 const ChatMessagesWithCommunity = ({
   setUser2Id,
   setChatRoomId,
+  setCommunityId,
 }: ChatMessagesProps) => {
   const [showAll, setShowAll] = useState(false);
   const [activeTab, setActiveTab] = useState("inbox");
@@ -24,22 +26,34 @@ const ChatMessagesWithCommunity = ({
   const { data: messageList } = useGetAllConversationListQuery({});
   const { data: communityList } = useGetAllCommunityListQuery({});
 
+  // 🔹 Attach socket listener once
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data?.chatroomId) {
+        setChatRoomId(data.chatroomId);
+      }
+      console.log("Server says:", data?.chatroomId);
+    };
+  }, [setChatRoomId]);
+
+  // 🔹 Build members list
   const inboxMembers =
-    messageList?.data?.conversationList?.map((privateMessage: any) => ({
-      id: privateMessage.conversationId,
-      name: privateMessage.participants.username || "Unknown User",
-      userId: privateMessage.participants?.userId,
-      location: "", // You can set location if you have it
-      avatar: privateMessage.participants.image || null,
+    messageList?.data?.conversationList?.map((conv: any) => ({
+      id: conv.conversationId,
+      name: conv.participants.username || "Unknown User",
+      userId: conv.participants?.userId,
+      avatar: conv.participants.image || null,
       type: "user",
-      status: privateMessage.unseen > 0 ? "Unseen" : null,
+      status: conv.unseen > 0 ? "Unseen" : null,
     })) || [];
 
   const communityMembers =
     communityList?.data?.data?.map((com: any) => ({
       id: com.id,
       name: com.title,
-      location: "Community",
       avatar: null,
       type: "community",
       status: null,
@@ -51,6 +65,7 @@ const ChatMessagesWithCommunity = ({
     ? currentMembers
     : currentMembers.slice(0, 4);
 
+  // 🔹 Avatar renderer
   const renderAvatar = (member: any) => {
     if (member.avatar) {
       return (
@@ -62,43 +77,49 @@ const ChatMessagesWithCommunity = ({
           className="w-10 h-10 rounded-full object-cover"
         />
       );
-    } else {
-      const letter = member.name.charAt(0).toUpperCase();
-      return (
-        <div className="w-10 h-10 rounded-full bg-green-800/10 flex items-center justify-center">
-          <span className="text-green-800 font-medium">{letter}</span>
-        </div>
-      );
     }
+    const letter = member.name.charAt(0).toUpperCase();
+    return (
+      <div className="w-10 h-10 rounded-full bg-green-800/10 flex items-center justify-center">
+        <span className="text-green-800 font-medium">{letter}</span>
+      </div>
+    );
   };
 
-  const handleSendMessage = (user2Id: string) => {
-    console.log("Send message to chat ID:", user2Id);
+  // 🔹 Handles both private & community
+  const handleSendMessage = (member: any) => {
+    if (!socket) return;
 
-    if (user2Id && socket) {
+    if (member.type === "user" && member.userId) {
       socket.send(
         JSON.stringify({
           type: "joinPrivateChat",
-          user2Id: user2Id,
+          user2Id: member.userId,
         })
       );
+      setUser2Id(member.userId);
+    }
 
-      setUser2Id(user2Id);
-
-      socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        const chatRoomId = data?.chatroomId;
-        if (chatRoomId) {
-          setChatRoomId(chatRoomId);
-        }
-      };
+    if (member.type === "community" && member.id) {
+      socket.send(
+        JSON.stringify({
+          type: "joinGroup",
+          communityId: member.id,
+        })
+      );
+      console.log(member.id);
+      setCommunityId(member.id);
+      // No setUser2Id here, since it's a community chat
     }
   };
+
+  console.log(displayedMembers);
 
   return (
     <div>
       <h2 className="text-lg font-medium text-gray-800 mb-4">Message</h2>
       <div className="border border-gray-200 rounded-xl p-5">
+        {/* Tabs */}
         <div className="flex space-x-3 mb-6">
           <button
             onClick={() => {
@@ -128,26 +149,27 @@ const ChatMessagesWithCommunity = ({
           </button>
         </div>
 
-        {/* Members Section */}
+        {/* Members */}
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Members</h3>
-
         <div className="space-y-4">
           {displayedMembers.map((member: any) => (
             <div
-              key={member?.userId}
+              key={member.userId || member.id}
               className="flex items-center space-x-3 hover:bg-green-500/10 rounded-lg p-1 transition-colors cursor-pointer"
-              onClick={() => handleSendMessage(member?.userId || member?.id)}
+              onClick={() => handleSendMessage(member)}
             >
               {renderAvatar(member)}
               <div className="flex-1">
                 <h4 className="font-medium text-gray-800">{member?.name}</h4>
-                <p className="text-sm text-gray-600">{member?.location}</p>
+                <p className="text-sm text-gray-600">
+                  {member?.type === "community" ? "Community" : ""}
+                </p>
               </div>
             </div>
           ))}
         </div>
 
-        {/* See more / Show less button */}
+        {/* Show more/less */}
         {currentMembers.length > 4 && (
           <button
             onClick={() => setShowAll(!showAll)}
