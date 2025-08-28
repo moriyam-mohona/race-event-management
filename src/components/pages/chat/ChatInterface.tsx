@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { Send } from "lucide-react";
 import {
-  // useGetAllMessagesOfCommunityQuery,
+  useGetAllMessagesOfCommunityQuery,
   useGetSingleMessageByUserQuery,
 } from "@/redux/features/chat/chatApi";
 import { socket } from "@/provider/SoketProvider";
@@ -44,16 +44,16 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
       ],
     },
   });
-  // const { data: messageCommunityData, isCommunityFetching } =
-  //   useGetAllMessagesOfCommunityQuery({
-  //     id: chatRoomId,
-  //     data: {
-  //       queryObj: [
-  //         { name: "page", value: String(page) },
-  //         { name: "limit", value: String(limit) },
-  //       ],
-  //     },
-  //   });
+  const { data: messageCommunityData, isCommunityFetching } =
+    useGetAllMessagesOfCommunityQuery({
+      id: chatRoomId,
+      data: {
+        queryObj: [
+          { name: "page", value: String(page) },
+          { name: "limit", value: String(limit) },
+        ],
+      },
+    });
 
   // Merge new messages with existing ones, avoiding duplicates
   useEffect(() => {

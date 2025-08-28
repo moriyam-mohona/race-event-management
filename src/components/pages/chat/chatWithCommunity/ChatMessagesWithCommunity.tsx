@@ -25,14 +25,14 @@ const ChatMessagesWithCommunity = ({
   const { data: communityList } = useGetAllCommunityListQuery({});
 
   const inboxMembers =
-    messageList?.data?.conversationList?.map((conv: any) => ({
-      id: conv.conversationId,
-      name: conv.participants.username || "Unknown User",
-      userId: conv.participants?.userId,
+    messageList?.data?.conversationList?.map((privateMessage: any) => ({
+      id: privateMessage.conversationId,
+      name: privateMessage.participants.username || "Unknown User",
+      userId: privateMessage.participants?.userId,
       location: "", // You can set location if you have it
-      avatar: conv.participants.image || null,
+      avatar: privateMessage.participants.image || null,
       type: "user",
-      status: conv.unseen > 0 ? "Unseen" : null,
+      status: privateMessage.unseen > 0 ? "Unseen" : null,
     })) || [];
 
   const communityMembers =

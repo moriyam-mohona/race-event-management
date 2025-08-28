@@ -4,14 +4,15 @@
 import React, { useState } from "react";
 import { MessageCircle } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
+// import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import {
   useGetAllUserListForChatQuery,
   useSendConnectionRequestMutation,
 } from "@/redux/features/chat/chatApi";
 import MessageListForCommunitySkeleton from "@/components/skeletons/MessageListForCommunitySkeleton";
 import { TbUserPlus } from "react-icons/tb";
+import { socket } from "@/provider/SoketProvider";
 
 const Message = () => {
   const [activeTab, setActiveTab] = useState<"local" | "global">("local");
@@ -19,6 +20,7 @@ const Message = () => {
   const limit = 5; // page size
 
   const { id } = useParams();
+  const router = useRouter();
 
   // Query API with type + pagination
   const { data, isLoading, isFetching } = useGetAllUserListForChatQuery({
@@ -38,6 +40,32 @@ const Message = () => {
       await sendConnectionRequest(userId).unwrap();
     } catch (error) {
       console.error("Error sending connection request:", error);
+    }
+  };
+
+  const handleCreateNewChat = (userId: string) => {
+    // Logic to create a new chat with the user
+    console.log("Create chat with user ID:", userId);
+    // You can redirect to the chat page or open a chat modal here
+
+    if (userId && socket) {
+      socket.send(
+        JSON.stringify({
+          type: "joinPrivateChat",
+          user2Id: userId,
+        })
+      );
+      router.push("/chat");
+
+      // setUser2Id(user2Id);
+
+      // socket.onmessage = (event) => {
+      //   const data = JSON.parse(event.data);
+      //   const chatRoomId = data?.chatroomId;
+      //   if (chatRoomId) {
+      //     setChatRoomId(chatRoomId);
+      //   }
+      // };
     }
   };
 
@@ -167,12 +195,13 @@ const Message = () => {
 
                   {member?.connectionStatus === "CONNECTED" && (
                     <>
-                      <Link
-                        href="/chat"
+                      <button
+                        onClick={() => handleCreateNewChat(member?.id)}
+                        // href="/chat"
                         className="p-1 hover:bg-gray-100 rounded-full transition-colors duration-200"
                       >
                         <MessageCircle size={18} className="text-gray-500" />
-                      </Link>
+                      </button>
                     </>
                   )}
                 </div>
