@@ -79,7 +79,7 @@ const eventApi = baseApi.injectEndpoints({
           });
         }
         return {
-          url: `event/get-all-share-events`,
+          url: `event/get-all-my-share-events`,
           method: "GET",
           params: params,
         };
