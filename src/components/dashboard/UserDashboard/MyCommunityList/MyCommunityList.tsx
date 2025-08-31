@@ -3,10 +3,21 @@
 
 import Loading from "@/components/shared/Loading/Loading";
 import { useGetAllMyCommunityQuery } from "@/redux/features/community/communityApi";
+import { Pagination } from "antd";
 import Image from "next/image";
 import Link from "next/link";
+import { useCallback, useState } from "react";
 
 const MyCommunityList = () => {
+  const [registeredPagination, setRegisteredPagination] = useState({
+    current: 1,
+    pageSize: 3,
+  });
+  const [followedPagination, setFollowedPagination] = useState({
+    current: 1,
+    pageSize: 3,
+  });
+
   // Query for registered communities (isPaidFollower=false)
   const {
     data: registeredData,
@@ -17,6 +28,14 @@ const MyCommunityList = () => {
       {
         name: "isPaidFollower",
         value: "true",
+      },
+      {
+        name: "page",
+        value: registeredPagination.current,
+      },
+      {
+        name: "limit",
+        value: registeredPagination.pageSize,
       },
     ],
   });
@@ -32,11 +51,36 @@ const MyCommunityList = () => {
         name: "isPaidFollower",
         value: "false",
       },
+      {
+        name: "page",
+        value: followedPagination.current,
+      },
+      {
+        name: "limit",
+        value: followedPagination.pageSize,
+      },
     ],
   });
 
   const registeredCommunities = registeredData?.data?.data || [];
   const followedCommunities = followedData?.data?.data || [];
+
+  const totalRegisteredCount = registeredData?.data?.meta?.total || 0;
+  const totalFollowedCount = followedData?.data?.meta?.total || 0;
+
+  // Handle pagination
+  const handleRegisteredPaginationChange = useCallback(
+    (page: number, pageSize: number) => {
+      setRegisteredPagination({ current: page, pageSize });
+    },
+    []
+  );
+  const handleFollowedPaginationChange = useCallback(
+    (page: number, pageSize: number) => {
+      setFollowedPagination({ current: page, pageSize });
+    },
+    []
+  );
 
   if (
     isRegisteredLoading ||
@@ -85,6 +129,16 @@ const MyCommunityList = () => {
                   </p>
                 </Link>
               ))}
+
+              <div className="p-4 w-full flex flex-wrap justify-center">
+                <Pagination
+                  current={registeredPagination.current}
+                  pageSize={registeredPagination.pageSize}
+                  total={totalRegisteredCount}
+                  disabled={isRegisteredLoading || isRegisteredFetching}
+                  onChange={handleRegisteredPaginationChange}
+                />
+              </div>
             </div>
           )}
         </div>
@@ -122,6 +176,15 @@ const MyCommunityList = () => {
                   </p>
                 </Link>
               ))}
+              <div className="p-4 w-full flex flex-wrap justify-center">
+                <Pagination
+                  current={followedPagination.current}
+                  pageSize={followedPagination.pageSize}
+                  total={totalFollowedCount}
+                  // disabled={isLoading || isFetching}
+                  onChange={handleFollowedPaginationChange}
+                />
+              </div>
             </div>
           )}
         </div>
