@@ -41,17 +41,19 @@ const EventViewCard: React.FC<any> = ({ event }) => {
             <h3 className="font-semibold font-montserrat text-lg sm:text-xl text-gray-800 mb-2 sm:mb-4 pr-2">
               {event?.title}
             </h3>
-            <button onClick={handleAddToBookmark} className="cursor-pointer">
-              <FaRegBookmark
-                className={`text-xl font-semibold ${
-                  !user
-                    ? "text-gray-700"
-                    : event?.isSaved
-                    ? "text-secondary"
-                    : "text-gray-700"
-                }`}
-              />
-            </button>
+            {user?.role === "USER" && (
+              <button onClick={handleAddToBookmark} className="cursor-pointer">
+                <FaRegBookmark
+                  className={`text-xl font-semibold ${
+                    !user
+                      ? "text-gray-700"
+                      : event?.isSaved
+                      ? "text-secondary"
+                      : "text-gray-700"
+                  }`}
+                />
+              </button>
+            )}
           </div>
 
           <div className="space-y-1 mb-3">
