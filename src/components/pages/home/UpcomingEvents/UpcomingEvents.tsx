@@ -95,7 +95,7 @@ const UpcomingEvents: React.FC = () => {
           {/* Navigation Buttons */}
           <button
             ref={prevRef}
-            className="absolute -left-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
+            className="absolute -left-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
             aria-label="Previous events"
           >
             <ChevronLeft className="w-6 h-6 text-gray-600" />
@@ -103,7 +103,7 @@ const UpcomingEvents: React.FC = () => {
 
           <button
             ref={nextRef}
-            className="absolute -right-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
+            className="absolute -right-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
             aria-label="Next events"
           >
             <ChevronRight className="w-6 h-6 text-gray-600" />

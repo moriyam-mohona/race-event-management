@@ -31,7 +31,7 @@ const EventViewCard: React.FC<any> = ({ event }) => {
           alt={event?.title}
           width={1000}
           height={1000}
-          className="bg-gray-100 w-full h-[200px] md:h-[300px] object-cover rounded-lg"
+          className="bg-gray-100 w-full h-[200px] md:h-[300px] object-contain rounded-lg"
         />
       </div>
 
@@ -102,7 +102,7 @@ const EventViewCard: React.FC<any> = ({ event }) => {
         <div className="flex items-center justify-end mt-2">
           <Link
             href={`/race-categories/${event?._id?.$oid}`}
-            className="bg-transparent hover:bg-primary text-primary hover:text-white border border-primary px-4 sm:px-6 py-2 sm:py-3 rounded text-sm sm:text-base transition-colors duration-200"
+            className="bg-transparent hover:bg-primary text-primary hover:text-white border border-primary px-4 sm:px-6 py-2 sm:py-2 rounded-lg text-sm sm:text-base transition-colors duration-200"
           >
             Details
           </Link>
