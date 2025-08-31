@@ -6,7 +6,7 @@ import PopularCategories from "./PopularCategories";
 
 const RaceCategoriesLayout: React.FC = () => {
   return (
-    <div className="container mx-auto max-w-7xl p-4">
+    <div className="container mx-auto max-w-7xl p-4 mb-20">
       <h2 className="text-3xl font-montserrat font-semibold text-gray-800 mb-10">
         Popular Categories
       </h2>
@@ -20,7 +20,7 @@ const RaceCategoriesLayout: React.FC = () => {
         </div>
 
         {/* Content section */}
-        <div className="w-full md:w-2/3">
+        <div className="w-full md:w-2/3 mb-20">
           <EventContent />
         </div>
       </div>

@@ -15,7 +15,7 @@ import EventListViewSkeleton from "@/components/skeletons/EventListViewSkeleton"
 const EventContent: React.FC<any> = () => {
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(5); // Default page size for list view
   const searchParams = useSearchParams();
 
   const user = useAppSelector(selectCurrentUser);
@@ -32,9 +32,19 @@ const EventContent: React.FC<any> = () => {
     { name: "userId", value: userId },
   ]);
 
+  // Set appropriate page size based on view mode
+  useEffect(() => {
+    if (viewMode === "map") {
+      setPageSize(100); // Set larger page size for map view
+      setPage(1); // Reset to first page when switching to map view
+    } else {
+      setPageSize(5); // Set smaller page size for list view
+    }
+  }, [viewMode]);
+
   useEffect(() => {
     setPage(1);
-    setPageSize(5);
+    // Keep the current page size when filters change
   }, [raceType]);
 
   useEffect(() => {
@@ -76,12 +86,13 @@ const EventContent: React.FC<any> = () => {
 
   const totalCount = approvedEvent?.data?.meta?.total || 0;
 
-  // Filter events based on the provided filters
-  // const filteredEvents = filterEvents(raceEvents, filters);
-
   const toggleViewMode = () => {
     setViewMode(viewMode === "list" ? "map" : "list");
   };
+
+  // Don't show pagination for map view since we're loading all events
+  const showPagination = viewMode === "list";
+
   if (isLoading || isFetching) return <EventListViewSkeleton />;
   if (isError) return <div className="text-center">Something went wrong</div>;
   if (!approvedEvent?.data?.data?.length)
@@ -113,10 +124,6 @@ const EventContent: React.FC<any> = () => {
   return (
     <div className="bg-white rounded-lg shadow-sm border p-4 h-full">
       <div className="flex justify-between items-center mb-6">
-        {/* <h2 className="text-xl font-semibold text-gray-800">
-          Events {approvedEvent?.length > 0 && `(${approvedEvent.length})`}
-        </h2> */}
-
         <button
           onClick={toggleViewMode}
           className="flex items-center space-x-2 bg-blue-50 hover:bg-blue-100 text-blue-600 px-4 py-2 rounded-lg transition-colors duration-200"
@@ -134,7 +141,6 @@ const EventContent: React.FC<any> = () => {
           )}
         </button>
       </div>
-      {/* <ListView events={data} /> */}
 
       <div className="h-[calc(100%-4rem)]">
         {viewMode === "list" ? (
@@ -142,15 +148,18 @@ const EventContent: React.FC<any> = () => {
         ) : (
           <MapView events={approvedEvent} />
         )}
-        <div className="p-4 w-full flex flex-wrap justify-center">
-          <Pagination
-            current={page}
-            pageSize={pageSize}
-            total={totalCount}
-            onChange={handlePaginationChange}
-            disabled={isFetching}
-          />
-        </div>
+
+        {showPagination && (
+          <div className="p-4 w-full flex flex-wrap justify-center mt-10">
+            <Pagination
+              current={page}
+              pageSize={pageSize}
+              total={totalCount}
+              onChange={handlePaginationChange}
+              disabled={isFetching}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
