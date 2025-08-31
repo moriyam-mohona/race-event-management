@@ -49,16 +49,15 @@ const ChatInterfaceWithCommunity = ({
       ],
     },
   });
-  const { data: messageCommunityData, isCommunityFetching } =
-    useGetAllMessagesOfCommunityQuery({
-      id: chatRoomId,
-      data: {
-        queryObj: [
-          { name: "page", value: String(page) },
-          { name: "limit", value: String(limit) },
-        ],
-      },
-    });
+  const { data: messageCommunityData } = useGetAllMessagesOfCommunityQuery({
+    id: chatRoomId,
+    data: {
+      queryObj: [
+        { name: "page", value: String(page) },
+        { name: "limit", value: String(limit) },
+      ],
+    },
+  });
 
   // Merge new messages with existing ones, avoiding duplicates
   useEffect(() => {
