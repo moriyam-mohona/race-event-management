@@ -27,10 +27,12 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
   const limit = 6;
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const previousScrollHeightRef = useRef<number>(0);
+  const isNearBottomRef = useRef<boolean>(true);
 
   // Reset state when chatRoomId changes
   useEffect(() => {
@@ -38,6 +40,8 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
     setPage(1);
     setHasMore(true);
     setIsLoadingMore(false);
+    setShouldScrollToBottom(true);
+    isNearBottomRef.current = true;
   }, [chatRoomId]);
 
   // Fetch messages with pagination
@@ -64,6 +68,7 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
       setMessages((prev) => {
         if (page === 1) {
           // First load - replace all messages
+          setShouldScrollToBottom(true);
           return newMessages;
         } else {
           // Loading older messages - prepend to existing messages
@@ -91,22 +96,39 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
     );
   }, [messages]);
 
-  // Scroll to bottom on initial load
-  useEffect(() => {
-    if (
-      chatContainerRef.current &&
-      page === 1 &&
-      sortedMessages.length > 0 &&
-      !isLoadingMore
-    ) {
+  // Check if user is near bottom
+  const checkIfNearBottom = useCallback(() => {
+    const container = chatContainerRef.current;
+    if (container) {
+      const isNear =
+        container.scrollHeight - container.scrollTop - container.clientHeight <
+        100;
+      isNearBottomRef.current = isNear;
+      return isNear;
+    }
+    return true;
+  }, []);
+
+  // Scroll to bottom function
+  const scrollToBottom = useCallback(() => {
+    if (chatContainerRef.current) {
       setTimeout(() => {
         if (chatContainerRef.current) {
           chatContainerRef.current.scrollTop =
             chatContainerRef.current.scrollHeight;
+          isNearBottomRef.current = true;
         }
-      }, 100);
+      }, 50);
     }
-  }, [sortedMessages, page, isLoadingMore]);
+  }, []);
+
+  // Scroll to bottom on initial load or when shouldScrollToBottom is true
+  useEffect(() => {
+    if (shouldScrollToBottom && sortedMessages.length > 0) {
+      scrollToBottom();
+      setShouldScrollToBottom(false);
+    }
+  }, [sortedMessages, shouldScrollToBottom, scrollToBottom]);
 
   // Restore scroll position after loading older messages
   useEffect(() => {
@@ -118,17 +140,20 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
             currentScrollHeight - previousScrollHeightRef.current;
           chatContainerRef.current.scrollTop = heightDifference;
         }
-      }, 100);
+      }, 50);
     }
   }, [sortedMessages, page, isLoadingMore]);
 
-  // Handle scroll to load older messages
+  // Handle scroll to load older messages and track position
   const handleScroll = useCallback(() => {
     const container = chatContainerRef.current;
-    if (!container || isLoadingMore || !hasMore || isFetching) return;
+    if (!container) return;
 
-    // Check if scrolled to top (within 10px threshold)
-    if (container.scrollTop <= 10) {
+    // Update near bottom status
+    checkIfNearBottom();
+
+    // Load more messages if at top
+    if (!isLoadingMore && hasMore && !isFetching && container.scrollTop <= 10) {
       console.log("Loading more messages, current page:", page);
 
       // Store current scroll height before loading new messages
@@ -137,7 +162,7 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
       setIsLoadingMore(true);
       setPage((prev) => prev + 1);
     }
-  }, [isLoadingMore, hasMore, isFetching, page]);
+  }, [isLoadingMore, hasMore, isFetching, page, checkIfNearBottom]);
 
   // Add scroll event listener
   useEffect(() => {
@@ -164,22 +189,12 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
 
           setMessages((prev) => [...prev, newMessage]);
 
-          // Auto scroll to bottom for new messages
-          setTimeout(() => {
-            if (chatContainerRef.current) {
-              const container = chatContainerRef.current;
-              const isNearBottom =
-                container.scrollHeight -
-                  container.scrollTop -
-                  container.clientHeight <
-                100;
-
-              // Only auto-scroll if user is near the bottom
-              if (isNearBottom) {
-                container.scrollTop = container.scrollHeight;
-              }
-            }
-          }, 100);
+          // Auto scroll to bottom for new messages only if user was near bottom
+          if (isNearBottomRef.current) {
+            setTimeout(() => {
+              scrollToBottom();
+            }, 100);
+          }
         }
       };
 
@@ -191,7 +206,7 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
         }
       };
     }
-  }, []);
+  }, [scrollToBottom]);
 
   // Send message via WebSocket
   const handleSendMessage = (content: string) => {
@@ -207,12 +222,9 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
       );
       setInputValue("");
 
-      // Scroll to bottom after sending
+      // Always scroll to bottom when sending a message
       setTimeout(() => {
-        if (chatContainerRef.current) {
-          chatContainerRef.current.scrollTop =
-            chatContainerRef.current.scrollHeight;
-        }
+        scrollToBottom();
       }, 100);
     } else {
       console.error("WebSocket not connected");
