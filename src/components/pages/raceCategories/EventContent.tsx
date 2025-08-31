@@ -122,7 +122,7 @@ const EventContent: React.FC<any> = () => {
     );
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-4 h-full">
+    <div className="bg-white rounded-lg  h-full">
       <div className="flex justify-between items-center mb-6">
         <button
           onClick={toggleViewMode}
