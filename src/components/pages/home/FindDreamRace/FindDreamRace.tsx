@@ -39,7 +39,7 @@ const FindDreamRace = () => {
                   Find your dream race in your destination with the right gear
                 </h2>
 
-                <p className="font-light opacity-90 text-sm sm:text-base">
+                <p className="font-light text-sm sm:text-base">
                   Explore top endurance races worldwide, from marathons to
                   triathlons, and choose the perfect destination. Get
                   personalized gear recommendations, travel tips, and exclusive

@@ -39,18 +39,20 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
 
         <div className="space-y-2 mb-4">
           <div className="flex items-center text-gray-600">
-            <MapPin className="w-4 h-4 mr-2 text-orange-500" />
-            <span>{event?.address}</span>
+            <MapPin className="w-4 h-4 mr-2 text-orange-500 flex-shrink-0" />
+            <span className="break-words truncate max-w-full">
+              {event?.address}
+            </span>
           </div>
 
           <div className="flex items-center text-gray-600">
-            <Calendar className="w-4 h-4 mr-2 text-orange-500" />
+            <Calendar className="w-4 h-4 mr-2 text-orange-500 flex-shrink-0" />
             <span>{display}</span>
           </div>
 
           <div className="flex items-center text-gray-600">
-            <Activity className="w-4 h-4 mr-2 text-orange-500" />
-            <span>{event?.category}</span>
+            <Activity className="w-4 h-4 mr-2 text-orange-500 flex-shrink-0" />
+            <span className="break-words">{event?.category}</span>
           </div>
         </div>
 

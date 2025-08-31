@@ -279,14 +279,14 @@ const Navbar = () => {
               <div className="flex items-center gap-3">
                 <Link
                   href={profileHref}
-                  className="px-5 py-2 rounded-full font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 hover:text-primary transition-colors duration-200 flex items-center gap-2"
+                  className="px-5 py-2 rounded-full font-medium bg-gray-100/40 text-gray-700 hover:bg-gray-200 hover:text-primary transition-colors duration-200 flex items-center gap-2"
                 >
                   <FaUser />
                   Profile
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="px-5 py-2 rounded-full font-medium bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 transition-colors duration-200 flex items-center gap-2"
+                  className="px-5 py-2 rounded-full font-medium bg-red-50/30 text-red-600 hover:bg-red-100 hover:text-red-700 transition-colors duration-200 flex items-center gap-2"
                 >
                   <IoIosLogOut size={20} />
                   Logout
