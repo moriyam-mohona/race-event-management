@@ -2,7 +2,6 @@ import { T_Event } from "@/types/Events";
 import Image from "next/image";
 
 export function NeededGears({ data }: { data: T_Event }) {
-  console.log(data?.Gear);
   if (!data?.Gear || data.Gear.length === 0) return null;
   return (
     <div>
