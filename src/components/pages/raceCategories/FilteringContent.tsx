@@ -73,7 +73,7 @@ const FilteringContent = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border p-6 max-h-[calc(100vh-2rem)] overflow-auto space-y-4">
+    <div className="bg-white rounded-lg  max-h-[calc(100vh-2rem)] overflow-auto space-y-4">
       {/* Header with Clear button */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold text-gray-800">Filters</h2>

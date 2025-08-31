@@ -329,8 +329,18 @@ const EventCreate = () => {
             Race Start to Finish Address & Distance
           </h2>
           <div className="bg-white border border-gray-100 rounded-2xl p-6 space-y-4 shadow-sm hover:shadow-md transition-shadow duration-300">
-            <MyFormInput name="startAddress" label="Start Address" />
-            <MyFormInput name="endAddress" label="End Address" />
+            <MyFormAddress
+              name="startAddress"
+              label="Start Address"
+              placeHolder="Enter Start Address"
+              inputClassName="!w-full"
+            />
+            <MyFormAddress
+              name="endAddress"
+              label="End Address"
+              placeHolder="Enter End Address"
+              inputClassName="!w-full"
+            />
             <MyFormInput name="distance" type="number" label="Distance" />
           </div>
         </div>

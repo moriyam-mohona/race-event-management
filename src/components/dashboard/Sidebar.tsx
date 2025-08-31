@@ -1,17 +1,17 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { GoPerson } from "react-icons/go";
-import profile from "@/assets/profile.png";
+import profile from "@/assets/images/profile.jpg";
 import Image from "next/image";
 import { FiLogOut } from "react-icons/fi";
 import { LuMessagesSquare } from "react-icons/lu";
 import { LiaListAltSolid } from "react-icons/lia";
 import { BsBookmark } from "react-icons/bs";
 import { LuLayoutDashboard } from "react-icons/lu";
-// import { IoCalendarOutline } from "react-icons/io5";
 import { useAppDispatch } from "@/redux/hooks";
 import { logout } from "@/redux/features/auth/authSlice";
 import Swal from "sweetalert2";
@@ -79,20 +79,47 @@ const sidebars: Record<
       href: "/dashboard/vendor/all-events",
       icon: <LiaListAltSolid />,
     },
-    // {
-    //   name: "Booking List",
-    //   href: "/dashboard/vendor/booking-list",
-    //   icon: <IoCalendarOutline />,
-    // },
   ],
+};
+
+// Skeleton component
+const SidebarSkeleton = () => {
+  return (
+    <div className="h-full flex flex-col justify-between items-center animate-pulse">
+      <div className="mt-20 flex flex-col items-center gap-5 w-full px-4">
+        {/* Profile Image Skeleton */}
+        <div className="w-28 h-28 rounded-full bg-gray-200" />
+
+        {/* Name Skeleton */}
+        <div className="h-5 w-32 bg-gray-200 rounded mt-4" />
+
+        {/* ID Skeleton */}
+        <div className="h-4 w-20 bg-gray-200 rounded mt-2" />
+
+        {/* Divider */}
+        <div className="w-full my-4">
+          <hr className="h-2 border-t border-gray-200" />
+        </div>
+
+        {/* Sidebar Links Skeleton */}
+        <div className="flex flex-col gap-3 w-full">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="w-full h-10 bg-gray-200 rounded" />
+          ))}
+        </div>
+      </div>
+
+      {/* Logout Button Skeleton */}
+      <div className="w-full h-10 bg-gray-200 rounded mb-10" />
+    </div>
+  );
 };
 
 const Sidebar = ({ role }: { role: string }) => {
   const pathname = usePathname();
   const links = sidebars[role] || [];
-  // const user = useAppSelector(selectCurrentUser);
   const dispatch = useAppDispatch();
-  const { data: getme } = useGetMeQuery({});
+  const { data: getme, isLoading } = useGetMeQuery({});
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -106,9 +133,7 @@ const Sidebar = ({ role }: { role: string }) => {
 
     if (result.isConfirmed) {
       try {
-        // Redux logout
         await dispatch(logout());
-
         Swal.fire({
           title: "Logged out!",
           icon: "success",
@@ -116,7 +141,6 @@ const Sidebar = ({ role }: { role: string }) => {
           showConfirmButton: false,
         });
       } catch (error) {
-        console.error("Logout failed:", error);
         Swal.fire({
           title: "Error!",
           text: "Logout failed. Please try again.",
@@ -125,6 +149,8 @@ const Sidebar = ({ role }: { role: string }) => {
       }
     }
   };
+
+  if (isLoading) return <SidebarSkeleton />;
 
   return (
     <div className="h-full flex flex-col justify-between items-center">
@@ -136,7 +162,7 @@ const Sidebar = ({ role }: { role: string }) => {
             alt="profile"
             width={1000}
             height={1000}
-            className="w-28 h-28 bg-gray-100 rounded-full object-cover"
+            className="w-28 h-28 bg-gray-100 rounded-full object-cover border border-gray-200"
           />
           <h2 className="mt-5 text-2xl font-medium">{getme?.data?.fullName}</h2>
           {getme?.data?.uniqueId && (

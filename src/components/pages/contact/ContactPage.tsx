@@ -10,6 +10,7 @@ import MyFormTextArea from "@/components/ui/MyForm/MyFormTextArea/MyFormTextArea
 import { useCreateContactMutation } from "@/redux/features/contact/contactApi";
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 import { useRouter } from "next/navigation";
+import { ButtonLoading } from "@/components/shared/Loading/ButtonLoading";
 
 const validationSchema = z.object({
   name: z
@@ -31,7 +32,7 @@ const validationSchema = z.object({
 
 const ContactPage: React.FC = () => {
   const router = useRouter();
-  const [createContact] = useCreateContactMutation();
+  const [createContact, { isLoading }] = useCreateContactMutation();
 
   const handleSubmit = async (formData: any, reset: any) => {
     const response = await handleAsyncWithToast(async () => {
@@ -44,20 +45,20 @@ const ContactPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto max-w-[1320px] px-4 py-12">
-      <div className="grid md:grid-cols-2 gap-16 lg:gap-24">
+    <div className="container mx-auto max-w-[1320px] py-12">
+      <div className="grid lg:grid-cols-2 gap-16 lg:gap-6 xl:gap-24">
         {/* Contact Information */}
         <div className="space-y-6">
           <h2 className="text-3xl md:text-4xl font-semibold font-montserrat">
             Contact Us
           </h2>
-          <p className="text-gray-600 leading-relaxed">
+          <p className="text-gray-600 leading-relaxed text-sm xl:text-base">
             Reach out via the form below, or contact us directly via email or
             phone. We look forward to connecting with you and ensuring your next
             race experience is amazing!
           </p>
 
-          <div className="space-y-4">
+          <div className="space-y-4 text-sm xl:text-base">
             <div className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-primary" />
               <span className="text-gray-700">example@teamwebflow.com</span>
@@ -76,7 +77,7 @@ const ContactPage: React.FC = () => {
         </div>
 
         {/* Contact Form */}
-        <div className="bg-white rounded-3xl shadow-lg p-8 md:p-12 border border-gray-100">
+        <div className="bg-white rounded-3xl shadow-lg p-5 lg:p-8 xl:p-12 border border-gray-100">
           <MyFormWrapper
             onSubmit={handleSubmit}
             resolver={zodResolver(validationSchema)}
@@ -88,8 +89,11 @@ const ContactPage: React.FC = () => {
             <MyFormInput name="subject" label="Subject" />
             <MyFormTextArea name="message" label="Message" />
 
-            <button className="w-full bg-primary text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:scale-105 hover:shadow-xl transform transition duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50">
-              Send Message
+            <button
+              disabled={isLoading}
+              className="w-full bg-primary text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:scale-105 hover:shadow-xl transform transition duration-300 focus:outline-none focus:ring-2 focus:ring-primary/50"
+            >
+              {isLoading ? <ButtonLoading /> : "Send Message"}
             </button>
           </MyFormWrapper>
         </div>

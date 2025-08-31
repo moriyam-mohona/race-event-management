@@ -45,16 +45,16 @@ const UpcomingEvents: React.FC = () => {
   }, [approvedEvent?.data?.data]);
 
   return (
-    <section className="py-20 px-4 bg-green-50">
+    <section className="py-20 bg-green-50">
       <div className=" mx-auto max-w-[1320px]">
         <div className="mx-auto mb-12 px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-0 mb-6">
-            <h2 className="font-montserrat text-3xl lg:text-[40px] font-semibold text-gray-900  ">
+          <div className="flex flex-row items-center justify-between gap-4 md:gap-0 mb-6">
+            <h2 className="w-full font-montserrat text-[25px] lg:text-[40px] font-semibold text-gray-900">
               Upcoming Events
             </h2>
             <Link
               href="/race-categories"
-              className="inline-flex items-center gap-2 bg-primary text-white font-medium px-5 py-2 rounded-lg shadow-md hover:bg-primary/90 hover:shadow-lg transition-all duration-200"
+              className="w-full max-w-[120px] md:max-w-32 inline-flex items-center gap-2 bg-primary text-white font-medium px-5 py-2 rounded-lg shadow-md hover:bg-primary/90 hover:shadow-lg transition-all duration-200 text-sm md:text-base"
             >
               See All <GoArrowRight className="w-5 h-5" />
             </Link>
@@ -95,7 +95,7 @@ const UpcomingEvents: React.FC = () => {
           {/* Navigation Buttons */}
           <button
             ref={prevRef}
-            className="absolute -left-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
+            className="absolute -left-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
             aria-label="Previous events"
           >
             <ChevronLeft className="w-6 h-6 text-gray-600" />
@@ -103,7 +103,7 @@ const UpcomingEvents: React.FC = () => {
 
           <button
             ref={nextRef}
-            className="absolute -right-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200"
+            className="absolute -right-0 top-48 -translate-y-1/2 z-10 p-2 bg-white/70 rounded-full shadow-lg hover:bg-gray-50 transition-colors duration-200 cursor-pointer"
             aria-label="Next events"
           >
             <ChevronRight className="w-6 h-6 text-gray-600" />

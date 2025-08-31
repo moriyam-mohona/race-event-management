@@ -15,7 +15,7 @@ import { useGetVendorDashboardPieChartInfoQuery } from "@/redux/features/vendor/
 const COLORS = ["#F8B195", "#1E5631", "#2E7D32"];
 
 const VendorPieChart = () => {
-  const { data } = useGetVendorDashboardPieChartInfoQuery({});
+  const { data, isLoading } = useGetVendorDashboardPieChartInfoQuery({});
 
   // Take only the first group (events & gears)
   const stats =
@@ -23,6 +23,8 @@ const VendorPieChart = () => {
       ...item,
       value: item.value ?? 0, // replace null with 0
     })) || [];
+
+  const hasData = stats.some((item: any) => item.value > 0);
 
   const renderCustomizedLabel = ({
     cx,
@@ -66,40 +68,46 @@ const VendorPieChart = () => {
         </h2>
       </CardHeader>
 
-      <div className="h-[250px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={stats}
-              cx="50%"
-              cy="50%"
-              labelLine={false}
-              label={renderCustomizedLabel}
-              outerRadius={90}
-              innerRadius={40}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {stats.map((entry: any, index: number) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-            <Tooltip formatter={(value) => [`${value}`, "Count"]} />
-            <Legend
-              layout="vertical"
-              verticalAlign="middle"
-              align="right"
-              formatter={(value, entry, index) => (
-                <span className="text-sm">
-                  {stats[index].value.toString().padStart(2, "0")} {value}
-                </span>
-              )}
-            />
-          </PieChart>
-        </ResponsiveContainer>
+      <div className="h-[250px] flex items-center justify-center">
+        {isLoading ? (
+          <p className="text-gray-500 text-sm">Loading...</p>
+        ) : hasData ? (
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={stats}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={renderCustomizedLabel}
+                outerRadius={90}
+                innerRadius={40}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {stats.map((entry: any, index: number) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => [`${value}`, "Count"]} />
+              <Legend
+                layout="vertical"
+                verticalAlign="middle"
+                align="right"
+                formatter={(value, entry, index) => (
+                  <span className="text-sm">
+                    {stats[index].value.toString().padStart(2, "0")} {value}
+                  </span>
+                )}
+              />
+            </PieChart>
+          </ResponsiveContainer>
+        ) : (
+          <p className="text-gray-500 text-sm">No data found</p>
+        )}
       </div>
     </Card>
   );

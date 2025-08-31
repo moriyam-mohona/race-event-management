@@ -33,7 +33,7 @@ const VendorCardInfo = () => {
       <h1 className="text-2xl md:text-3xl font-medium mb-6">
         Dashboard Summary
       </h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-1 md:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-1 md:gap-6">
         {stats.map((stat, index) => (
           <div
             key={index}

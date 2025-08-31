@@ -2,7 +2,7 @@
 
 import React from "react";
 import banner from "@/assets/community-banner.png";
-import profile from "@/assets/event.png";
+import profile from "@/assets/images/profile.jpg";
 import Image from "next/image";
 import {
   useFollowOrUnfollowACommunityMutation,
@@ -32,12 +32,12 @@ const CommunityHeader = () => {
         alt="Community Banner"
         width={1000}
         height={1000}
-        className="bg-gray-50 w-full h-[200px] lg:h-[285px] 2xl:h-[425px] object-contain rounded-md lg:rounded-lg"
+        className="bg-gray-50 w-full h-[200px] lg:h-[285px] 2xl:h-[425px] object-cover rounded-md lg:rounded-lg"
       />
 
       <div className="flex items-end gap-2 mx-2 lg:mx-4 -mt-4 sm:-mt-10 lg:-mt-12">
         <Image
-          src={communityData?.data?.user?.eventImages || profile}
+          src={communityData?.data?.user?.profileImage || profile}
           alt="Community Profile"
           width={1000}
           height={1000}

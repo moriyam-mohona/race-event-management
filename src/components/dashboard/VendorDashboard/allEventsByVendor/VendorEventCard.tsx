@@ -28,16 +28,38 @@ const VendorEventCard: React.FC<any> = ({ event }) => {
 
   // Dropdown Menu
   const menu = {
-    items: [
-      { key: "community", label: "Community" },
-      {
-        key: "toggle-registration",
-        label: event?.isRegistrationOpen
-          ? "Stop Registration"
-          : "Open Registration",
-      },
-      { key: "remove", label: "Remove" },
-    ],
+    items:
+      event?.type === "SHARED"
+        ? [
+            {
+              key: "remove",
+              label: "Remove",
+            },
+          ]
+        : [
+            {
+              key: "community",
+              label: event?.Community ? (
+                <Link
+                  href={`/community/${event?.Community?.id}`}
+                  className="text-primary hover:underline"
+                >
+                  Community
+                </Link>
+              ) : (
+                <span className="text-gray-400 cursor-not-allowed">
+                  Community
+                </span>
+              ),
+            },
+            {
+              key: "toggle-registration",
+              label: event?.isRegistrationOpen
+                ? "Stop Registration"
+                : "Open Registration",
+            },
+            { key: "remove", label: "Remove" },
+          ],
     onClick: ({ key }: { key: string }) => {
       if (key === "community") {
         console.log("Go to Community | Event ID:", event?.id);
@@ -58,7 +80,7 @@ const VendorEventCard: React.FC<any> = ({ event }) => {
           alt={event?.title}
           width={1000}
           height={1000}
-          className="w-full h-[180px] md:h-[290px] object-cover object-center rounded-xl transform hover:scale-105 transition-transform duration-500 bg-gray-100"
+          className="w-full h-[180px] md:h-[340px] object-cover object-center rounded-xl transform hover:scale-105 transition-transform duration-500 bg-gray-100"
         />
       </div>
 
@@ -71,13 +93,18 @@ const VendorEventCard: React.FC<any> = ({ event }) => {
             </h3>
 
             {/* Dropdown Action Menu */}
-            {event?.eventStatus === "PENDING" && (
-              <Dropdown menu={menu} trigger={["click"]} placement="bottomRight">
-                <button className="p-2 rounded-full hover:bg-gray-100 transition">
-                  <MoreVertical className="text-gray-600" />
-                </button>
-              </Dropdown>
-            )}
+            {event?.eventStatus === "PENDING" ||
+              (event?.eventStatus === "APPROVED" && (
+                <Dropdown
+                  menu={menu}
+                  trigger={["click"]}
+                  placement="bottomRight"
+                >
+                  <button className="p-2 rounded-full hover:bg-gray-100 transition">
+                    <MoreVertical className="text-gray-600" />
+                  </button>
+                </Dropdown>
+              ))}
           </div>
 
           {/* Event Info */}
@@ -125,15 +152,19 @@ const VendorEventCard: React.FC<any> = ({ event }) => {
         {/* Action Buttons */}
         <div className="flex items-center justify-end gap-4 mt-2">
           <Link
-            href={`/dashboard/vendor/all-events/${event?.id}`}
-            className="flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/90 px-5 py-2.5 rounded-full text-sm sm:text-base shadow transition"
+            href={
+              event?.type === "SHARED"
+                ? `/dashboard/vendor/all-events/verify-booking/${event?.id}`
+                : `/dashboard/vendor/all-events/${event?.id}`
+            }
+            className="flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/90 px-5 py-2 rounded-xl text-sm sm:text-base shadow transition"
           >
             View Booking
           </Link>
 
           <Link
             href={`/race-categories/${event?.id}`}
-            className="flex items-center justify-center gap-2 border border-primary text-primary hover:bg-primary hover:text-white px-5 py-2.5 rounded-full text-sm sm:text-base transition"
+            className="flex items-center justify-center gap-2 border border-primary text-primary hover:bg-primary hover:text-white px-5 py-2 rounded-xl text-sm sm:text-base transition"
           >
             Details
           </Link>

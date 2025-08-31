@@ -20,6 +20,9 @@ import {
 import { useRouter } from "next/navigation";
 import { Modal, Button, Typography } from "antd";
 import { FiAlertTriangle } from "react-icons/fi";
+import { FaUser } from "react-icons/fa";
+import { IoIosLogOut } from "react-icons/io";
+import { usePathname } from "next/navigation";
 
 const { Text, Paragraph } = Typography;
 
@@ -29,6 +32,7 @@ const Navbar = () => {
   const user = useAppSelector(selectCurrentUser);
   const role = user?.role;
   const dispatch = useAppDispatch();
+  const pathname = usePathname();
 
   // Navigation links
   const navLinks = [
@@ -43,9 +47,9 @@ const Navbar = () => {
     role === "USER"
       ? "/dashboard/user/profile"
       : role === "VENDOR"
-      ? "/dashboard/vendor/profile"
+      ? "/dashboard/vendor/dashboard"
       : role === "SUPER_ADMIN"
-      ? "/dashboard/admin/profile"
+      ? "dashboard/admin/dashboard"
       : "/auth/login";
 
   const handleLogout = async () => {
@@ -122,7 +126,7 @@ const Navbar = () => {
 
   return (
     <ProgressProvider color="#0B7077">
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white lg:bg-white/40  backdrop-blur-md py-4 px-4 md:px-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white lg:bg-white/40  backdrop-blur-md py-4 px-4 md:px-8 shadow-lg">
         <div className="container max-w-[1320px] mx-auto flex items-center justify-between">
           <div className="flex items-center space-x-4 xl:gap-10">
             {/* Logo */}
@@ -138,11 +142,26 @@ const Navbar = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center space-x-3 lg:space-x-5 xl:space-x-8">
-              {navLinks.map((link, index) => (
+              {/* {navLinks.map((link, index) => (
                 <Link
                   key={index}
                   href={link.href}
                   className="text-sm lg:text-base font-medium xl:font-normal hover:font-semibold"
+                >
+                  {link.name}
+                </Link>
+              ))} */}
+
+              {navLinks.map((link, index) => (
+                <Link
+                  key={index}
+                  href={link.href}
+                  className={`text-sm lg:text-base font-medium xl:font-normal py-1 rounded-md transition-colors
+      ${
+        pathname === link.href
+          ? "text-primary font-bold"
+          : "hover:font-semibold hover:text-primary"
+      }`}
                 >
                   {link.name}
                 </Link>
@@ -171,15 +190,30 @@ const Navbar = () => {
                 animate={{ opacity: 1, height: "auto" }}
                 exit={{ opacity: 0, height: 0 }}
                 transition={{ duration: 0.3 }}
-                className="absolute top-24 left-0 right-0 bg-white z-20 lg:hidden"
+                className="absolute top-24 left-0 right-0 bg-white z-20 lg:hidden shadow-lg"
               >
                 <div className="flex flex-col p-4 space-y-4">
+                  {/* {navLinks.map((link, index) => (
+                    <Link
+                      key={index}
+                      href={link.href}
+                      className="hover:font-semibold hover:text-primary transition-colors py-2 border-b"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      {link.name}
+                    </Link>
+                  ))} */}
+
                   {navLinks.map((link, index) => (
                     <Link
                       key={index}
                       href={link.href}
-                      className="hover:font-semibold hover:text-primary transition-colors py-2"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`text-base font-normal px-3 py-1 rounded-md transition-colors
+      ${
+        pathname === link.href
+          ? "text-primary font-bold"
+          : "hover:font-semibold hover:text-primary"
+      }`}
                     >
                       {link.name}
                     </Link>
@@ -187,25 +221,28 @@ const Navbar = () => {
 
                   {user ? (
                     <>
-                      <div className="flex items-center justify-between gap-5 space-y-2">
+                      <div className="flex items-center justify-between gap-4 w-full">
                         <Link
                           href="/auth/login"
-                          className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full"
                           onClick={() => setIsMobileMenuOpen(false)}
+                          className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2 rounded-full bg-primary text-white hover:bg-primary/90 transition-colors text-base font-medium"
                         >
+                          <FaUser size={18} />
                           Profile
                         </Link>
+
                         <button
                           onClick={handleLogout}
-                          className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full"
+                          className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-2 rounded-full bg-red-50 text-red-600 hover:bg-red-100 transition-colors text-base font-medium"
                         >
+                          <IoIosLogOut size={18} />
                           Logout
                         </button>
                       </div>
                     </>
                   ) : (
                     <>
-                      <div className="flex items-center justify-between gap-5 space-y-2">
+                      <div className="flex items-center justify-between gap-5 space-y-2 ">
                         <Link
                           href="/auth/login"
                           className="bg-transparent border border-primary text-primary hover:bg-primary/80 hover:text-white py-2 px-4 rounded-full text-center transition-colors w-full"
@@ -239,21 +276,22 @@ const Navbar = () => {
           {/* Search and Login */}
           <div className="hidden lg:flex items-center space-x-3">
             {user ? (
-              <>
-                {" "}
+              <div className="flex items-center gap-3">
                 <Link
                   href={profileHref}
-                  className="text-base hover:text-primary hover:font-semibold hover:underline border-r-2 pr-3 border-black"
+                  className="px-2 flex items-center gap-2"
                 >
+                  <FaUser />
                   Profile
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="text-base hover:text-primary hover:font-semibold hover:underline  pr-3 border-black cursor-pointer"
+                  className="px-2 text-red-500 flex items-center gap-2"
                 >
+                  <IoIosLogOut size={20} />
                   Logout
                 </button>
-              </>
+              </div>
             ) : (
               <>
                 {" "}
