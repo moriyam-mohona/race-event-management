@@ -118,39 +118,45 @@ export function EventHeader({ data }: { data: any }) {
 
         <div className="mt-8 space-y-2">
           {/* Location  */}
-          <div className="flex items-center gap-3">
-            <IoLocationOutline className="w-6 h-6 text-secondary/80" />
-            <span className="font-medium text-gray-600">
+          <div className="flex items-start gap-3">
+            <IoLocationOutline className="w-6 h-6 text-secondary/80 flex-shrink-0 mt-1" />
+            <span className="font-medium text-gray-600 break-words">
               {data?.address}, {data?.region}, {data?.country},{" "}
               {data?.continent}
             </span>
           </div>
-          {/* Date  */}
+
+          {/* Date */}
           <div className="flex items-center gap-4">
-            <SlCalender className="w-5 h-5 text-secondary/80" />
+            <SlCalender className="w-5 h-5 text-secondary/80 flex-shrink-0" />
             <span className="font-medium text-gray-600">
               {displayDate || "Date not available"}
             </span>
           </div>
 
+          {/* Category */}
           <div className="flex items-center gap-4">
-            <GiCycling className="w-5 h-5 text-secondary/80" />
+            <GiCycling className="w-5 h-5 text-secondary/80 flex-shrink-0" />
             <span className="font-medium text-gray-600">{data?.category}</span>
           </div>
-          <div className="flex items-center gap-4">
-            <TiWeatherWindy className="w-5 h-5 text-secondary/80" />
 
+          {/* Venue Type */}
+          <div className="flex items-center gap-4">
+            <TiWeatherWindy className="w-5 h-5 text-secondary/80 flex-shrink-0" />
             <span className="font-medium text-gray-600">{data?.venueType}</span>
           </div>
-          <div className="flex items-center gap-4">
-            <PiMountainsLight className="w-5 h-5 text-secondary/80" />
 
+          {/* Size */}
+          <div className="flex items-center gap-4">
+            <PiMountainsLight className="w-5 h-5 text-secondary/80 flex-shrink-0" />
             <span className="font-medium text-gray-600">
               {data?.size} runners
             </span>
           </div>
+
+          {/* Season */}
           <div className="flex items-center gap-4">
-            <SiStreamrunners className="w-5 h-5 text-secondary/80" />
+            <SiStreamrunners className="w-5 h-5 text-secondary/80 flex-shrink-0" />
             <span className="font-medium text-gray-600">{data?.season}</span>
           </div>
 
