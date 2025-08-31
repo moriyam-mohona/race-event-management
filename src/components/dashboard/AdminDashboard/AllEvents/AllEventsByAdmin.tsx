@@ -11,7 +11,7 @@ import { Input, Pagination } from "antd";
 const { Search } = Input;
 
 const AllEventsByAdmin = () => {
-  const [activeTab, setActiveTab] = useState("upcoming");
+  const [activeTab, setActiveTab] = useState("pending");
   const [pagination, setPagination] = useState({ current: 1, pageSize: 9 });
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
@@ -131,7 +131,7 @@ const AllEventsByAdmin = () => {
 
       {/* Tabs */}
       <Tabs
-        defaultValue="upcoming"
+        defaultValue="pending"
         className="w-full"
         onValueChange={(value: string) => setActiveTab(value)}
       >

@@ -6,10 +6,13 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useGetSingleEventQuery } from "@/redux/features/event/eventApi";
 import Link from "next/link";
+import Loading from "@/components/shared/Loading/Loading";
 
 const PublishEvent = () => {
   const eventId = useSelector((state: RootState) => state.event.eventId);
-  const { data: eventData } = useGetSingleEventQuery(eventId);
+  const { data: eventData, isLoading } = useGetSingleEventQuery(eventId);
+
+  if (isLoading) return <Loading />;
   return (
     <div className="space-y-10 max-w-6xl mx-auto px-4 py-8">
       {/* Event Header */}

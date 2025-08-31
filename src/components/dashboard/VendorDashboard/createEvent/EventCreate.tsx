@@ -17,6 +17,8 @@ import { useCreateEventByVendorMutation } from "@/redux/features/event/eventApi"
 import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 import { useAppDispatch } from "@/redux/hooks";
 import { nextStep, setEventId } from "@/redux/features/event/eventSlice";
+import dayjs from "dayjs";
+import { ButtonLoading } from "@/components/shared/Loading/ButtonLoading";
 
 const validationSchema = z.object({
   title: z.string().min(3, "Title is required"),
@@ -78,16 +80,30 @@ const EventCreate = () => {
     flagUrl: `https://flagcdn.com/w20/${country.cca2.toLowerCase()}.png`,
   }));
 
-  const [eventCreate] = useCreateEventByVendorMutation();
+  const [eventCreate, { isLoading }] = useCreateEventByVendorMutation();
   const dispatch = useAppDispatch();
 
   const handleSubmit = async (formData: any) => {
+    const startDateTime = dayjs(formData.startDate)
+      .hour(dayjs(formData.time).hour())
+      .minute(dayjs(formData.time).minute())
+      .second(0)
+      .millisecond(0)
+      .toISOString();
+
+    const endDateTime = dayjs(formData.endDate)
+      .hour(dayjs(formData.time).hour())
+      .minute(dayjs(formData.time).minute())
+      .second(0)
+      .millisecond(0)
+      .toISOString();
+
     const dataToSend = new FormData();
     const data = {
       title: formData.title,
       description: formData.description,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
+      startDate: startDateTime,
+      endDate: endDateTime,
       time: formData.time,
       continent: formData.continent,
       country: formData.country,
@@ -131,9 +147,9 @@ const EventCreate = () => {
         {/* Set Date & Time */}
         <div>
           <h2 className="text-xl font-semibold mb-4 text-gray-700">
-            Set Date & Time
+            Event or Expo Title
           </h2>
-          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
+          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300 space-y-5">
             <MyFormInput name="title" type="text" label="Title" />
             <MyFormTextArea name="description" label="Description" />
           </div>
@@ -142,7 +158,7 @@ const EventCreate = () => {
         {/* Event or Expo Title */}
         <div>
           <h2 className="text-xl font-semibold mb-4 text-gray-700">
-            Event or Expo Title
+            Set Date & Time
           </h2>
           <div className="bg-white border border-gray-100 rounded-2xl p-6 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 shadow-sm hover:shadow-md transition-shadow duration-300">
             <MyFormDatePicker
@@ -373,8 +389,14 @@ const EventCreate = () => {
               bg-primary py-3 px-6 font-semibold text-white shadow-lg
               transition-all duration-300 hover:shadow-xl focus:outline-none active:scale-[0.97] cursor-pointer"
           >
-            <span className="relative z-10">Submit</span>
-            <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent animate-[shimmer_2s_infinite]" />
+            {isLoading ? (
+              <>
+                {" "}
+                <ButtonLoading />
+              </>
+            ) : (
+              " Submit"
+            )}
           </button>
         </div>
       </MyFormWrapper>

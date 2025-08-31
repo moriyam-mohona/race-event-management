@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { nextStep, setEventId } from "@/redux/features/event/eventSlice";
 import { useAppDispatch } from "@/redux/hooks";
+import { ButtonLoading } from "@/components/shared/Loading/ButtonLoading";
 
 const validationSchema = z.object({
   gearTitle: z.string().min(3, "Gear Title is required"),
@@ -27,7 +28,7 @@ const validationSchema = z.object({
 });
 
 const GearCreate = () => {
-  const [createGear] = useCreateGearMutation();
+  const [createGear, { isLoading }] = useCreateGearMutation();
   const dispatch = useAppDispatch();
   const eventId = useSelector((state: RootState) => state.event.eventId);
 
@@ -150,15 +151,29 @@ const GearCreate = () => {
           </div>
 
           {/* Submit Button */}
-          <div className="w-full my-8">
+          <div className="w-full my-8 flex items-center justify-between gap-4">
+            <button
+              onClick={() => dispatch(nextStep())}
+              className="w-40 rounded-xl 
+                bg-green-700 py-3 font-semibold text-white shadow-lg
+                transition-all duration-300 hover:shadow-xl focus:outline-none active:scale-[0.97] cursor-pointer"
+            >
+              Skip
+            </button>
             <button
               type="submit"
-              className="relative mx-auto w-full overflow-hidden rounded-xl 
+              className="w-40 rounded-xl 
                 bg-primary py-3 px-6 font-semibold text-white shadow-lg
                 transition-all duration-300 hover:shadow-xl focus:outline-none active:scale-[0.97] cursor-pointer"
             >
-              <span className="relative z-10">Submit</span>
-              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent animate-[shimmer_2s_infinite]" />
+              {isLoading ? (
+                <>
+                  {" "}
+                  <ButtonLoading />
+                </>
+              ) : (
+                " Submit"
+              )}
             </button>
           </div>
         </MyFormWrapper>
