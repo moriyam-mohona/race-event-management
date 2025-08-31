@@ -41,11 +41,7 @@ const SavedEventCard: React.FC<any> = ({ event }) => {
               onClick={handleAddToBookmark}
               className="cursor-pointer flex-shrink-0"
             >
-              <FaRegBookmark
-                className={`text-xl font-semibold ${
-                  event?.isSaved ? "text-secondary" : "text-gray-700"
-                }`}
-              />
+              <FaRegBookmark className="text-xl font-semibold text-secondary" />
             </button>
           </div>
 
