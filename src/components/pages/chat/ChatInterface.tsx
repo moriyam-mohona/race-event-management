@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { Send } from "lucide-react";
-import { useGetSingleMessageByUserQuery } from "@/redux/features/chat/chatApi";
 import { socket } from "@/provider/SocketProvider";
-import { useAppSelector } from "@/redux/hooks";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useGetSingleMessageByUserQuery } from "@/redux/features/chat/chatApi";
+import { useAppSelector } from "@/redux/hooks";
+import { Send } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface ChatInterfaceProps {
   chatRoomId: string | null;
@@ -26,6 +26,7 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
   const limit = 10;
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
@@ -67,11 +68,12 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
 
   // Scroll to bottom on new messages
   useEffect(() => {
-    if (chatContainerRef.current) {
+    if (chatContainerRef.current && shouldScrollToBottom) {
       chatContainerRef.current.scrollTop =
         chatContainerRef.current.scrollHeight;
+      setShouldScrollToBottom(false);
     }
-  }, [sortedMessages]);
+  }, [sortedMessages, shouldScrollToBottom]);
 
   // Handle scroll to fetch older messages
   const handleScroll = useCallback(() => {
@@ -81,7 +83,17 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
       !isFetching &&
       hasMore
     ) {
+      const prevScrollHeight = chatContainerRef.current.scrollHeight;
       setPage((prev) => prev + 1);
+
+      // Maintain scroll position after loading older messages
+      setTimeout(() => {
+        if (chatContainerRef.current) {
+          const newScrollHeight = chatContainerRef.current.scrollHeight;
+          chatContainerRef.current.scrollTop =
+            newScrollHeight - prevScrollHeight;
+        }
+      }, 100);
     }
   }, [isFetching, hasMore]);
 
@@ -107,6 +119,8 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
               createdAt: data?.createdAt,
             },
           ]);
+          // Trigger scroll to bottom for new messages
+          setShouldScrollToBottom(true);
         }
       };
     }
@@ -118,12 +132,13 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
       socket.send(
         JSON.stringify({
           type: "sendPrivateMessage",
-          // receiverId: chatRoomId,
           receiverId: user2Id,
           content: content,
         })
       );
       setInputValue("");
+      // Trigger scroll to bottom for sent messages
+      setShouldScrollToBottom(true);
     } else {
       console.error("WebSocket not connected");
     }
@@ -185,12 +200,14 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
     <div className="border border-gray-200 h-[450px] lg:h-[600px] rounded-2xl flex flex-col bg-white overflow-hidden">
       <div
         ref={chatContainerRef}
-        className="flex-1 overflow-y-auto px-4 py-4 space-y-1"
+        className="flex flex-col justify-end h-full overflow-y-auto px-4 py-4 space-y-1"
         style={{ scrollBehavior: "smooth", maxHeight: "calc(100% - 90px)" }}
       >
-        {sortedMessages.map((m) => (
-          <MessageBubble key={m?.id} message={m} />
-        ))}
+        <div className="flex flex-col">
+          {sortedMessages.map((m) => (
+            <MessageBubble key={m?.id} message={m} />
+          ))}
+        </div>
         <div ref={messagesEndRef} />
       </div>
 
