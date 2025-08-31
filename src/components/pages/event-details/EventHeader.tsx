@@ -196,13 +196,15 @@ export function EventHeader({ data }: { data: any }) {
                 >
                   Visit Event
                 </a>
-
-                <button
-                  onClick={showModal}
-                  className="hover:border hover:border-primary hover:bg-primary/20 hover:text-primary bg-primary text-white px-8 py-2 rounded-lg text-lg"
-                >
-                  Verify Event
-                </button>
+                {Array.isArray(data?.VerifyEvent) &&
+                  data.VerifyEvent.length === 0 && (
+                    <button
+                      onClick={showModal}
+                      className="hover:border hover:border-primary hover:bg-primary/20 hover:text-primary bg-primary text-white px-8 py-2 rounded-lg text-lg"
+                    >
+                      Verify Event
+                    </button>
+                  )}
               </div>
             </>
           ) : (
