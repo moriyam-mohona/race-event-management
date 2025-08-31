@@ -12,11 +12,19 @@ import { useState } from "react";
 interface ChatMessagesProps {
   setUser2Id: (user2Id: string) => void;
   setChatRoomId: (chatRoomId: string) => void;
+  setCommunityId: (communityId: string) => void;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
 }
 
-const ChatMessages = ({ setUser2Id, setChatRoomId }: ChatMessagesProps) => {
+const ChatMessages = ({
+  setUser2Id,
+  setChatRoomId,
+  setCommunityId,
+  activeTab,
+  setActiveTab,
+}: ChatMessagesProps) => {
   const [showAll, setShowAll] = useState(false);
-  const [activeTab, setActiveTab] = useState("inbox");
 
   const { data: messageList } = useGetAllConversationListQuery({});
   const { data: communityList } = useGetAllCommunityListQuery({});
@@ -71,8 +79,19 @@ const ChatMessages = ({ setUser2Id, setChatRoomId }: ChatMessagesProps) => {
 
   const joinChat = (user2Id: string, chatRoomId: string) => {
     console.log("Send message to chat ID:", user2Id);
+    console.log(chatRoomId, "chatRoomId");
 
-    if (user2Id && socket) {
+    if (activeTab === "communities" && chatRoomId && socket) {
+      socket.send(
+        JSON.stringify({
+          type: "joinGroup",
+          communityId: chatRoomId,
+        })
+      );
+      setCommunityId(chatRoomId);
+      setUser2Id("");
+      setChatRoomId("");
+    } else if (activeTab === "inbox" && user2Id && socket) {
       socket.send(
         JSON.stringify({
           type: "joinPrivateChat",
@@ -82,6 +101,7 @@ const ChatMessages = ({ setUser2Id, setChatRoomId }: ChatMessagesProps) => {
 
       setUser2Id(user2Id);
       setChatRoomId(chatRoomId);
+      setCommunityId("");
     }
   };
 
@@ -122,9 +142,9 @@ const ChatMessages = ({ setUser2Id, setChatRoomId }: ChatMessagesProps) => {
         <h3 className="text-lg font-semibold text-gray-800 mb-4">Members</h3>
 
         <div className="space-y-4">
-          {displayedMembers.map((member: any) => (
+          {displayedMembers.map((member: any, index: number) => (
             <div
-              key={member?.userId}
+              key={index}
               className="flex items-center space-x-3 hover:bg-green-500/10 rounded-lg p-1 transition-colors cursor-pointer"
               onClick={() => joinChat(member?.userId, member?.id)}
             >

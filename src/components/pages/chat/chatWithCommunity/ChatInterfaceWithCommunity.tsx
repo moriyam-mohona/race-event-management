@@ -1,95 +1,100 @@
 "use client";
 
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import { Send } from "lucide-react";
-import {
-  useGetAllMessagesOfCommunityQuery,
-  useGetSingleMessageByUserQuery,
-} from "@/redux/features/chat/chatApi";
 import { socket } from "@/provider/SocketProvider";
-import { useAppSelector } from "@/redux/hooks";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { useGetAllMessagesOfCommunityQuery } from "@/redux/features/chat/chatApi";
+import { useAppSelector } from "@/redux/hooks";
+import { Send } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface ChatInterfaceProps {
-  chatRoomId: string | null;
-  user2Id: string | null;
   communityId: string | null;
 }
 
 type Message = {
   id: string;
   content: string;
-  senderId: string;
+  communityId: string;
   createdAt: string;
+  sender: {
+    fullName: string;
+    id: string;
+    profileImage: string | null;
+  };
 };
 
-const ChatInterfaceWithCommunity = ({
-  chatRoomId,
-  user2Id,
-  communityId,
-}: ChatInterfaceProps) => {
+const ChatInterfaceWithCommunity = ({ communityId }: ChatInterfaceProps) => {
   const user = useAppSelector(selectCurrentUser);
 
   const [inputValue, setInputValue] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const limit = 10;
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [shouldScrollToBottom, setShouldScrollToBottom] = useState(false);
+  const limit = 6;
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const previousScrollHeightRef = useRef<number>(0);
+  const isNearBottomRef = useRef<boolean>(true);
+
+  // Reset state when chatRoomId changes
+  useEffect(() => {
+    setMessages([]);
+    setPage(1);
+    setHasMore(true);
+    setIsLoadingMore(false);
+    setShouldScrollToBottom(true);
+    isNearBottomRef.current = true;
+  }, [communityId]);
 
   // Fetch messages with pagination
-  const { data: messageData, isFetching } = useGetSingleMessageByUserQuery({
-    id: chatRoomId,
-    data: {
-      queryObj: [
-        { name: "page", value: String(page) },
-        { name: "limit", value: String(limit) },
-      ],
-    },
-  });
-  const { data: messageCommunityData, isCommunityFetching } =
-    useGetAllMessagesOfCommunityQuery({
-      id: chatRoomId,
+  const { data: messageData, isFetching } = useGetAllMessagesOfCommunityQuery(
+    {
+      id: communityId,
       data: {
         queryObj: [
           { name: "page", value: String(page) },
           { name: "limit", value: String(limit) },
         ],
       },
-    });
-
-  // Merge new messages with existing ones, avoiding duplicates
-  useEffect(() => {
-    if (messageData?.data?.messages) {
-      setMessages((prev) => {
-        const newMessages = messageData.data.messages.filter(
-          (msg: Message) => !prev.some((m) => m.id === msg.id)
-        );
-
-        if (newMessages.length < limit) setHasMore(false);
-
-        return [...newMessages, ...prev]; // prepend older messages
-      });
+    },
+    {
+      skip: !communityId,
     }
-  }, [messageData]);
+  );
 
+  console.log(messageData?.data?.result, "messageData");
+
+  // Handle new message data
   useEffect(() => {
-    if (messageCommunityData?.data?.messages) {
+    if (messageData?.data?.result) {
+      const newMessages = messageData?.data?.result;
+
       setMessages((prev) => {
-        const newMessages = messageCommunityData.data.messages.filter(
-          (msg: Message) => !prev.some((m) => m.id === msg.id)
-        );
-
-        if (newMessages.length < limit) setHasMore(false);
-
-        return [...newMessages, ...prev];
+        if (page === 1) {
+          // First load - replace all messages
+          setShouldScrollToBottom(true);
+          return newMessages;
+        } else {
+          // Loading older messages - prepend to existing messages
+          const filteredNew = newMessages.filter(
+            (msg: Message) => !prev.some((m) => m.id === msg.id)
+          );
+          return [...filteredNew, ...prev];
+        }
       });
-    }
-  }, [messageCommunityData]);
 
-  // Sort messages by creation time
+      // Check if we have more messages to load
+      if (newMessages.length < limit) {
+        setHasMore(false);
+      }
+
+      setIsLoadingMore(false);
+    }
+  }, [messageData, page, limit]);
+
+  // Sort messages by creation time (oldest to newest)
   const sortedMessages = useMemo(() => {
     return [...messages].sort(
       (a, b) =>
@@ -97,62 +102,125 @@ const ChatInterfaceWithCommunity = ({
     );
   }, [messages]);
 
-  // Scroll to bottom on new messages
-  useEffect(() => {
-    if (chatContainerRef.current) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
+  // Check if user is near bottom
+  const checkIfNearBottom = useCallback(() => {
+    const container = chatContainerRef.current;
+    if (container) {
+      const isNear =
+        container.scrollHeight - container.scrollTop - container.clientHeight <
+        100;
+      isNearBottomRef.current = isNear;
+      return isNear;
     }
-  }, [sortedMessages]);
+    return true;
+  }, []);
 
-  // Handle scroll to fetch older messages
+  // Scroll to bottom function
+  const scrollToBottom = useCallback(() => {
+    if (chatContainerRef.current) {
+      setTimeout(() => {
+        if (chatContainerRef.current) {
+          chatContainerRef.current.scrollTop =
+            chatContainerRef.current.scrollHeight;
+          isNearBottomRef.current = true;
+        }
+      }, 50);
+    }
+  }, []);
+
+  // Scroll to bottom on initial load or when shouldScrollToBottom is true
+  useEffect(() => {
+    if (shouldScrollToBottom && sortedMessages.length > 0) {
+      scrollToBottom();
+      setShouldScrollToBottom(false);
+    }
+  }, [sortedMessages, shouldScrollToBottom, scrollToBottom]);
+
+  // Restore scroll position after loading older messages
+  useEffect(() => {
+    if (page > 1 && chatContainerRef.current && !isLoadingMore) {
+      setTimeout(() => {
+        if (chatContainerRef.current) {
+          const currentScrollHeight = chatContainerRef.current.scrollHeight;
+          const heightDifference =
+            currentScrollHeight - previousScrollHeightRef.current;
+          chatContainerRef.current.scrollTop = heightDifference;
+        }
+      }, 50);
+    }
+  }, [sortedMessages, page, isLoadingMore]);
+
+  // Handle scroll to load older messages and track position
   const handleScroll = useCallback(() => {
-    if (
-      chatContainerRef.current &&
-      chatContainerRef.current.scrollTop === 0 &&
-      !isFetching &&
-      hasMore
-    ) {
+    const container = chatContainerRef.current;
+    if (!container) return;
+
+    // Update near bottom status
+    checkIfNearBottom();
+
+    // Load more messages if at top
+    if (!isLoadingMore && hasMore && !isFetching && container.scrollTop <= 10) {
+      console.log("Loading more messages, current page:", page);
+
+      // Store current scroll height before loading new messages
+      previousScrollHeightRef.current = container.scrollHeight;
+
+      setIsLoadingMore(true);
       setPage((prev) => prev + 1);
     }
-  }, [isFetching, hasMore]);
+  }, [isLoadingMore, hasMore, isFetching, page, checkIfNearBottom]);
 
+  // Add scroll event listener
   useEffect(() => {
     const container = chatContainerRef.current;
-    container?.addEventListener("scroll", handleScroll);
-    return () => container?.removeEventListener("scroll", handleScroll);
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+      return () => container.removeEventListener("scroll", handleScroll);
+    }
   }, [handleScroll]);
 
+  // Handle real-time messages
   useEffect(() => {
     if (socket) {
-      socket.onmessage = (event) => {
+      const handleMessage = (event: MessageEvent) => {
         const data = JSON.parse(event.data);
 
-        console.log("Message from server:", data);
-        if (data?.type === "receivePrivateMessage") {
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: data?.id,
-              content: data?.content,
-              senderId: data?.senderId,
-              createdAt: data?.createdAt,
-            },
-          ]);
+        if (data?.type === "receiveGroupMessage") {
+          console.log(data, "Received group message");
+          const newMessage = {
+            id: data?.id,
+            content: data?.content,
+            communityId: data?.communityId,
+            createdAt: data?.createdAt,
+            sender: data?.sender,
+          };
+
+          setMessages((prev) => [...prev, newMessage]);
+
+          // Auto scroll to bottom for new messages only if user was near bottom
+          if (isNearBottomRef.current) {
+            setTimeout(() => {
+              scrollToBottom();
+            }, 100);
+          }
+        }
+      };
+
+      socket.onmessage = handleMessage;
+
+      return () => {
+        if (socket) {
+          socket.onmessage = null;
         }
       };
     }
-  });
+  }, [scrollToBottom]);
 
   // Send message via WebSocket
   const handleSendMessage = (content: string) => {
-    if (!socket || socket.readyState !== WebSocket.OPEN) {
-      console.error("WebSocket not connected");
-      return;
-    }
+    if (!content.trim()) return;
 
-    if (communityId) {
-      // COMMUNITY MESSAGE
+    if (socket && socket.readyState === WebSocket.OPEN && communityId) {
       socket.send(
         JSON.stringify({
           type: "sendGroupMessage",
@@ -160,18 +228,15 @@ const ChatInterfaceWithCommunity = ({
           content: content,
         })
       );
-    } else if (chatRoomId && user2Id) {
-      // PRIVATE MESSAGE
-      socket.send(
-        JSON.stringify({
-          type: "sendPrivateMessage",
-          receiverId: user2Id,
-          content: content,
-        })
-      );
-    }
+      setInputValue("");
 
-    setInputValue("");
+      // Always scroll to bottom when sending a message
+      setTimeout(() => {
+        scrollToBottom();
+      }, 100);
+    } else {
+      console.error("WebSocket not connected");
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -183,7 +248,7 @@ const ChatInterfaceWithCommunity = ({
 
   // Message bubble component
   const MessageBubble = ({ message }: { message: Message }) => {
-    const isMe = message.senderId === user?.id;
+    const isMe = message.sender?.id === user?.id;
 
     return (
       <div
@@ -224,19 +289,31 @@ const ChatInterfaceWithCommunity = ({
 
   return (
     <div className="border border-gray-200 h-[450px] lg:h-[600px] rounded-2xl flex flex-col bg-white overflow-hidden">
-      <div
-        ref={chatContainerRef}
-        className="flex-1 overflow-y-auto px-4 py-4 space-y-1"
-        style={{ scrollBehavior: "smooth", maxHeight: "calc(100% - 90px)" }}
-      >
-        {sortedMessages.map((m) => (
-          <MessageBubble key={m?.id} message={m} />
-        ))}
-        <div ref={messagesEndRef} />
+      <div ref={chatContainerRef} className="flex-1 overflow-y-auto px-4 py-4">
+        {/* Loading indicator for older messages - Show at TOP */}
+        {isLoadingMore && (
+          <div className="text-center py-2 text-gray-500 text-sm">
+            Loading older messages...
+          </div>
+        )}
+
+        {/* No more messages indicator - Show at TOP */}
+        {!hasMore && messages.length > 0 && !isLoadingMore && (
+          <div className="text-center py-2 text-gray-400 text-sm">
+            No more messages
+          </div>
+        )}
+
+        {/* Messages container */}
+        <div className="space-y-1">
+          {sortedMessages.map((message) => (
+            <MessageBubble key={message.id} message={message} />
+          ))}
+        </div>
       </div>
 
       {/* Input Area */}
-      <div className="px-4 py-3 border-t border-gray-100 bg-gray-50">
+      <div className="px-4 py-3 border-t border-gray-100 bg-gray-50 flex-shrink-0">
         <div className="flex items-center gap-2">
           <div className="flex-1 relative">
             <input
@@ -245,7 +322,7 @@ const ChatInterfaceWithCommunity = ({
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Type message"
-              className="w-full px-4 py-5 pr-12 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent bg-white"
+              className="w-full px-4 py-3 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent bg-white"
             />
           </div>
 
