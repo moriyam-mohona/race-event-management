@@ -101,32 +101,6 @@ export function EventHeader({ data }: { data: any }) {
         />
       </div>
       <div className="md:w-2/3 space-y-4">
-        <div className="flex justify-between items-start ">
-          <div className="flex items-center gap-4">
-            <p className="font-semibold">Registered From : </p>
-            <p className="text-gray-600">
-              Location ·
-              <span className="font-semibold text-black">
-                {" "}
-                {data?.address} |{" "}
-              </span>
-            </p>
-            <p className="text-gray-600">
-              Hosted country ·
-              <span className="font-semibold text-black">
-                {" "}
-                {data?.country} |{" "}
-              </span>
-            </p>
-            <p className="text-gray-600">
-              Entryfy ·{" "}
-              <span className="font-semibold text-black">
-                {data?.eventStatus}
-              </span>
-            </p>
-          </div>
-        </div>
-
         <div className="flex justify-between items-center ">
           <h1 className="text-3xl font-semibold">{data?.title}</h1>
           <button onClick={handleAddToBookmark} className="cursor-pointer">

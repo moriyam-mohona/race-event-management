@@ -32,7 +32,7 @@ const CommunityHeader = () => {
         alt="Community Banner"
         width={1000}
         height={1000}
-        className="w-full h-[200px] lg:h-[325px] object-cover rounded-md lg:rounded-lg"
+        className="bg-gray-50 w-full h-[200px] lg:h-[285px] 2xl:h-[425px] object-contain rounded-md lg:rounded-lg"
       />
 
       <div className="flex items-end gap-2 mx-2 lg:mx-4 -mt-4 sm:-mt-10 lg:-mt-12">
