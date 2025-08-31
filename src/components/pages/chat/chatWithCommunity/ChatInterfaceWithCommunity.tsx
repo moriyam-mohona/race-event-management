@@ -184,18 +184,37 @@ const ChatInterfaceWithCommunity = ({ communityId }: ChatInterfaceProps) => {
     if (socket) {
       const handleMessage = (event: MessageEvent) => {
         const data = JSON.parse(event.data);
+        console.log("Raw WebSocket data:", data); // Debug log
 
         if (data?.type === "receiveGroupMessage") {
           console.log(data, "Received group message");
+
+          // Validate message data before processing
+          if (
+            !data?.message?.id ||
+            !data?.message?.content ||
+            !data?.message?.sender
+          ) {
+            console.error("Invalid message data received:", data);
+            return;
+          }
+
           const newMessage = {
-            id: data?.id,
-            content: data?.content,
-            communityId: data?.communityId,
-            createdAt: data?.createdAt,
-            sender: data?.sender,
+            id: data?.message?.id,
+            content: data?.message?.content,
+            communityId: data?.message?.communityId,
+            createdAt: data?.message?.createdAt,
+            sender: data?.message?.sender,
           };
 
-          setMessages((prev) => [...prev, newMessage]);
+          setMessages((prev) => {
+            // Check for duplicates
+            const messageExists = prev.some((msg) => msg.id === newMessage.id);
+            if (!messageExists) {
+              return [...prev, newMessage];
+            }
+            return prev;
+          });
 
           // Auto scroll to bottom for new messages only if user was near bottom
           if (isNearBottomRef.current) {
@@ -214,23 +233,25 @@ const ChatInterfaceWithCommunity = ({ communityId }: ChatInterfaceProps) => {
         }
       };
     }
-  }, [scrollToBottom]);
+  }, [scrollToBottom, user?.id]);
 
   // Send message via WebSocket
   const handleSendMessage = (content: string) => {
     if (!content.trim()) return;
 
-    if (socket && socket.readyState === WebSocket.OPEN && communityId) {
+    if (socket && socket.readyState === WebSocket.OPEN && communityId && user) {
+      // Send via WebSocket - let the server handle the message creation
       socket.send(
         JSON.stringify({
           type: "sendGroupMessage",
           communityId: communityId,
-          content: content,
+          content: content.trim(),
         })
       );
+
       setInputValue("");
 
-      // Always scroll to bottom when sending a message
+      // Scroll to bottom when sending a message
       setTimeout(() => {
         scrollToBottom();
       }, 100);
