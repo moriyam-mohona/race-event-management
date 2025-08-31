@@ -1,11 +1,12 @@
 import CreateStripeAccountFailed from "@/components/dashboard/VendorDashboard/allEventsByVendor/CreateStripeAccountFailed";
+import WithRole from "@/role-wrapper/WithRole";
 import React from "react";
 
 const CreateStripeFailedPage = () => {
   return (
-    <div>
+    <WithRole allowedRoles={["VENDOR"]}>
       <CreateStripeAccountFailed />
-    </div>
+    </WithRole>
   );
 };
 
