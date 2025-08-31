@@ -154,6 +154,7 @@ const Register = () => {
               <MyFormInput
                 label="Password"
                 name="password"
+                type="password"
                 placeHolder="Enter your password"
               />
               <Button

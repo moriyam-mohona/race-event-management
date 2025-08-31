@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -11,8 +13,19 @@ import logo from "@/assets/logo.png";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
 import Swal from "sweetalert2";
+import {
+  useLazyGenerateOnBoardingLinkQuery,
+  useLazyIsStripeAccountReadyQuery,
+} from "@/redux/features/event/eventApi";
+import { useRouter } from "next/navigation";
+import { Modal, Button, Typography } from "antd";
+import { FiAlertTriangle } from "react-icons/fi";
+
+const { Text, Paragraph } = Typography;
+
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const router = useRouter();
   const user = useAppSelector(selectCurrentUser);
   const role = user?.role;
   const dispatch = useAppDispatch();
@@ -64,6 +77,46 @@ const Navbar = () => {
           icon: "error",
         });
       }
+    }
+  };
+
+  // other API mutation (the one you want to call if not ready)
+
+  const [triggerIsStripeAccountReady, { isLoading }] =
+    useLazyIsStripeAccountReadyQuery();
+  const [triggerOnBoardingApi, { isLoading: onboardingLoading }] =
+    useLazyGenerateOnBoardingLinkQuery();
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [onboardingLink, setOnboardingLink] = useState("");
+
+  const handleCreateEvent = async () => {
+    try {
+      const response = await triggerIsStripeAccountReady(undefined).unwrap();
+
+      if (response.success) {
+        // Account ready → navigate directly
+        router.push("/dashboard/vendor/create-event");
+      }
+    } catch (err: any) {
+      // Stripe not ready → call onboarding API
+      try {
+        const onboardingRes = await triggerOnBoardingApi(undefined).unwrap();
+
+        if (onboardingRes.success && onboardingRes.data?.accountLink) {
+          // Save the link and show modal
+          setOnboardingLink(onboardingRes.data.accountLink);
+          setModalVisible(true);
+        }
+      } catch (onboardErr) {
+        console.error("Error generating onboarding link:", onboardErr);
+      }
+    }
+  };
+
+  const handleGoToStripe = () => {
+    if (onboardingLink) {
+      window.location.href = onboardingLink;
     }
   };
 
@@ -170,12 +223,13 @@ const Navbar = () => {
                     </>
                   )}
                   {user?.role === "VENDOR" && (
-                    <Link
-                      href="/dashboard/vendor/create-event"
-                      className="bg-primary hover:bg-transparent hover:border hover:border-primary hover:text-primary hover:font-semibold text-white py-2 px-5 rounded-full text-center transition-colors"
+                    <Button
+                      loading={isLoading || onboardingLoading}
+                      onClick={handleCreateEvent}
+                      className="!bg-primary hover:!bg-transparent hover:!border hover:!border-primary hover:!text-primary hover:!font-semibold !text-white !py-5 !px-5 !rounded-full !text-center !transition-colors !cursor-pointer"
                     >
                       Create Event
-                    </Link>
+                    </Button>
                   )}
                 </div>
               </motion.div>
@@ -218,15 +272,63 @@ const Navbar = () => {
               </>
             )}
             {user?.role === "VENDOR" && (
-              <Link
-                href="/dashboard/vendor/create-event"
-                className="text-base bg-primary hover:bg-primary/80 text-white py-3 px-5 ml-3 rounded-full text-center transition-colors"
+              <Button
+                loading={isLoading || onboardingLoading}
+                onClick={handleCreateEvent}
+                className="!border-none !text-base !bg-primary hover:!bg-primary/80 !text-white !py-5 !px-5 !ml-3 !rounded-full !text-center !transition-colors !cursor-pointer"
               >
                 Create Event
-              </Link>
+              </Button>
             )}
           </div>
         </div>
+
+        {/* Go To stripe acc  */}
+        <Modal
+          title={
+            <div className="flex items-center gap-2">
+              <FiAlertTriangle className="text-yellow-500 text-xl" />
+              <span>Complete Your Stripe Account</span>
+            </div>
+          }
+          open={modalVisible}
+          onCancel={() => setModalVisible(false)}
+          footer={[
+            <Button
+              key="cancel"
+              onClick={() => setModalVisible(false)}
+              type="default"
+              style={{ borderRadius: "8px" }}
+            >
+              Cancel
+            </Button>,
+            <Button
+              key="go"
+              onClick={handleGoToStripe}
+              type="primary"
+              style={{
+                borderRadius: "8px",
+                backgroundColor: "#6772e5",
+                borderColor: "#6772e5",
+              }}
+            >
+              Go to Stripe
+            </Button>,
+          ]}
+        >
+          <Paragraph>
+            <Text strong>
+              You need to complete your Stripe account before creating an event.
+            </Text>
+          </Paragraph>
+          <Paragraph>
+            Click the{" "}
+            <Text strong style={{ color: "#6772e5" }}>
+              Go to Stripe
+            </Text>{" "}
+            button below to finish the setup securely.
+          </Paragraph>
+        </Modal>
       </nav>
     </ProgressProvider>
   );

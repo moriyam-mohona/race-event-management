@@ -52,7 +52,6 @@ const eventApi = baseApi.injectEndpoints({
       },
       providesTags: ["event"],
     }),
-
     getAllMyRegisteredEvents: builder.query({
       query: (data) => {
         const params = new URLSearchParams();
@@ -86,7 +85,6 @@ const eventApi = baseApi.injectEndpoints({
       },
       providesTags: ["event"],
     }),
-
     createEventByVendor: builder.mutation({
       query: (data) => ({
         url: "event/create-events",
@@ -111,6 +109,28 @@ const eventApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["event"],
     }),
+
+    // Checking sripe account for create event by vendor
+    // isStripeAccountReady: builder.query<any, void>({
+    //   query: () => ({
+    //     url: `payment/is-stripe-account-ready`,
+    //     method: "GET",
+    //   }),
+    // }),
+
+    isStripeAccountReady: builder.query({
+      query: () => ({
+        url: `payment/is-stripe-account-ready`,
+        method: "GET",
+      }),
+    }),
+
+    generateOnBoardingLink: builder.query({
+      query: () => ({
+        url: "payment/generate-onboarding-link",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -124,4 +144,6 @@ export const {
   useCreateEventByVendorMutation,
   useCreateGearMutation,
   useVerifyForSharedEventMutation,
+  useLazyIsStripeAccountReadyQuery,
+  useLazyGenerateOnBoardingLinkQuery,
 } = eventApi;
