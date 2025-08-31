@@ -72,6 +72,33 @@ const vendorApi = baseApi.injectEndpoints({
       },
       providesTags: ["vendor"],
     }),
+
+    getAllBookingForVerify: builder.query<any, any>({
+      query: ({ id, data }) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `vendor/get-all-shared-booking-events/${id}`,
+          method: "GET",
+          params: params,
+        };
+      },
+      providesTags: ["vendor"],
+    }),
+    approveOrRejectSharedEvent: builder.mutation<any, any>({
+      query: ({ id, data }) => {
+        return {
+          url: `vendor/approve-or-reject-shared-booking/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+      invalidatesTags: ["vendor"],
+    }),
   }),
 });
 
@@ -82,4 +109,6 @@ export const {
   useGetAllEventsForVendorQuery,
   useStopEventRegistrationMutation,
   useGetAllBookingByVendorQuery,
+  useGetAllBookingForVerifyQuery,
+  useApproveOrRejectSharedEventMutation,
 } = vendorApi;

@@ -152,7 +152,11 @@ const VendorEventCard: React.FC<any> = ({ event }) => {
         {/* Action Buttons */}
         <div className="flex items-center justify-end gap-4 mt-2">
           <Link
-            href={`/dashboard/vendor/all-events/${event?.id}`}
+            href={
+              event?.type === "SHARED"
+                ? `/dashboard/vendor/all-events/verify-booking/${event?.id}`
+                : `/dashboard/vendor/all-events/${event?.id}`
+            }
             className="flex items-center justify-center gap-2 bg-primary text-white hover:bg-primary/90 px-5 py-2 rounded-xl text-sm sm:text-base shadow transition"
           >
             View Booking
