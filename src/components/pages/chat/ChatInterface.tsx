@@ -27,21 +27,34 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [shouldScrollToBottom, setShouldScrollToBottom] = useState(true);
-  const limit = 10;
+  const limit = 5;
 
   const chatContainerRef = useRef<HTMLDivElement | null>(null);
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
+  // Reset state when chatRoomId changes
+  useEffect(() => {
+    setMessages([]);
+    setPage(1);
+    setHasMore(true);
+    setShouldScrollToBottom(true);
+  }, [chatRoomId]);
+
   // Fetch messages with pagination
-  const { data: messageData, isFetching } = useGetSingleMessageByUserQuery({
-    id: chatRoomId,
-    data: {
-      queryObj: [
-        { name: "page", value: String(page) },
-        { name: "limit", value: String(limit) },
-      ],
+  const { data: messageData, isFetching } = useGetSingleMessageByUserQuery(
+    {
+      id: chatRoomId,
+      data: {
+        queryObj: [
+          { name: "page", value: String(page) },
+          { name: "limit", value: String(limit) },
+        ],
+      },
     },
-  });
+    {
+      skip: !chatRoomId,
+    }
+  );
 
   // Merge new messages with existing ones, avoiding duplicates
   useEffect(() => {
@@ -53,10 +66,15 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
 
         if (newMessages.length < limit) setHasMore(false);
 
-        return [...newMessages, ...prev]; // prepend older messages
+        // For page 1, replace all messages, for subsequent pages, prepend
+        if (page === 1) {
+          return newMessages;
+        } else {
+          return [...newMessages, ...prev];
+        }
       });
     }
-  }, [messageData]);
+  }, [messageData, page, limit]);
 
   // Sort messages by creation time
   const sortedMessages = useMemo(() => {
@@ -66,20 +84,11 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
     );
   }, [messages]);
 
-  // Scroll to bottom on new messages
-  useEffect(() => {
-    if (chatContainerRef.current && shouldScrollToBottom) {
-      chatContainerRef.current.scrollTop =
-        chatContainerRef.current.scrollHeight;
-      setShouldScrollToBottom(false);
-    }
-  }, [sortedMessages, shouldScrollToBottom]);
-
   // Handle scroll to fetch older messages
   const handleScroll = useCallback(() => {
     if (
       chatContainerRef.current &&
-      chatContainerRef.current.scrollTop === 0 &&
+      chatContainerRef.current.scrollTop <= 10 && // Changed from === 0 to <= 10 for better detection
       !isFetching &&
       hasMore
     ) {
@@ -104,8 +113,24 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
   }, [handleScroll]);
 
   useEffect(() => {
+    if (chatContainerRef.current && page === 1 && sortedMessages.length > 0) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
+  }, [sortedMessages, page]);
+
+  // Scroll to bottom on new messages
+  useEffect(() => {
+    if (chatContainerRef.current && shouldScrollToBottom && page === 1) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+      setShouldScrollToBottom(false);
+    }
+  }, [sortedMessages, shouldScrollToBottom, page]);
+
+  useEffect(() => {
     if (socket) {
-      socket.onmessage = (event) => {
+      const handleMessage = (event: MessageEvent) => {
         const data = JSON.parse(event.data);
 
         console.log("Message from server:", data);
@@ -119,12 +144,20 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
               createdAt: data?.createdAt,
             },
           ]);
-          // Trigger scroll to bottom for new messages
           setShouldScrollToBottom(true);
         }
       };
+
+      socket.onmessage = handleMessage;
+
+      // Cleanup function
+      return () => {
+        if (socket) {
+          socket.onmessage = null;
+        }
+      };
     }
-  });
+  }, []);
 
   // Send message via WebSocket
   const handleSendMessage = (content: string) => {
@@ -197,13 +230,16 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
   }
 
   return (
-    <div className="border border-gray-200 h-[450px] lg:h-[600px] rounded-2xl flex flex-col bg-white overflow-hidden">
+    <div className="border border-gray-200 h-[450px] lg:h-[700px] rounded-2xl flex flex-col bg-white overflow-hidden">
       <div
         ref={chatContainerRef}
-        className="flex flex-col justify-end h-full overflow-y-auto px-4 py-4 space-y-1"
+        className="flex flex-col h-full overflow-y-auto px-4 py-4 space-y-1"
         style={{ scrollBehavior: "smooth", maxHeight: "calc(100% - 90px)" }}
       >
-        <div className="flex flex-col">
+        {isFetching && page > 1 && (
+          <div className="text-center py-2 text-gray-500">Loading...</div>
+        )}
+        <div className="flex flex-col min-h-full justify-end">
           {sortedMessages.map((m) => (
             <MessageBubble key={m?.id} message={m} />
           ))}

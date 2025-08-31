@@ -14,7 +14,9 @@ export default function SocketProvider({
   const token = useAppSelector(selectCurrentToken);
 
   useEffect(() => {
-    socket = new WebSocket(`ws://172.252.13.76:5012?token=${token}`);
+    socket = new WebSocket(
+      `${process.env.NEXT_PUBLIC_SOCKET_URL}?token=${token}`
+    );
 
     socket.onopen = () => {
       console.log("Connected to WebSocket");
