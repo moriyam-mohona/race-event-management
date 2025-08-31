@@ -177,6 +177,10 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
     );
   };
 
+  if (!chatRoomId) {
+    return <div>kono message nai</div>;
+  }
+
   return (
     <div className="border border-gray-200 h-[450px] lg:h-[600px] rounded-2xl flex flex-col bg-white overflow-hidden">
       <div

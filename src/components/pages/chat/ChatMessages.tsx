@@ -69,7 +69,7 @@ const ChatMessages = ({ setUser2Id, setChatRoomId }: ChatMessagesProps) => {
     }
   };
 
-  const handleSendMessage = (user2Id: string) => {
+  const joinChat = (user2Id: string, chatRoomId: string) => {
     console.log("Send message to chat ID:", user2Id);
 
     if (user2Id && socket) {
@@ -81,14 +81,7 @@ const ChatMessages = ({ setUser2Id, setChatRoomId }: ChatMessagesProps) => {
       );
 
       setUser2Id(user2Id);
-
-      socket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        const chatRoomId = data?.chatroomId;
-        if (chatRoomId) {
-          setChatRoomId(chatRoomId);
-        }
-      };
+      setChatRoomId(chatRoomId);
     }
   };
 
@@ -133,7 +126,7 @@ const ChatMessages = ({ setUser2Id, setChatRoomId }: ChatMessagesProps) => {
             <div
               key={member?.userId}
               className="flex items-center space-x-3 hover:bg-green-500/10 rounded-lg p-1 transition-colors cursor-pointer"
-              onClick={() => handleSendMessage(member?.userId || member?.id)}
+              onClick={() => joinChat(member?.userId, member?.id)}
             >
               {renderAvatar(member)}
               <div className="flex-1">
