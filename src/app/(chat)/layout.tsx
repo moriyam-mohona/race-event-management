@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 const layout = ({ children }: { children: ReactNode }) => {
   return (
     <div>
-      <WithRole allowedRoles={["USER"]}>
+      <WithRole allowedRoles={["USER", "VENDOR", "SUPER_ADMIN"]}>
         <NavBar />
         <div className="h-full">{children}</div>
       </WithRole>
