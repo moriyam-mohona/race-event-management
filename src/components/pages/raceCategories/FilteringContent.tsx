@@ -42,9 +42,9 @@ const FilteringContent = () => {
       params.set("distance", newFilters.distance.min);
 
     if (newFilters.date) params.set("date", newFilters.date);
-    if (newFilters.continent) params.set("searchField", newFilters.continent);
-    if (newFilters.country) params.set("searchField", newFilters.country);
-    if (newFilters.region) params.set("searchField", newFilters.region);
+    if (newFilters.continent) params.set("continent", newFilters.continent);
+    if (newFilters.country) params.set("country", newFilters.country);
+    if (newFilters.region) params.set("region", newFilters.region);
     if (newFilters.raceType) params.set("raceType", newFilters.raceType);
 
     const queryString = params.toString();

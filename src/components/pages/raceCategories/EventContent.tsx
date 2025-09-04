@@ -21,6 +21,7 @@ const EventContent: React.FC<any> = () => {
   const user = useAppSelector(selectCurrentUser);
   const userId = user?.id;
 
+  const distance = searchParams.get("distance");
   const raceType = searchParams.get("raceType");
   const category = searchParams.get("category");
   const continent = searchParams.get("continent");
@@ -54,6 +55,9 @@ const EventContent: React.FC<any> = () => {
       { name: "userId", value: userId || "" },
     ];
 
+    if (distance) {
+      queryParams.push({ name: "distance", value: distance });
+    }
     if (raceType) {
       queryParams.push({ name: "raceType", value: raceType });
     }
@@ -61,14 +65,22 @@ const EventContent: React.FC<any> = () => {
       queryParams.push({ name: "category", value: category });
     }
     if (continent) {
-      queryParams.push({ name: "continent", value: continent });
+      queryParams.push({ name: "searchField", value: continent });
     }
     if (country) {
-      queryParams.push({ name: "country", value: country });
+      queryParams.push({ name: "searchField", value: country });
     }
-
     setObjectQuery(queryParams);
-  }, [raceType, category, continent, country, page, pageSize, userId]);
+  }, [
+    distance,
+    raceType,
+    category,
+    continent,
+    country,
+    page,
+    pageSize,
+    userId,
+  ]);
 
   const {
     data: approvedEvent,
