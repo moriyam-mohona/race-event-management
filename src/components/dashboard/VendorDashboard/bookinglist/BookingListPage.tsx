@@ -2,9 +2,13 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Table, Button, Modal, Image } from "antd";
+import { Table, Button, Modal, Image, Tag } from "antd";
 import { useParams } from "next/navigation";
-import { useGetAllBookingByVendorQuery } from "@/redux/features/vendor/vendorApi";
+import {
+  useApproveOrRejectBookingMutation,
+  useGetAllBookingByVendorQuery,
+} from "@/redux/features/vendor/vendorApi";
+import { handleAsyncWithToast } from "@/utils/handleAsyncWithToast";
 
 export default function BookingListPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -13,6 +17,7 @@ export default function BookingListPage() {
 
   const id = useParams().id;
   const { data: bookingData } = useGetAllBookingByVendorQuery({ id });
+  const [approveOrRejectBooking] = useApproveOrRejectBookingMutation();
 
   // Columns for the table
   const columns = useMemo(
@@ -42,6 +47,23 @@ export default function BookingListPage() {
         title: "Status",
         dataIndex: "status",
         key: "status",
+        render: (status: string) => {
+          let color;
+          switch (status) {
+            case "APPROVED":
+              color = "green";
+              break;
+            case "REJECTED":
+              color = "red";
+              break;
+            case "PENDING":
+              color = "gold";
+              break;
+            default:
+              color = "default";
+          }
+          return <Tag color={color}>{status}</Tag>;
+        },
       },
       {
         title: "Action",
@@ -49,6 +71,7 @@ export default function BookingListPage() {
         render: (_: any, record: any) => (
           <Button
             type="primary"
+            className="!bg-primary hover:!bg-primary/90"
             onClick={() => {
               setSelectedBooking(record);
               setModalVisible(true);
@@ -61,6 +84,12 @@ export default function BookingListPage() {
     ],
     []
   );
+
+  const handleApproveOrReject = async (isApprove: boolean, id: string) => {
+    await handleAsyncWithToast(() =>
+      approveOrRejectBooking({ id, data: { isApprove } })
+    );
+  };
 
   const tableData = useMemo(() => {
     if (!bookingData?.data?.data) return [];
@@ -88,11 +117,7 @@ export default function BookingListPage() {
         open={modalVisible}
         title="Booking Details"
         onCancel={() => setModalVisible(false)}
-        footer={[
-          <Button key="close" onClick={() => setModalVisible(false)}>
-            Close
-          </Button>,
-        ]}
+        footer={null}
         width={700}
       >
         {selectedBooking && (
@@ -169,6 +194,26 @@ export default function BookingListPage() {
                   </div>
                 </div>
               ))}
+              {selectedBooking.status === "PENDING" && (
+                <div className="flex items-center justify-end gap-5">
+                  <button
+                    onClick={() =>
+                      handleApproveOrReject(true, selectedBooking.id)
+                    }
+                    className="bg-green-700 px-8 py-1.5 text-white rounded-lg cursor-pointer"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() =>
+                      handleApproveOrReject(false, selectedBooking.id)
+                    }
+                    className="bg-red-500 px-8 py-1.5 text-white rounded-lg cursor-pointer"
+                  >
+                    Reject
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}

@@ -72,6 +72,16 @@ const vendorApi = baseApi.injectEndpoints({
       },
       providesTags: ["vendor"],
     }),
+    approveOrRejectBooking: builder.mutation<any, any>({
+      query: ({ id, data }) => {
+        return {
+          url: `vendor/approve-or-reject-booking/${id}`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+      invalidatesTags: ["vendor"],
+    }),
 
     getAllBookingForVerify: builder.query<any, any>({
       query: ({ id, data }) => {
@@ -109,6 +119,7 @@ export const {
   useGetAllEventsForVendorQuery,
   useStopEventRegistrationMutation,
   useGetAllBookingByVendorQuery,
+  useApproveOrRejectBookingMutation,
   useGetAllBookingForVerifyQuery,
   useApproveOrRejectSharedEventMutation,
 } = vendorApi;
