@@ -10,13 +10,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { CalendarIcon } from "lucide-react";
 import { format, parseISO } from "date-fns";
 import { T_User } from "@/types/User";
@@ -43,7 +36,6 @@ const UpdateUserProfile = () => {
   const [formData, setFormData] = useState<T_User>({
     fullName: "",
     dateOfBirth: undefined,
-    gender: "",
     continent: "",
     country: "",
     region: "",
@@ -61,7 +53,6 @@ const UpdateUserProfile = () => {
         dateOfBirth: getme?.data?.dateOfBirth
           ? parseISO(getme?.data?.dateOfBirth)
           : undefined,
-        gender: getme?.data?.gender?.toLowerCase() || "",
         continent: getme?.data?.continent || "",
         country: getme?.data?.country || "",
         region: getme?.data?.region || "",
@@ -102,7 +93,6 @@ const UpdateUserProfile = () => {
       dateOfBirth: formData.dateOfBirth
         ? formData.dateOfBirth.toISOString()
         : null,
-      gender: formData.gender ? formData.gender.toUpperCase() : null,
       continent: formData.continent,
       country: formData.country,
       region: formData.region,
@@ -231,22 +221,6 @@ const UpdateUserProfile = () => {
                   />
                 </PopoverContent>
               </Popover>
-            </div>
-            <div>
-              <Label className="text-base md:text-lg mb-2">Gender</Label>
-              <Select
-                value={formData.gender}
-                onValueChange={(value) => handleInputChange("gender", value)}
-              >
-                <SelectTrigger className="bg-gray-50">
-                  <SelectValue placeholder="Gender" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="male">Male</SelectItem>
-                  <SelectItem value="female">Female</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
           </div>
         </div>
