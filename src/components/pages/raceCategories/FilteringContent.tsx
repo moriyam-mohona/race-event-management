@@ -3,13 +3,13 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FilterState } from "@/types/Common";
-import EventTypeSelector from "./FilterControl/EventTypeSelector";
 import CategoryFilter from "./FilterControl/CategoryFilter";
 import DateFilter from "./FilterControl/DateFilter";
 import LocationFilter from "./FilterControl/LocationFilter";
 import RaceTypeFilter from "./FilterControl/RaceTypeFilter";
 import { IoCloseOutline } from "react-icons/io5";
 import { InputNumber, Divider } from "antd";
+// import EventTypeSelector from "./FilterControl/EventTypeSelector";
 
 const FilteringContent = () => {
   const router = useRouter();
@@ -86,17 +86,17 @@ const FilteringContent = () => {
         </button>
       </div>
 
-      <Divider />
+      {/* <Divider /> */}
 
       {/* Event Type */}
-      <EventTypeSelector
+      {/* <EventTypeSelector
         selectedType={filters.eventType}
         onTypeChange={(type) =>
           handleFilterChange({ ...filters, eventType: type })
         }
-      />
+      /> */}
 
-      <Divider />
+      {/* <Divider /> */}
 
       {/* Category */}
       <CategoryFilter
