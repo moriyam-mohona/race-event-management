@@ -5,6 +5,7 @@ import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 import { useGetAllMessagesOfCommunityQuery } from "@/redux/features/chat/chatApi";
 import { useAppSelector } from "@/redux/hooks";
 import { Send } from "lucide-react";
+import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 interface ChatInterfaceProps {
@@ -278,7 +279,17 @@ const ChatInterfaceWithCommunity = ({ communityId }: ChatInterfaceProps) => {
         }`}
       >
         <div className="flex-shrink-0 w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center">
-          {isMe ? "👨‍💼" : "👤"}
+          {message.sender?.profileImage ? (
+            <Image
+              src={message.sender.profileImage}
+              alt="User"
+              width={32}
+              height={32}
+              className="rounded-full object-cover"
+            />
+          ) : (
+            <span className="text-2xl">{isMe ? "👨‍💼" : "👤"}</span>
+          )}
         </div>
 
         <div
@@ -286,6 +297,11 @@ const ChatInterfaceWithCommunity = ({ communityId }: ChatInterfaceProps) => {
             isMe ? "items-end" : "items-start"
           } max-w-[70%]`}
         >
+          {/* ✅ Sender name */}
+          <span className="text-xs font-medium text-gray-700 mb-1">
+            {message.sender?.fullName || "Unknown User"}
+          </span>
+
           <div
             className={`p-2 lg:p-4 rounded-md ${
               isMe
@@ -297,6 +313,7 @@ const ChatInterfaceWithCommunity = ({ communityId }: ChatInterfaceProps) => {
               {message.content}
             </p>
           </div>
+
           <span className="text-xs text-gray-600 mt-1 px-1">
             {new Date(message.createdAt).toLocaleTimeString([], {
               hour: "2-digit",

@@ -180,6 +180,7 @@ const ChatInterface = ({ chatRoomId, user2Id }: ChatInterfaceProps) => {
         const data = JSON.parse(event.data);
 
         if (data?.type === "receivePrivateMessage") {
+          console.log(data, "Received private message");
           const newMessage = {
             id: data?.id,
             content: data?.content,
