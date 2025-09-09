@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import banner from "@/assets/images/home/hero.jpg";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { format } from "date-fns";
 import { CalendarIcon, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ import {
 import { useRouter } from "next/navigation";
 import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding";
 import Image from "next/image"; // Add this import
+import debounce from "lodash/debounce";
 
 const Banner: React.FC = () => {
   const geocodingClient = mbxGeocoding({
@@ -48,28 +50,66 @@ const Banner: React.FC = () => {
     setIsOpen(false);
   };
 
-  const handleLocationSelect = async (query: string) => {
+  const cache = useMemo(() => new Map<string, any>(), []);
+
+  const debouncedLocationSelect = useMemo(
+    () =>
+      debounce(async (query: string) => {
+        if (!query) return;
+        if (cache.has(query)) {
+          setLocationDetails(cache.get(query));
+          return;
+        }
+        const response = await geocodingClient
+          .forwardGeocode({ query, limit: 1 })
+          .send();
+        const feature = response.body.features[0];
+        if (feature) {
+          const details = {
+            continent: feature.context?.find((c) =>
+              c.id.startsWith("continent")
+            )?.text,
+            country: feature.context?.find((c) => c.id.startsWith("country"))
+              ?.text,
+            region: feature.context?.find((c) => c.id.startsWith("region"))
+              ?.text,
+            latitude: feature.center[1],
+            longitude: feature.center[0],
+          };
+          cache.set(query, details);
+          setLocationDetails(details);
+        }
+      }, 300),
+    [cache, setLocationDetails, geocodingClient]
+  );
+
+  const handleLocationSelect = (query: string) => {
     setLocation(query);
-
-    const response = await geocodingClient
-      .forwardGeocode({
-        query,
-        limit: 1,
-      })
-      .send();
-
-    const feature = response.body.features[0];
-    if (feature) {
-      setLocationDetails({
-        continent: feature.context?.find((c) => c.id.startsWith("continent"))
-          ?.text,
-        country: feature.context?.find((c) => c.id.startsWith("country"))?.text,
-        region: feature.context?.find((c) => c.id.startsWith("region"))?.text,
-        latitude: feature.center[1],
-        longitude: feature.center[0],
-      });
-    }
+    debouncedLocationSelect(query);
   };
+
+  // const handleLocationSelect = async (query: string) => {
+  //   setLocation(query);
+
+  //   const response = await geocodingClient
+  //     .forwardGeocode({
+  //       query,
+  //       limit: 1,
+  //     })
+  //     .send();
+
+  //   const feature = response.body.features[0];
+  //   if (feature) {
+  //     setLocationDetails({
+  //       continent: feature.context?.find((c) => c.id.startsWith("continent"))
+  //         ?.text,
+  //       country: feature.context?.find((c) => c.id.startsWith("country"))?.text,
+  //       region: feature.context?.find((c) => c.id.startsWith("region"))?.text,
+  //       latitude: feature.center[1],
+  //       longitude: feature.center[0],
+  //     });
+  //   }
+  // };
 
   const handleSearch = () => {
     const query: Record<string, string> = {};
@@ -96,11 +136,11 @@ const Banner: React.FC = () => {
           src={banner}
           alt="Hero banner"
           fill
-          priority // This loads the image immediately
-          quality={85} // Slightly reduce quality for better performance
-          sizes="100vw" // Tell Next.js this image takes full viewport width
+          priority
+          quality={75} // Lower quality for faster loading
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Responsive sizes
           className="object-cover object-left-top sm:object-center md:object-right-top lg:object-center"
-          placeholder="blur" // Add blur placeholder if banner has blurDataURL
+          placeholder="blur"
         />
 
         {/* Optional: Add a loading skeleton/placeholder */}
@@ -203,7 +243,7 @@ const Banner: React.FC = () => {
 
                 {/* Search Button */}
                 <Button
-                  className="h-11 px-8 bg-primary text-white rounded-md font-medium hover:bg-primary/80 transition-colors duration-300 whitespace-nowrap"
+                  className="h-11 px-8 bg-primary text-white rounded-md font-medium hover:bg-primary/80 transition-colors duration-300 whitespace-nowrap cursor-pointer"
                   onClick={handleSearch}
                 >
                   Explore Race
