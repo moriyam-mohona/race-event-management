@@ -92,7 +92,7 @@ const Banner: React.FC = () => {
       {/* Hero Section */}
       <div className="relative min-h-[450px] max-h-[800px] xl:min-h-[850px] overflow-hidden">
         {/* Optimized Background Image */}
-        <Image
+        {/* <Image
           src={banner}
           alt="Hero banner"
           fill
@@ -101,6 +101,17 @@ const Banner: React.FC = () => {
           sizes="100vw" // Tell Next.js this image takes full viewport width
           className="object-cover object-left-top sm:object-center md:object-right-top lg:object-center"
           placeholder="blur" // Add blur placeholder if banner has blurDataURL
+        /> */}
+
+        <Image
+          src={banner}
+          alt="Hero banner"
+          fill
+          priority
+          quality={80}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+          className="object-cover object-center"
+          placeholder="blur"
         />
 
         {/* Optional: Add a loading skeleton/placeholder */}
