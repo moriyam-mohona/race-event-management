@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/popover";
 import { useRouter } from "next/navigation";
 import mbxGeocoding from "@mapbox/mapbox-sdk/services/geocoding";
+import Image from "next/image"; // Add this import
 
 const Banner: React.FC = () => {
   const geocodingClient = mbxGeocoding({
@@ -90,19 +91,26 @@ const Banner: React.FC = () => {
     <div>
       {/* Hero Section */}
       <div className="relative min-h-[450px] max-h-[800px] xl:min-h-[850px] overflow-hidden">
-        {/* Background Image */}
+        {/* Optimized Background Image */}
+        <Image
+          src={banner}
+          alt="Hero banner"
+          fill
+          priority // This loads the image immediately
+          quality={85} // Slightly reduce quality for better performance
+          sizes="100vw" // Tell Next.js this image takes full viewport width
+          className="object-cover object-left-top sm:object-center md:object-right-top lg:object-center"
+          placeholder="blur" // Add blur placeholder if banner has blurDataURL
+        />
+
+        {/* Optional: Add a loading skeleton/placeholder */}
         <div
-          className="absolute inset-0 lg:bg-center object-left bg-top-left bg-cover"
-          style={{
-            backgroundImage: `url(${banner.src})`,
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            zIndex: -1,
-          }}
+          className="absolute inset-0 bg-gray-900 animate-pulse"
+          style={{ zIndex: -1 }}
         />
 
         {/* Content */}
-        <div className="relative container max-w-[1320px] mx-auto px-4 h-full">
+        <div className="relative container max-w-[1320px] mx-auto px-4 h-full z-10">
           <div className="flex flex-col justify-end h-full pt-40 md:pt-48 xl:pt-72 pb-40">
             <h1 className="font-montserrat text-4xl md:text-5xl lg:text-5xl font-bold text-orange-50 max-w-3xl md:leading-16">
               The Journey starts With us -{" "}
@@ -146,11 +154,11 @@ const Banner: React.FC = () => {
                       >
                         {options.map((option) => (
                           <li
-                            key={option.value} // use value as key
+                            key={option.value}
                             onClick={() => handleSelect(option.value)}
                             className="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
                           >
-                            {option.label} {/* display the label */}
+                            {option.label}
                           </li>
                         ))}
                       </motion.ul>
@@ -164,7 +172,7 @@ const Banner: React.FC = () => {
                     type="text"
                     placeholder="Location"
                     value={location}
-                    onChange={(e) => handleLocationSelect(e.target.value)} // <--- use handleLocationSelect here
+                    onChange={(e) => handleLocationSelect(e.target.value)}
                     className="w-full h-11 bg-transparent border text-white focus:ring-2 focus:ring-primary placeholder:text-white"
                   />
                 </div>
