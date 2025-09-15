@@ -103,17 +103,19 @@ export function EventHeader({ data }: { data: any }) {
       <div className="md:w-2/3 space-y-4">
         <div className="flex justify-between items-center ">
           <h1 className="text-3xl font-semibold">{data?.title}</h1>
-          <button onClick={handleAddToBookmark} className="cursor-pointer">
-            <FaRegBookmark
-              className={`text-xl font-semibold ${
-                !user
-                  ? "text-gray-700"
-                  : data?.isSaved
-                  ? "text-secondary"
-                  : "text-gray-700"
-              }`}
-            />
-          </button>
+          {user && (
+            <button onClick={handleAddToBookmark} className="cursor-pointer">
+              <FaRegBookmark
+                className={`text-xl font-semibold ${
+                  !user
+                    ? "text-gray-700"
+                    : data?.isSaved
+                    ? "text-secondary"
+                    : "text-gray-700"
+                }`}
+              />
+            </button>
+          )}
         </div>
 
         <div className="mt-8 space-y-2">
