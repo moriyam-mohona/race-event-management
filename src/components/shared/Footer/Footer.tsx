@@ -81,7 +81,7 @@ const Footer = () => {
               <ul className="space-y-2">
                 <li>
                   <Link
-                    href="#"
+                    href="/race-categories"
                     className="text-sm md:text-base text-gray-600 hover:underline hover:text-black"
                   >
                     Race Categories
@@ -89,7 +89,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="#"
+                    href="/community"
                     className="text-sm md:text-base text-gray-600 hover:underline hover:text-black"
                   >
                     Community
@@ -97,7 +97,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    href="#"
+                    href="/auth/register"
                     className="text-sm md:text-base text-gray-600 hover:underline hover:text-black"
                   >
                     Create Vendor Account
