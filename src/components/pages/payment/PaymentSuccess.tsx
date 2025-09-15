@@ -7,6 +7,7 @@ import React from "react";
 import { CheckCircle } from "lucide-react";
 import { format } from "date-fns";
 import PaymentSuccessSkeleton from "@/components/skeletons/PaymentSuccessSkeleton";
+import Link from "next/link";
 
 const PaymentSuccess = () => {
   const { paymentId } = useParams();
@@ -20,7 +21,7 @@ const PaymentSuccess = () => {
   const user = payment?.data?.user;
 
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg space-y-10">
+    <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg space-y-10 p-6">
       {/* Success Header */}
       <div className="flex flex-col items-center text-center gap-4">
         <CheckCircle className="text-green-500 w-16 h-16" />
@@ -101,6 +102,16 @@ const PaymentSuccess = () => {
           ))}
         </div>
       )}
+
+      {/* Explore More Button */}
+      <div className="flex justify-center pb-6">
+        <Link
+          href="/race-categories"
+          className="bg-primary hover:bg-primary/90 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+        >
+          Explore More
+        </Link>
+      </div>
     </div>
   );
 };
