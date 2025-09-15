@@ -113,6 +113,29 @@ export default function AddOns() {
     setAddedGearInfo(updatedGearInfo);
   };
 
+  if (!detailEventData?.data?.Gear || detailEventData.data.Gear.length === 0) {
+    return (
+      <div className="rounded-lg border border-gray-200 bg-white p-6 text-center">
+        <h2 className="text-xl font-semibold mb-2">Gears</h2>
+        <p className="text-gray-500">No Gears available for this event.</p>
+        <div className="mt-8 flex justify-between">
+          <button
+            onClick={handleBack}
+            className="border px-10 py-2 rounded cursor-pointer"
+          >
+            Back
+          </button>
+          <button
+            className="bg-primary hover:bg-primary/90 text-white px-10 py-2 rounded cursor-pointer transition"
+            onClick={handleContinue}
+          >
+            {addedGearInfo.length > 0 ? "Next" : "Skip & Continue"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (isLoading || isFetching) return <Loading />;
 
   return (
