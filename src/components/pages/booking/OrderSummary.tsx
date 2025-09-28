@@ -11,8 +11,8 @@ import { format } from "date-fns";
 export default function OrderSummary() {
   const { ticket, addOns } = useSelector((state: RootState) => state.booking);
   const params = useParams();
-  const id = params.id;
-  const { data: detailEventData } = useGetSingleEventQuery(id);
+  const id = typeof params.id === "string" ? params.id : "";
+  const { data: detailEventData } = useGetSingleEventQuery({ id });
 
   const calculateTotal = () => {
     // Ticket total = ticket price * quantity

@@ -39,12 +39,12 @@ export default function AddOns() {
   const { addOns } = useSelector((state: RootState) => state.booking);
 
   const params = useParams();
-  const id = params.id;
+  const id = typeof params.id === "string" ? params.id : "";
   const {
     data: detailEventData,
     isLoading,
     isFetching,
-  } = useGetSingleEventQuery(id);
+  } = useGetSingleEventQuery({ id });
 
   const [availableItems, setAvailableItems] = useState<AddOnItem[]>([]);
   const [addedGearInfo, setAddedGearInfo] = useState<AddedGearInfo[]>(

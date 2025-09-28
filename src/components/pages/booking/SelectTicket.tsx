@@ -16,12 +16,14 @@ import Loading from "@/components/shared/Loading/Loading";
 
 export default function SelectTicket() {
   const params = useParams();
-  const id = params.id;
+  // const id = params.id;
+  const id = typeof params.id === "string" ? params.id : "";
+
   const {
     data: detailEventData,
     isLoading,
     isFetching,
-  } = useGetSingleEventQuery(id);
+  } = useGetSingleEventQuery({ id });
 
   function formatEventDate(startDate: string, endDate: string) {
     const start = new Date(startDate);

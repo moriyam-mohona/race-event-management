@@ -10,7 +10,9 @@ import Loading from "@/components/shared/Loading/Loading";
 
 const PublishEvent = () => {
   const eventId = useSelector((state: RootState) => state.event.eventId);
-  const { data: eventData, isLoading } = useGetSingleEventQuery(eventId);
+  const { data: eventData, isLoading } = useGetSingleEventQuery({
+    id: eventId ?? "",
+  });
 
   if (isLoading) return <Loading />;
   return (

@@ -16,12 +16,12 @@ import Loading from "@/components/shared/Loading/Loading";
 
 export default function BookingFlow() {
   const params = useParams();
-  const id = params.id;
+  const id = typeof params.id === "string" ? params.id : "";
   const {
     data: detailEventData,
     isLoading,
     isFetching,
-  } = useGetSingleEventQuery(id);
+  } = useGetSingleEventQuery({ id });
 
   const { currentStep } = useSelector((state: RootState) => state.booking);
   const dispatch = useDispatch();

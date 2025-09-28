@@ -20,14 +20,32 @@ const eventApi = baseApi.injectEndpoints({
       },
       providesTags: ["event"],
     }),
+
     getSingleEvent: builder.query({
-      query: ({ id, userId }: { id: string; userId?: string }) => ({
-        url: `admin/get-event-details-by-id/${id}`,
-        method: "GET",
-        params: userId ? { userId } : undefined, // only send userId if defined
-      }),
+      query: ({ id, data }: { id: string; data?: any }) => {
+        const params = new URLSearchParams();
+        if (data?.queryObj) {
+          data?.queryObj.forEach((item: any) => {
+            params.append(item.name, item.value as string);
+          });
+        }
+        return {
+          url: `admin/get-event-details-by-id/${id}`,
+          method: "GET",
+          params: params,
+        };
+      },
       providesTags: ["event"],
     }),
+
+    // getSingleEvent: builder.query({
+    //   query: ({ id, userId }: { id: string; userId?: string }) => ({
+    //     url: `admin/get-event-details-by-id/${id}`,
+    //     method: "GET",
+    //     params: params,
+    //   }),
+    //   providesTags: ["event"],
+    // }),
 
     // Bookmark any event
     addEventToSaved: builder.mutation({

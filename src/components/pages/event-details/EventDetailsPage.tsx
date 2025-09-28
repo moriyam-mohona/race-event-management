@@ -16,11 +16,14 @@ const EventDetailsPage = () => {
   const user = useAppSelector(selectCurrentUser);
   const userId = user?.id;
 
+  const queryObj = [{ name: "userId", value: userId }];
+
   const eventId = (useParams().id as string) || "";
   const { data: detailEventData, isLoading } = useGetSingleEventQuery({
     id: eventId,
-    userId,
+    data: queryObj,
   });
+
   const eventData = detailEventData?.data;
 
   if (isLoading) return <Loading />;
