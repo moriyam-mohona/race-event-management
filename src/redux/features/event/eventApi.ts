@@ -21,12 +21,14 @@ const eventApi = baseApi.injectEndpoints({
       providesTags: ["event"],
     }),
     getSingleEvent: builder.query({
-      query: (id) => ({
+      query: ({ id, userId }: { id: string; userId?: string }) => ({
         url: `admin/get-event-details-by-id/${id}`,
         method: "GET",
+        params: userId ? { userId } : undefined, // only send userId if defined
       }),
       providesTags: ["event"],
     }),
+
     // Bookmark any event
     addEventToSaved: builder.mutation({
       query: (id) => ({

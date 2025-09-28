@@ -9,12 +9,22 @@ import { EventFAQs } from "./EventFAQs";
 import { useGetSingleEventQuery } from "@/redux/features/event/eventApi";
 import { useParams } from "next/navigation";
 import Loading from "@/components/shared/Loading/Loading";
+import { useAppSelector } from "@/redux/hooks";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 const EventDetailsPage = () => {
-  const id = useParams().id;
-  const { data: detailEventData, isLoading } = useGetSingleEventQuery(id);
+  const user = useAppSelector(selectCurrentUser);
+  const userId = user?.id;
+
+  const eventId = (useParams().id as string) || "";
+  const { data: detailEventData, isLoading } = useGetSingleEventQuery({
+    id: eventId,
+    userId,
+  });
   const eventData = detailEventData?.data;
+
   if (isLoading) return <Loading />;
+
   return (
     <div className="container mx-auto px-4 py-8 max-w-7xl space-y-10">
       <EventHeader data={eventData} />

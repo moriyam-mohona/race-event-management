@@ -214,7 +214,7 @@ const Banner: React.FC = () => {
 
                 {/* Search Button */}
                 <Button
-                  className="h-11 px-8 bg-primary text-white rounded-md font-medium hover:bg-primary/80 transition-colors duration-300 whitespace-nowrap"
+                  className="h-11 px-8 bg-primary text-white rounded-md font-medium hover:bg-primary/80 transition-colors duration-300 whitespace-nowrap cursor-pointer"
                   onClick={handleSearch}
                 >
                   Explore Race
