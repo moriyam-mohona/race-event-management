@@ -38,6 +38,7 @@ const Navbar = () => {
   const navLinks = [
     { name: "Home", href: "/" },
     { name: "Race Categories", href: "/race-categories" },
+    // { name: "About Us", href: "/about-us" },
     { name: "Contact", href: "/contact-us" },
     { name: "Community", href: "/community" },
     { name: "Chat", href: "/chat" },
