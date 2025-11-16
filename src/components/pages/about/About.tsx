@@ -1,3 +1,8 @@
+"use client";
+
+import Image from "next/image";
+import aboutUsImage from "@/assets/about-us.png";
+
 const About = () => {
   return (
     <div className="space-y-24 py-20 mt-6">
@@ -190,6 +195,16 @@ const About = () => {
           community, part “why not?” <br />
           10 points to you. 🏅
         </p>
+
+        {/* 🔥 Add Image at the END */}
+        <div className="mt-16 flex justify-center">
+          <Image
+            src={aboutUsImage}
+            alt="About DustiTrainers"
+            className="rounded-2xl shadow-lg w-full max-w-3xl"
+            priority={false} // Optimized loading
+          />
+        </div>
       </section>
     </div>
   );
