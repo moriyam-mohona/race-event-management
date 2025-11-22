@@ -44,6 +44,18 @@ const Login = () => {
     const response = await handleAsyncWithToast(async () => {
       return login(formData);
     });
+    console.log(response?.data?.data?.isVerified);
+
+    if (response?.data?.data?.isVerified === false) {
+      router.push(
+        `/auth/verify-email?email=${encodeURIComponent(
+          formData.email
+        )}&page=login`
+      );
+    } else {
+      router.push("/");
+    }
+
     if (response?.data?.success) {
       const user = (await verifyToken(
         response?.data?.data?.accessToken
@@ -56,8 +68,7 @@ const Login = () => {
           refresh_token: response?.data?.data?.refreshToken,
         })
       );
-
-      router.push("/");
+      // router.push("/");
       reset();
     }
   };

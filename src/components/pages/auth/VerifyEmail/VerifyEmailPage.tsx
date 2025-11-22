@@ -104,6 +104,8 @@ const VerifyEmailPage = () => {
         // reset();
         if (page === "register") {
           router.push("/");
+        } else if (page === "login") {
+          router.push("/");
         } else {
           router.push("/auth/reset-password");
         }
