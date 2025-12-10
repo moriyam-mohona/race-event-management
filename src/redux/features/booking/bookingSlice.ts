@@ -7,10 +7,6 @@ import {
 } from "@/types/Common";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
-// const persistedBooking =
-//   typeof window !== "undefined"
-//     ? JSON.parse(localStorage.getItem("booking") || "{}")
-//     : {};
 
 const initialState: BookingState = {
   currentStep: 1,
