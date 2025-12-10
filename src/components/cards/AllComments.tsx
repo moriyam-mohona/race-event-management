@@ -56,7 +56,7 @@ const AllComments = ({ postId }: any) => {
         return [...prev, ...newComments];
       });
     }
-  }, [allComments?.data?.data, pagination.current]);
+  }, [allComments?.data?.data, pagination]);
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
