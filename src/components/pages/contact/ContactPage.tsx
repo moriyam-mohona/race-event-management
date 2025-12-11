@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail } from "lucide-react";
 import MyFormWrapper from "@/components/ui/MyForm/MyFormWrapper/MyFormWrapper";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -61,18 +61,20 @@ const ContactPage: React.FC = () => {
           <div className="space-y-4 text-sm xl:text-base">
             <div className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-primary" />
-              <span className="text-gray-700">example@teamwebflow.com</span>
+              <span className="text-gray-700">info@dustitrainers.com</span>
             </div>
-            <div className="flex items-center gap-3">
+            {/* Location  */}
+            {/* <div className="flex items-center gap-3">
               <MapPin className="w-5 h-5 text-primary" />
               <span className="text-gray-700">
                 The Race Shop · New York, NY 10001
               </span>
-            </div>
-            <div className="flex items-center gap-3">
+            </div> */}
+            {/* Phone  */}
+            {/* <div className="flex items-center gap-3">
               <Phone className="w-5 h-5 text-primary" />
               <span className="text-gray-700">124 214 4521</span>
-            </div>
+            </div> */}
           </div>
         </div>
 

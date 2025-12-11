@@ -86,18 +86,6 @@ const FilteringContent = () => {
         </button>
       </div>
 
-      {/* <Divider /> */}
-
-      {/* Event Type */}
-      {/* <EventTypeSelector
-        selectedType={filters.eventType}
-        onTypeChange={(type) =>
-          handleFilterChange({ ...filters, eventType: type })
-        }
-      /> */}
-
-      {/* <Divider /> */}
-
       {/* Category */}
       <CategoryFilter
         selectedCategories={filters.categories}

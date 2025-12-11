@@ -37,10 +37,8 @@ const Banner: React.FC = () => {
   const router = useRouter();
 
   const options = [
-    { label: "Hybrid", value: "HYBRID" },
     { label: "On Site", value: "ON_SITE" },
     { label: "Virtual", value: "VIRTUAL" },
-    { label: "Shared", value: "SHARED" },
   ];
 
   const handleSelect = (value: string) => {

@@ -1,15 +1,15 @@
 import React from "react";
 
 interface RaceTypeFilterProps {
-  selectedType: "HYBRID" | "VIRTUAL" | "ON_SITE" | "SHARED" | "";
-  onRaceTypeChange: (type: "HYBRID" | "VIRTUAL" | "ON_SITE" | "SHARED") => void;
+  selectedType: "VIRTUAL" | "ON_SITE" | "";
+  onRaceTypeChange: (type: "VIRTUAL" | "ON_SITE") => void;
 }
 
 const RaceTypeFilter: React.FC<RaceTypeFilterProps> = ({
   selectedType,
   onRaceTypeChange,
 }) => {
-  const options = ["HYBRID", "VIRTUAL", "ON_SITE", "SHARED"] as const;
+  const options = ["VIRTUAL", "ON_SITE"] as const;
 
   return (
     <div className="mb-4">

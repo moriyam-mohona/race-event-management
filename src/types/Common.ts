@@ -46,7 +46,7 @@ export interface FilterState {
   continent: string;
   country: string;
   region: string;
-  raceType: "" | "HYBRID" | "VIRTUAL" | "ON_SITE" | "SHARED";
+  raceType: "" | "VIRTUAL" | "ON_SITE";
 }
 
 export interface RaceEvent {

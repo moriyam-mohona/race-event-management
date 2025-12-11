@@ -114,7 +114,7 @@ const Footer = () => {
                   +00 000 000
                 </li>
                 <li className="text-gray-600 text-sm md:text-base">
-                  www.company@gmail.com
+                  info@dustitrainers.com
                 </li>
               </ul>
             </div>
@@ -130,7 +130,7 @@ const Footer = () => {
                     type="email"
                     ref={emailRef}
                     placeholder="Enter your email"
-                    className="flex-grow px-4 py-2 text-sm bg-gray-200 rounded-l-md focus:outline-none"
+                    className="grow px-4 py-2 text-sm bg-gray-200 rounded-l-md focus:outline-none"
                   />
                   <button
                     type="button"
@@ -140,10 +140,6 @@ const Footer = () => {
                     Submit
                   </button>
                 </div>
-                <p className="text-gray-500 mt-2 text-sm md:text-base">
-                  Powered by (then Match My Search Logo below). By Clicking on
-                  the Logo you should be directed.
-                </p>
               </div>
             </div>
           </div>
@@ -151,7 +147,7 @@ const Footer = () => {
 
         <div className="mt-12 pt-8 border-t-2 border-black/70">
           <p className="text-sm md:text-base text-center text-gray-600">
-            © {currentYear} Untitled UI. All rights reserved.
+            © {currentYear} DustiTrainers. All rights reserved.
           </p>
         </div>
       </div>
