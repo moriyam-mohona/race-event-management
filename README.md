@@ -28,6 +28,7 @@
 ## ✨ Key Features
 
 ### 🏁 Public Portal & Event Discovery
+
 - **Hero & Interactive Map Discovery**: Search races by location, category, date range, or keywords using Mapbox interactive maps.
 - **Race Categories & Listing**: Browse events with grid/map toggle views, distance filters, and sorting.
 - **Detailed Event Pages**: Comprehensive race overviews including schedules, route maps, vendor profiles, FAQs, user reviews, ratings, and active comment threads.
@@ -37,7 +38,9 @@
 - **Real-Time Direct Messaging**: Live WebSocket chat system connecting participants, organizers, and support teams.
 
 ### 👥 Role-Based Dashboards
+
 #### 🛡️ Admin Dashboard (`/dashboard/admin`)
+
 - Platform-wide statistics (total users, active vendors, listed events, booking metrics, revenue).
 - **Event Management**: Review, approve, reject, edit, or delete submitted race events.
 - **Vendor Directory**: Manage vendor accounts, verify organization status, and view detailed profiles.
@@ -45,12 +48,14 @@
 - **Subscriber Management**: View and export newsletter subscribers list.
 
 #### 🎪 Vendor / Organizer Dashboard (`/dashboard/vendor`)
+
 - Organizer metrics tracking total events hosted, total ticket sales, and total earnings.
 - **Multi-Step Event Creator**: Dynamic event builder with interactive Mapbox location picker, custom FAQ builder, ticket tier setup, and multi-media dropzone (images, video preview, PDF documents).
 - **Event Portfolio**: Manage created races/expos and share event links directly.
 - **Vendor Profile**: Update organization details, payment details (Stripe onboarding link), and contact info.
 
 #### 🏃 User / Runner Dashboard (`/dashboard/user`)
+
 - Overview of registered races, upcoming schedules, and event history.
 - **My Tickets**: Quick access to confirmed bookings with downloadable PDF tickets.
 - **Saved Events**: Bookmark favorite races for quick tracking.
@@ -62,34 +67,38 @@
 
 The application implements strict Role-Based Access Control (RBAC) via JWT tokens and the `WithRole` higher-order component:
 
-| Role | Access Level | Key Capabilities |
-| :--- | :--- | :--- |
-| **Public / Guest** | Read-Only & Registration | Explore events, read community posts, register/login, submit contact inquiries. |
-| **User (Runner)** | Participant Portal | Book tickets, view/download tickets, save events, participate in community discussions, chat with vendors/admin. |
-| **Vendor (Organizer)** | Host Portal | Create and manage race events, view event sales metrics, share event links, chat with users. |
-| **Admin** | System Overseer | Full system access, approve/reject events, manage users/vendors, moderate community content, monitor platform revenue. |
+| Role                   | Access Level             | Key Capabilities                                                                                                       |
+| :--------------------- | :----------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| **Public / Guest**     | Read-Only & Registration | Explore events, read community posts, register/login, submit contact inquiries.                                        |
+| **User (Runner)**      | Participant Portal       | Book tickets, view/download tickets, save events, participate in community discussions, chat with vendors/admin.       |
+| **Vendor (Organizer)** | Host Portal              | Create and manage race events, view event sales metrics, share event links, chat with users.                           |
+| **Admin**              | System Overseer          | Full system access, approve/reject events, manage users/vendors, moderate community content, monitor platform revenue. |
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Core Framework & Frontend
+
 - **Framework**: [Next.js 15.5.7](https://nextjs.org/) (App Router with Turbopack)
 - **Library**: [React 18.3.1](https://react.dev/) & TypeScript 5
 - **Styling**: Tailwind CSS v4, Ant Design (`antd`), Shadcn UI (Radix UI primitives)
 - **Animations**: Framer Motion, Lottie React, Swiper.js
 
 ### State Management & Communication
+
 - **State & Data Fetching**: Redux Toolkit (`@reduxjs/toolkit`) & RTK Query
 - **State Persistence**: `redux-persist` with SSR fallback storage
 - **Real-Time Communication**: WebSockets (`SocketProvider` context)
 
 ### Forms & Validation
+
 - **Form Management**: React Hook Form
 - **Schema Validation**: Zod (`@hookform/resolvers/zod`)
 - **Custom Form Architecture**: Reusable `MyForm` component suit (`MyFormInput`, `MyFormAddress`, `MyFormFileUpload`, `MyFormDatePicker`, `MyFormSelect`, etc.)
 
 ### Third-Party Services & Utilities
+
 - **Maps & Geolocation**: Mapbox GL JS (`react-map-gl`, `@mapbox/mapbox-sdk`), Google Maps React
 - **Payments**: Stripe (`@stripe/stripe-js`, `@stripe/react-stripe-js`)
 - **Authentication**: JWT token auto-refresh flow, NextAuth (`next-auth`) for social OAuth (Google, Facebook, Apple)
@@ -182,18 +191,21 @@ NEXT_PUBLIC_APPLE_SECRET=your_apple_client_secret
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - **Node.js**: `v18.x` or `v20.x` recommended
 - **npm**, **yarn**, **pnpm**, or **bun**
 
 ### Installation
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/moriyam-mohona/race-event-management.git
    cd race-event-management
    ```
 
 2. **Install dependencies**:
+
    ```bash
    npm install
    ```
@@ -202,6 +214,7 @@ NEXT_PUBLIC_APPLE_SECRET=your_apple_client_secret
    Create a `.env` file in the project root as described in the [Environment Variables](#-environment-variables) section.
 
 4. **Run the Development Server**:
+
    ```bash
    npm run dev
    ```
@@ -213,18 +226,19 @@ NEXT_PUBLIC_APPLE_SECRET=your_apple_client_secret
 
 ## 📜 Scripts & Commands
 
-| Script | Command | Description |
-| :--- | :--- | :--- |
-| **Development** | `npm run dev` | Starts Next.js dev server with Turbopack enabled. |
-| **Build** | `npm run build` | Compiles production-optimized build. |
+| Script               | Command         | Description                                              |
+| :------------------- | :-------------- | :------------------------------------------------------- |
+| **Development**      | `npm run dev`   | Starts Next.js dev server with Turbopack enabled.        |
+| **Build**            | `npm run build` | Compiles production-optimized build.                     |
 | **Production Start** | `npm run start` | Launches production server on port 5001 (`--port 5001`). |
-| **Lint** | `npm run lint` | Runs Next.js ESLint check across all files. |
+| **Lint**             | `npm run lint`  | Runs Next.js ESLint check across all files.              |
 
 ---
 
 ## 🌐 Deployment
 
 ### Deploy on Vercel
+
 The easiest way to deploy this Next.js app is via [Vercel](https://vercel.com/):
 
 1. Push your code to GitHub / GitLab / Bitbucket.
